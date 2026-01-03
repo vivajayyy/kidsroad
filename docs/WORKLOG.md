@@ -5,6 +5,30 @@
 
 ---
 
+## 2026-01-03 (토)
+
+### 🔧 코드 품질 도구 설정
+
+- **분류**: `Setup` / `Code Quality`
+- **작업 내용**:
+  - Prettier 설정 추가
+    - `.prettierrc`: 코드 포맷팅 규칙 설정
+    - `.prettierignore`: 포맷팅 제외 파일 목록
+    - `package.json`에 `format`, `format:check` 스크립트 추가
+  - ESLint 설정 업데이트
+    - `eslint.config.mjs`: Prettier 통합 설정 추가
+    - `eslint-config-prettier`, `eslint-plugin-prettier` 의존성 추가
+  - `CLAUDE.md` 파일 추가: Claude Code를 위한 프로젝트 가이드 문서
+  - `docs/TODO.md` 업데이트
+- **관련 파일**:
+  - `.prettierrc`
+  - `.prettierignore`
+  - `eslint.config.mjs`
+  - `package.json`
+  - `package-lock.json`
+  - `CLAUDE.md`
+  - `docs/TODO.md`
+
 ## 2026-01-02 (금)
 
 ### 📝 프로젝트 초기화 및 문서 작성

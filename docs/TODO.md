@@ -24,15 +24,15 @@
 
 ## 2. 개발 환경 구성 (Dev Environment)
 
-- [ ] **Lint & Formatting 설정**
-  - [ ] ESLint 규칙 커스터마이징 (필요 시)
-  - [ ] Prettier 설정 및 자동 저장 적용
-- [ ] **폴더 구조 정의**
-  - [ ] `app/` (Next.js App Router)
-  - [ ] `components/` (UI 컴포넌트)
-  - [ ] `lib/` 또는 `utils/` (유틸리티 함수)
-  - [ ] `types/` (TypeScript 타입 정의)
-  - [ ] `hooks/` (커스텀 훅)
+- [x] **Lint & Formatting 설정**
+  - [x] ESLint 규칙 (Next.js 기본 설정 사용)
+  - [x] Prettier 설정 및 ESLint 통합 완료
+- [x] **폴더 구조 정의**
+  - [x] `app/` (Next.js App Router)
+  - [x] `components/` (UI 컴포넌트)
+  - [x] `lib/` (유틸리티 함수)
+  - [x] `types/` (TypeScript 타입 정의)
+  - [x] `hooks/` (커스텀 훅)
 
 ## 3. Supabase 연동 (Backend Setup)
 
