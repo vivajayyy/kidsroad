@@ -5,6 +5,24 @@
 
 ---
 
+## 2026-01-04 (일)
+
+### 🎨 UI 프레임워크 기초 작업 및 첫 화면 구성
+
+- **분류**: `Frontend` / `UI/UX`
+- **작업 내용**:
+  - 모바일 퍼스트 레이아웃 구현 (`max-w-md`, 중앙 정렬 컨테이너)
+  - 프로젝트 메타데이터(Title, Description) 최적화 (PRD 반영)
+  - `lucide-react` 아이콘 라이브러리 설치 및 적용
+  - 시각적 완성도를 위한 공통 헤더 컴포넌트 추가
+  - `app/page.tsx` 초기 디자인 적용 (환영 인사 및 카드 레이아웃)
+- **관련 파일**:
+  - `app/layout.tsx`
+  - `app/page.tsx`
+  - `package.json`
+  - `docs/TODO.md`
+
+
 ## 2026-01-03 (토)
 
 ### 🔗 Supabase 연동 및 타입 생성
