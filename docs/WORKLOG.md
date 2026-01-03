@@ -7,6 +7,21 @@
 
 ## 2026-01-03 (토)
 
+### 🔗 Supabase 연동 및 타입 생성
+
+- **분류**: `Setup` / `Backend`
+- **작업 내용**:
+  - Supabase 프로젝트 연결 및 환경 변수(`.env.local`) 설정
+  - Supabase Client 유틸리티 구현 (`lib/supabase.ts`)
+  - Supabase CLI를 이용한 TypeScript 타입 생성 (`types/supabase.ts`)
+  - `Database` Generic 타입을 클라이언트에 적용하여 타입 안정성 확보
+- **관련 파일**:
+  - `.env.local`
+  - `lib/supabase.ts`
+  - `types/supabase.ts`
+  - `docs/TODO.md`
+  - `docs/ROADMAP.md`
+
 ### 🔧 코드 품질 도구 설정
 
 - **분류**: `Setup` / `Code Quality`

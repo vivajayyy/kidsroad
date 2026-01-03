@@ -36,12 +36,12 @@
 
 ## 3. Supabase 연동 (Backend Setup)
 
-- [ ] **Supabase 프로젝트 생성**
-  - [ ] 프로젝트 생성 및 Region 설정 (Seoul)
-  - [ ] 환경 변수 (`.env.local`) 설정: API Key, URL
-- [ ] **Supabase Client 설정**
-  - [ ] Next.js용 Supabase 클라이언트 유틸리티 작성 (`lib/supabase.ts`)
-  - [ ] TypeScript 타입 생성 (`supabase create type`)
+- [x] **Supabase 프로젝트 생성**
+  - [x] 프로젝트 생성 및 Region 설정 (Seoul)
+  - [x] 환경 변수 (`.env.local`) 설정: API Key, URL
+- [x] **Supabase Client 설정**
+  - [x] Next.js용 Supabase 클라이언트 유틸리티 작성 (`lib/supabase.ts`)
+  - [x] TypeScript 타입 생성 (`supabase create type`)
 
 ## 4. UI 프레임워크 기초 작업
 
