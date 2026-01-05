@@ -1,6 +1,10 @@
+---
+trigger: always_on
+---
+
 # Kidsroad Project Rules
 
-This file provides guidance to Cursor AI when working with code in this repository.
+This file provides guidance to AI when working with code in this repository.
 
 ## Project Overview
 
@@ -15,7 +19,7 @@ This file provides guidance to Cursor AI when working with code in this reposito
 - **Language**: TypeScript 5
 - **Deployment**: Vercel
 - **Database**: Supabase (PostgreSQL) - to be integrated
-- **Data Sources**: TourAPI (한국관광공사), 문화포털 API (문화체육관광부)
+- **Data Sources**: TourAPI (Korean Tourism Organization), Culture Portal API
 
 ## Development Guidelines
 
@@ -28,7 +32,7 @@ This file provides guidance to Cursor AI when working with code in this reposito
 - Use Prettier for code formatting (configured in `.prettierrc`)
 - Follow ESLint rules (configured in `eslint.config.mjs`)
 
-### Coding Best Practices (1인 개발 필수)
+### Coding Best Practices (Solo Dev Requirements)
 
 #### TypeScript & Type Safety
 
@@ -75,7 +79,7 @@ This file provides guidance to Cursor AI when working with code in this reposito
 - Add JSDoc comments for public APIs and complex logic
 - Explain "why" not "what" in comments
 - Use Korean comments for business logic, English for technical details
-- Mark TODOs with context: `// TODO: [context] 설명`
+- Mark TODOs with context: `// TODO: [context] description`
 
 #### Security
 
@@ -85,13 +89,24 @@ This file provides guidance to Cursor AI when working with code in this reposito
 - Implement proper CORS policies
 - Sanitize data before rendering to prevent XSS
 
-### Git Workflow
+### Git & Branch Strategy
 
-- **Current Strategy**: `main` + `dev` (Phase 1)
-- Work on `dev` branch, merge to `main` for deployment
-- **Commit format**: `<type>: <description>`
+- **Default Branch**: `dev`
+- **Commit Proposal Process**:
+  - AI must **propose a merge strategy** to the user before committing.
+  - **Case A (Safe Changes)**: Documentation (`docs`), simple config (`chore`) -> Commit to `dev` then propose immediate merge to `main`.
+  - **Case B (Feature Dev)**: Features (`feat`), Fixes (`fix`), Refactor (`refactor`) -> Commit to `dev` and recommend testing.
+- **Commit Message Format**: `<type>: <description>`
   - Types: `feat`, `fix`, `refactor`, `style`, `docs`, `chore`, `test`
-  - Example: `feat: 연령별 필터 기능 추가`
+  - Example: `feat: add age-based filter`
+
+### Documentation Management
+
+- **Always-on Files**: Keep these updated automatically during tasks.
+  - `docs/TODO.md`: Manage **Current Week's** tasks only. Move past weeks to `docs/archive/`.
+  - `docs/WORKLOG.md`: Log work history in **reverse chronological order (newest top)**.
+    - Format: Date Header (`## YYYY-MM-DD`) -> Category -> Details.
+  - `docs/ROADMAP.md`: Manage overall schedule and milestones.
 
 ### UI/UX Principles
 
@@ -108,14 +123,6 @@ This file provides guidance to Cursor AI when working with code in this reposito
 - `types/` - TypeScript type definitions
 - `hooks/` - Custom React hooks
 - `docs/` - Project documentation
-
-### Key Features (from PRD)
-
-1. **Age-based Filtering**: 0-2세 / 3-5세 / 6-9세 / 10세+
-2. **Parent Checklist Filters**: 유모차, 주차, 실내/실외, 무료, 수유실, 기저귀 교환대
-3. **Integrated Event Data**: Public APIs + web scraping
-4. **Curated Lists**: Weekend recommendations, weather-based, free events
-5. **Event Detail Pages**: All essential information in one place
 
 ### Common Commands
 
@@ -170,3 +177,4 @@ npm run format       # Format code with Prettier
 - Full product vision: `docs/PRD.md`
 - Development roadmap: `docs/ROADMAP.md`
 - Git workflow: `docs/git_branch_guide.md`
+

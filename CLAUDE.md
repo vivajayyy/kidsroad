@@ -57,6 +57,7 @@ This is a Next.js 16 project using the App Router pattern:
 **Current Phase**: Week 1 - Environment Setup
 
 The project follows an 8-week MVP roadmap:
+
 - **Weeks 1-4**: Foundation (setup, DB, data pipeline, core UI)
 - **Weeks 5-8**: Features & launch (search/filters, map integration, QA, deployment)
 
@@ -71,6 +72,7 @@ The project follows an 8-week MVP roadmap:
   - Example: `feat: 연령별 필터 기능 추가`
 
 **Workflow**:
+
 ```bash
 # 1. Work on dev branch
 git checkout dev
@@ -106,6 +108,7 @@ git push origin main
 ### Data Pipeline (Week 3 milestone)
 
 When implementing data collection:
+
 - Use TourAPI and 문화포털 API as primary sources
 - Apply rule-based classification for missing metadata
 - Tag events with age ranges and parent checklist attributes
@@ -121,6 +124,7 @@ When implementing data collection:
 ### Naming Conventions
 
 The codebase uses Korean for user-facing content and domain concepts. Maintain this pattern:
+
 - UI text: Korean
 - Technical code: English
 - Comments explaining Korean domain terms: Bilingual when helpful
@@ -137,6 +141,7 @@ The codebase uses Korean for user-facing content and domain concepts. Maintain t
 ### Supabase Integration (Week 2 milestone)
 
 When setting up the database:
+
 - Tables needed: `events`, `event_categories`, `user_favorites` (Phase 2)
 - Use Supabase Auth for user features (Phase 2)
 - Enable Row Level Security (RLS) policies
@@ -144,6 +149,7 @@ When setting up the database:
 ### API Routes Pattern
 
 Create API routes in `app/api/` directory following App Router conventions:
+
 - `app/api/events/route.ts` - Event listing/search
 - `app/api/events/[id]/route.ts` - Event details
 - Use Next.js 16 Server Components where possible
@@ -151,6 +157,7 @@ Create API routes in `app/api/` directory following App Router conventions:
 ### Environment Variables
 
 When APIs are integrated, use `.env.local`:
+
 ```
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
