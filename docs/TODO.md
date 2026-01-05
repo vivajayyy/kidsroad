@@ -18,17 +18,24 @@
 
 ## 2. 공공데이터 API 연동 (TourAPI)
 
-- [ ] **API 환경 설정**
-  - [ ] 한국관광공사 TourAPI 인증키 발급 및 .env 등록
-  - [ ] API 호출 테스트 (Postman / 스크립트)
-- [ ] **데이터 수집 로직 구현**
-  - [ ] API 데이터 -> Supabase 저장 스크립트 작성
-  - [ ] 데이터 매핑 (API 응답 -> Event 스키마)
+- [ ] **API 환경 설정 및 타입 정의**
+  - [ ] 한국관광공사 TourAPI 활용신청 및 인증키(Decoding Key) 발급
+  - [ ] `.env.local`에 API Key 환경변수 등록 (`NEXT_PUBLIC_TOUR_API_KEY`)
+  - [ ] TourAPI 응답 데이터 타입(Interface) 정의 (`types/tour-api.ts`)
+- [ ] **데이터 수집 로직 구현 (Data Fetching)**
+  - [ ] `lib/tour-api.ts`: API 호출 및 데이터 Fetching 유틸리티 구현
+  - [ ] `utils/mapper.ts`: TourAPI 데이터 -> Supabase DB 스키마 변환 함수 작성
+  - [ ] 데이터 저장 스크립트 작성 및 테스트 (터미널 실행)
 
-## 3. UI/UX 고도화 (선택 사항)
+## 3. 메인 페이지 UI 구현 (UI Implementation)
 
-- [ ] **메인 페이지 UI 업데이트**
-  - [ ] 실제 DB 데이터 연동해보기 (Server Component)
+- [ ] **데이터 조회 기능 (Data Fetching)**
+  - [ ] `lib/events.ts`: Supabase에서 행사 목록 조회 함수 작성 (`getEvents`)
+  - [ ] Server Component(`app/page.tsx`)에서 데이터 호출 연결
+- [ ] **리스트 UI 구현**
+  - [ ] `components/EventCard.tsx`: 행사 정보 카드 컴포넌트 생성 (이미지, 제목, 날짜)
+  - [ ] `app/page.tsx`: Grid 레이아웃 적용 및 카드 리스트 렌더링
+  - [ ] 빈 상태(Empty State) 및 로딩(Skeleton) UI 처리
 
 ---
 
