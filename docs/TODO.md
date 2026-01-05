@@ -1,64 +1,37 @@
-# Kidsroad 1주차 개발 진행 상황
+# Kidsroad 2주차 개발 진행 상황
 
-> **기간**: 1주차 (환경 설정 및 프로젝트 구조 잡기)
-> **목표**: Next.js + Supabase 기본 환경 구성 및 문서화
-> **상태**: 진행 중 🏃
-
----
-
-## 1. 프로젝트 초기 설정 (Project Setup)
-
-- [x] **Next.js 프로젝트 생성** (`create-next-app`)
-  - [x] TypeScript 적용
-  - [x] Tailwind CSS v4 설정
-  - [x] Next.js 16 / React 19 환경 확인
-- [x] **Git & GitHub 설정**
-  - [x] 레포지토리 초기화
-  - [x] `.gitignore` 설정
-  - [x] 브랜치 전략 수립 (`main` - `dev`) 및 적용
-- [x] **프로젝트 문서화**
-  - [x] PRD (요구사항 정의서) 작성
-  - [x] Git 브랜치 전략 가이드 작성
-  - [x] 프로젝트 체크리스트 작성
-  - [x] TODO 리스트 작성 (현재 파일)
-  - [x] **프로젝트 규칙 통합** (`.agent/rules` 및 `.cursor/rules` 동기화)
-- [x] **배포 환경 구축 (CI/CD)**
-  - [x] Vercel 프로젝트 연동 및 자동 배포 설정
-  - [x] `.env.example` 생성 및 환경 변수 가이드 마련
-
-## 2. 개발 환경 구성 (Dev Environment)
-
-- [x] **Lint & Formatting 설정**
-  - [x] ESLint 규칙 (Next.js 기본 설정 사용)
-  - [x] Prettier 설정 및 ESLint 통합 완료
-- [x] **폴더 구조 정의**
-  - [x] `app/` (Next.js App Router)
-  - [x] `components/` (UI 컴포넌트)
-  - [x] `lib/` (유틸리티 함수)
-  - [x] `types/` (TypeScript 타입 정의)
-  - [x] `hooks/` (커스텀 훅)
-
-## 3. Supabase 연동 (Backend Setup)
-
-- [x] **Supabase 프로젝트 생성**
-  - [x] 프로젝트 생성 및 Region 설정 (Seoul)
-  - [x] 환경 변수 (`.env.local`) 설정: API Key, URL
-- [x] **Supabase Client 설정**
-  - [x] Next.js용 Supabase 클라이언트 유틸리티 작성 (`lib/supabase.ts`)
-  - [x] TypeScript 타입 생성 (`supabase create type`)
-
-## 4. UI 프레임워크 기초 작업
-
-- [x] **기본 레이아웃 구성**
-  - [x] `layout.tsx` (전역 폰트, 메타데이터 설정)
-  - [x] 모바일 퍼스트 레이아웃 컨테이너 잡기 (`max-w-md` 등)
-- [x] **아이콘 설정**
-  - [x] Lucide React 등 아이콘 라이브러리 설치
+> **기간**: 2주차 (DB 구조 설계 및 데이터 수집)
+> **목표**: Supabase 스키마 구축 및 공공데이터(TourAPI) 연동
+> **상태**: 시작 전 ⬜
 
 ---
 
-## 📅 다음 주 계획 (2주차 예고)
+## 1. 데이터베이스 설계 및 구축 (Database)
 
-- **DB 설계 및 구축**: 공공데이터용 테이블 설계
-- **API 연동 테스트**: TourAPI 호출 테스트
-- **필수 기능 구현**: 헤더, 네비게이션 바 컴포넌트 개발
+- [ ] **Supabase 테이블 설계 (Schema Design)**
+  - [ ] `events`: 축제/행사 정보 테이블
+  - [ ] `profiles`: 사용자 정보 테이블 (Kakao 로그인 대비)
+  - [ ] `bookmarks`: 찜하기 기능 테이블
+- [ ] **데이터베이스 생성**
+  - [ ] Supabase Dashboard에서 테이블 생성
+  - [ ] RLS (Row Level Security) 정책 설정
+
+## 2. 공공데이터 API 연동 (TourAPI)
+
+- [ ] **API 환경 설정**
+  - [ ] 한국관광공사 TourAPI 인증키 발급 및 .env 등록
+  - [ ] API 호출 테스트 (Postman / 스크립트)
+- [ ] **데이터 수집 로직 구현**
+  - [ ] API 데이터 -> Supabase 저장 스크립트 작성
+  - [ ] 데이터 매핑 (API 응답 -> Event 스키마)
+
+## 3. UI/UX 고도화 (선택 사항)
+
+- [ ] **메인 페이지 UI 업데이트**
+  - [ ] 실제 DB 데이터 연동해보기 (Server Component)
+
+---
+
+## 📅 지난 주 완료 사항 (Archive)
+
+- [x] **Week 1**: [환경 설정 및 배포 완료](archive/Week1_Foundation.md)

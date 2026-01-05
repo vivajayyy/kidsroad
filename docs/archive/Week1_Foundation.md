@@ -1,0 +1,64 @@
+# Kidsroad 1주차 개발 진행 상황
+
+> **기간**: 1주차 (환경 설정 및 프로젝트 구조 잡기)
+> **목표**: Next.js + Supabase 기본 환경 구성 및 문서화
+> **상태**: 진행 중 🏃
+
+---
+
+## 1. 프로젝트 초기 설정 (Project Setup)
+
+- [x] **Next.js 프로젝트 생성** (`create-next-app`)
+  - [x] TypeScript 적용
+  - [x] Tailwind CSS v4 설정
+  - [x] Next.js 16 / React 19 환경 확인
+- [x] **Git & GitHub 설정**
+  - [x] 레포지토리 초기화
+  - [x] `.gitignore` 설정
+  - [x] 브랜치 전략 수립 (`main` - `dev`) 및 적용
+- [x] **프로젝트 문서화**
+  - [x] PRD (요구사항 정의서) 작성
+  - [x] Git 브랜치 전략 가이드 작성
+  - [x] 프로젝트 체크리스트 작성
+  - [x] TODO 리스트 작성 (현재 파일)
+  - [x] **프로젝트 규칙 통합** (`.agent/rules` 및 `.cursor/rules` 동기화)
+- [x] **배포 환경 구축 (CI/CD)**
+  - [x] Vercel 프로젝트 연동 및 자동 배포 설정
+  - [x] `.env.example` 생성 및 환경 변수 가이드 마련
+
+## 2. 개발 환경 구성 (Dev Environment)
+
+- [x] **Lint & Formatting 설정**
+  - [x] ESLint 규칙 (Next.js 기본 설정 사용)
+  - [x] Prettier 설정 및 ESLint 통합 완료
+- [x] **폴더 구조 정의**
+  - [x] `app/` (Next.js App Router)
+  - [x] `components/` (UI 컴포넌트)
+  - [x] `lib/` (유틸리티 함수)
+  - [x] `types/` (TypeScript 타입 정의)
+  - [x] `hooks/` (커스텀 훅)
+
+## 3. Supabase 연동 (Backend Setup)
+
+- [x] **Supabase 프로젝트 생성**
+  - [x] 프로젝트 생성 및 Region 설정 (Seoul)
+  - [x] 환경 변수 (`.env.local`) 설정: API Key, URL
+- [x] **Supabase Client 설정**
+  - [x] Next.js용 Supabase 클라이언트 유틸리티 작성 (`lib/supabase.ts`)
+  - [x] TypeScript 타입 생성 (`supabase create type`)
+
+## 4. UI 프레임워크 기초 작업
+
+- [x] **기본 레이아웃 구성**
+  - [x] `layout.tsx` (전역 폰트, 메타데이터 설정)
+  - [x] 모바일 퍼스트 레이아웃 컨테이너 잡기 (`max-w-md` 등)
+- [x] **아이콘 설정**
+  - [x] Lucide React 등 아이콘 라이브러리 설치
+
+---
+
+## 📅 다음 주 계획 (2주차 예고)
+
+- **DB 설계 및 구축**: 공공데이터용 테이블 설계
+- **API 연동 테스트**: TourAPI 호출 테스트
+- **필수 기능 구현**: 헤더, 네비게이션 바 컴포넌트 개발

@@ -20,6 +20,9 @@
     - Vercel 연동을 위한 문서(`TODO`, `ROADMAP`) 업데이트
     - **Vercel 배포 완료**: `https://kidsroad.vercel.app/` 연결 성공
   - 커밋 메시지 규칙(한글 필수) 및 단위(Atomic) 가이드라인 수립
+  - **주차 전환 (W1 -> W2)**:
+    - 1주차 할 일 아카이빙 (`docs/archive/Week1_Foundation.md`)
+    - 2주차 목표 수립 (DB 설계 및 API 연동)
 - **관련 파일**:
   - `docs/WORKLOG.md`, `docs/TODO.md`, `docs/ROADMAP.md`
   - `.agent/rules/kidsroad.md`
