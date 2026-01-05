@@ -170,3 +170,9 @@ npm run format       # Format code with Prettier
 - Full product vision: `docs/PRD.md`
 - Development roadmap: `docs/ROADMAP.md`
 - Git workflow: `docs/git_branch_guide.md`
+
+### Communication & Task Management
+- **Task-based Guidance**: Provide a **complete, end-to-end guide** for a specific task (e.g., a "TODO" item). Do not fragment instructions into button clicks; enable the user to complete the full task in one go.
+  - `// 클릭 단위가 아닌, "기능/Task 완성" 단위로 전체 가이드를 제공하세요.`
+  - `// 한 번에 하나씩, 명확한 단계별 가이드를 제공하세요.`
+
