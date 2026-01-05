@@ -31,19 +31,18 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-50`}
       >
         {/* 
-            모바일 컨테이너 
-            - max-w-md: 너비를 최대 448px로 제한 (아이폰 사이즈 느낌)
-            - mx-auto: 화면 중앙 정렬
-            - min-h-screen: 최소 높이를 화면 꽉 차게
-            - bg-white: 실제 컨텐츠 영역은 흰색
-            - shadow-sm: 모바일 기기 느낌을 주기 위한 가벼운 그림자
+            수정된 반응형 컨테이너 
+            - w-full: 기본적으로 가로 100% (모바일)
+            - max-w-screen-xl: 너무 넓어지지 않게 최대 너비 제한 (약 1280px)
+            - mx-auto: 중앙 정렬
         */}
-        <main className="max-w-md mx-auto min-h-screen bg-white shadow-sm">
-          <header className="p-4 border-b flex items-center justify-between">
+        <main className="w-full max-w-screen-xl mx-auto min-h-screen bg-white shadow-sm">
+          <header className="p-4 border-b flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-50">
             <h1 className="text-xl font-bold text-pink-500 flex items-center gap-2">
               <Heart size={24} fill="currentColor" />
               Kidsroad
             </h1>
+            {/* 우측에 메뉴 등 추가 공간 확보 가능 */}
           </header>
           {children}
         </main>
