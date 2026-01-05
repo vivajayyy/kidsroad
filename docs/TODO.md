@@ -21,8 +21,10 @@
   - [x] Git 브랜치 전략 가이드 작성
   - [x] 프로젝트 체크리스트 작성
   - [x] TODO 리스트 작성 (현재 파일)
+  - [x] **프로젝트 규칙 통합** (`.agent/rules` 및 `.cursor/rules` 동기화)
 - [x] **배포 환경 구축 (CI/CD)**
   - [x] Vercel 프로젝트 연동 및 자동 배포 설정
+  - [x] `.env.example` 생성 및 환경 변수 가이드 마련
 
 ## 2. 개발 환경 구성 (Dev Environment)
 
