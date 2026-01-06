@@ -27,10 +27,11 @@
 
 ## 2. 공공데이터 API 연동 (TourAPI)
 
-- [ ] **API 환경 설정 및 타입 정의**
-  - [ ] 한국관광공사 TourAPI 활용신청 및 인증키(Decoding Key) 발급
-  - [ ] `.env.local`에 API Key 환경변수 등록 (`NEXT_PUBLIC_TOUR_API_KEY`)
-  - [ ] TourAPI 응답 데이터 타입(Interface) 정의 (`types/tour-api.ts`)
+- [x] **API 환경 설정 및 타입 정의**
+  - [x] 한국관광공사 TourAPI 활용신청 및 인증키(Decoding Key) 발급 (공공데이터포털 data.go.kr 이용)
+  - [x] TourAPI 활용 가이드 문서 작성 (`docs/TOUR_API_GUIDE.md`)
+  - [x] `.env.local`에 API Key 환경변수 등록 (`NEXT_PUBLIC_TOUR_API_KEY`)
+  - [x] TourAPI 응답 데이터 타입(Interface) 정의 (`types/tour-api.ts`)
 - [ ] **데이터 수집 로직 구현 (Data Fetching)**
   - [ ] `lib/tour-api.ts`: API 호출 및 데이터 Fetching 유틸리티 구현
   - [ ] `utils/mapper.ts`: TourAPI 데이터 -> Supabase DB 스키마 변환 함수 작성

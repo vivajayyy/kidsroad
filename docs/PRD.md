@@ -2,7 +2,7 @@
 
 > **Product Requirements Document v1.0**
 
-> 최종 수정일: 2024년 12월
+> 최종 수정일: 2026년 1월
 
 ---
 
@@ -548,7 +548,7 @@ MVP에서 **포함하지 않는** 기능:
 
 | API명        | 제공 기관      | URL                                                 | 주요 데이터      |
 | ------------ | -------------- | --------------------------------------------------- | ---------------- |
-| TourAPI      | 한국관광공사   | [api.visitkorea.or.kr](http://api.visitkorea.or.kr) | 축제, 공연, 체험 |
+| TourAPI      | 한국관광공사   | [data.go.kr](https://www.data.go.kr) | 축제, 공연, 체험 |
 | 문화포털 API | 문화체육관광부 | [culture.go.kr/data](http://culture.go.kr/data)     | 전시, 문화행사   |
 
 ### 크롤링 대상 (주 1회)
@@ -572,7 +572,8 @@ MVP에서 **포함하지 않는** 기능:
 
 ## 8.4 참고 자료
 
-- 한국관광공사 TourAPI 문서: [https://api.visitkorea.or.kr](https://api.visitkorea.or.kr)
+- 한국관광공사 TourAPI 문서: [https://api.visitkorea.or.kr](https://api.visitkorea.or.kr) (문서 확인용)
+- 한국관광공사 TourAPI 인증키 발급: [https://www.data.go.kr](https://www.data.go.kr) (실제 발급처)
 - 문화체육관광부 공공데이터: [https://culture.go.kr/data](https://culture.go.kr/data)
 - 공공데이터포털: [https://data.go.kr](https://data.go.kr)
 

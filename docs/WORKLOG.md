@@ -5,6 +5,33 @@
 
 ---
 
+## 2026-01-06 (화)
+
+### 📝 TourAPI 인증키 발급 및 문서 최신화
+
+- **분류**: `Docs` / `Setup`
+- **작업 내용**:
+  - **TourAPI 발급처 정보 수정**:
+    - TourAPI 인증키 발급처가 `api.visitkorea.or.kr`이 아닌 공공데이터포털(`data.go.kr`)임을 확인 및 반영
+    - PRD, TODO, ROADMAP 문서 내 잘못된 URL 및 절차 정보 수정
+  - **TourAPI 활용 가이드 작성**:
+    - `docs/api` 내 매뉴얼 분석을 통해 핵심 API 규격 및 매핑 전략 정리 (`docs/TOUR_API_GUIDE.md`)
+    - Kidsroad 특화 부모 체크리스트 데이터 변환 로직 초안 수립
+  - **인증키 발급 완료**:
+    - 공공데이터포털을 통한 "한국관광공사_국문 관광정보 서비스_GW" 활용 신청 및 승인 완료
+  - **TourAPI 환경변수 및 타입 정의**:
+    - `.env.local`에 `NEXT_PUBLIC_TOUR_API_KEY` 등록 완료
+    - TourAPI 응답 구조에 맞춘 TypeScript 인터페이스 정의 (`types/tour-api.ts`)
+  - **문서 현행화**:
+    - 전체 로드맵 및 진행 상황을 Week 2로 업데이트
+- **관련 파일**:
+  - `docs/PRD.md`
+  - `docs/TODO.md`
+  - `docs/ROADMAP.md`
+  - `docs/WORKLOG.md`
+
+---
+
 ## 2026-01-05 (월)
 
 ### 🗄️ Supabase Events 테이블 설계 및 생성 완료
