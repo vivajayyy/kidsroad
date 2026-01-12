@@ -1,49 +1,170 @@
-// app/page.tsx
-import { getEvents, Event } from '../lib/events';
-import EventCard from '../components/EventCard'; // EventCard 컴포넌트 가져오기
+"use client";
 
-export default async function Home() {
-  const events = await getEvents({ pageSize: 11 }); // 인기 필터 카드 공간을 고려하여 11개 가져오기
-  // console.log('Fetched events:', events); // 서버 측 콘솔에 이벤트 로깅 (디버깅용)
+import React, { useState } from 'react';
+import Image from 'next/image';
+
+// --- Types (간소화) ---
+interface Event {
+  id: number;
+  title: string;
+  fullTitle?: string;
+  age: string;
+  location: string;
+  fullLocation?: string;
+  description?: string;
+  image: string;
+  tags?: string[];
+  schedule?: string;
+  fee?: string;
+  checklist: {
+    icon: string;
+    label: string;
+    sub: string;
+  }[];
+}
+
+// --- Mock Data ---
+const EVENTS: Event[] = [
+  { id: 1, title: "Modern Forest Atelier", age: "Age 4-7", location: "Seongsu-dong, Seoul", image: "https://images.unsplash.com/photo-1511497584788-876760111969?q=80&w=800&auto=format&fit=crop", checklist: [] },
+  {
+    id: 2,
+    title: "Architecture for Kids",
+    fullTitle: "Architecture for Kids: Bauhaus Session",
+    age: "All Ages",
+    location: "Pyeongchang-dong, Seoul",
+    fullLocation: "Pyeongchang-dong 12-4, Seoul",
+    description: "A curated workshop focused on spatial awareness and minimalist design principles for young creators. Led by professional architects in a light-filled studio environment.",
+    image: "https://images.unsplash.com/photo-1518005020480-1097c009716e?q=80&w=800&auto=format&fit=crop",
+    tags: ["Design", "Education"],
+    schedule: "Sat - Sun | 11:00, 14:00, 16:00",
+    fee: "₩45,000 (Incl. materials)",
+    checklist: [
+      { icon: "local_parking", label: "Valet Parking", sub: "Available on-site" },
+      { icon: "baby_changing_station", label: "Nursing Room", sub: "Premium facilities" },
+      { icon: "restaurant", label: "Kids Cafe", sub: "Organic menu" },
+      { icon: "stroller", label: "Stroller Access", sub: "Barrier free" },
+    ]
+  },
+  { id: 3, title: "Beige Sensory Play", age: "Age 0-3", location: "Hannam-dong, Seoul", image: "https://images.unsplash.com/photo-1554232456-8727a67032ba?q=80&w=800&auto=format&fit=crop", checklist: [] },
+  { id: 4, title: "Minimal Ceramic Class", age: "Age 5+", location: "Yeonnam-dong, Seoul", image: "https://images.unsplash.com/photo-1565193566174-933c9f702e23?q=80&w=800&auto=format&fit=crop", checklist: [] },
+  { id: 5, title: "Gourmet Little Chef", age: "Age 3-10", location: "Cheongdam-dong, Seoul", image: "https://images.unsplash.com/photo-1600565193348-f74d3c2723a9?q=80&w=800&auto=format&fit=crop", checklist: [] },
+  { id: 6, title: "The Digital Lab", age: "Age 6+", location: "Gangnam, Seoul", image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=800&auto=format&fit=crop", checklist: [] },
+];
+
+function DetailRow({ label, value }: { label: string; value: string }) {
+  if (!value) return null;
+  return (
+    <div className="flex justify-between py-5 border-b border-gray-100 dark:border-gray-800">
+      <span className="text-[11px] text-gray-400 uppercase tracking-wider">{label}</span>
+      <span className="text-[12px] font-medium text-right">{value}</span>
+    </div>
+  );
+}
+
+export default function KidsroadPage() {
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(EVENTS[1]);
 
   return (
-    <div className="flex flex-col gap-8 px-4 sm:px-6 lg:px-8">
-      {/* 환영 인사: 데스크톱에서도 중앙 정렬 */}
-      <section className="py-12 md:py-20 text-center">
-        <h2 className="text-3xl md:text-5xl font-bold text-slate-800 leading-tight">
-          아이와 함께하는 <span className="text-pink-500">지연님</span>의 오늘을 <br />
-          키즈로드가 응원해요!
-        </h2>
-        <p className="mt-4 text-slate-500 text-base md:text-lg max-w-2xl mx-auto">
-          주말에 어디 갈지 고민이신가요? 딱 맞는 행사만 골라왔어요.
-        </p>
-      </section>
-
-      {/* 이벤트 카드 그리드: xl 화면에서 4열 적용 */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {events.length > 0 ? (
-          events.map((event) => (
-            <EventCard key={event.contentid} event={event} />
-          ))
-        ) : (
-          // 이벤트가 없을 경우 표시될 내용 (Empty State)
-          <div className="col-span-full aspect-video bg-gray-50 rounded-2xl flex items-center justify-center border-2 border-dashed border-gray-200 text-gray-400 font-medium">
-            <p>✨ 현재 추천할 만한 행사가 없습니다.</p>
+    <>
+      <main className="pt-24 pb-12 px-8 max-w-[1440px] mx-auto flex gap-12">
+        {/* --- Left Content: Event Grid --- */}
+        <section className="transition-all duration-500 ease-in-out w-full lg:w-[55%]">
+          <div className="mb-12">
+            <h2 className="text-4xl font-normal tracking-tight mb-2">Curated for your weekend.</h2>
+            <p className="text-gray-500 text-sm font-light">Minimalist discovery of children's premium experiences.</p>
           </div>
-        )}
 
-        {/* 인기 필터 섹션 */}
-        <div className="p-6 bg-slate-50 rounded-2xl flex flex-col justify-center">
-            <p className="text-slate-600 text-base font-semibold mb-4">이번 주 인기 필터</p>
-            <div className="flex flex-wrap gap-2">
-              <span className="cursor-pointer px-4 py-2 bg-white border rounded-full text-sm text-slate-500 hover:border-pink-400 hover:text-pink-500 transition-colors">#무료</span>
-              <span className="cursor-pointer px-4 py-2 bg-white border rounded-full text-sm text-slate-500 hover:border-pink-400 hover:text-pink-500 transition-colors">#수유실있음</span>
-              <span className="cursor-pointer px-4 py-2 bg-white border rounded-full text-sm text-slate-500 hover:border-pink-400 hover:text-pink-500 transition-colors">#실내체험</span>
-              <span className="cursor-pointer px-4 py-2 bg-white border rounded-full text-sm text-slate-500 hover:border-pink-400 hover:text-pink-500 transition-colors">#주차편함</span>
-              <span className="cursor-pointer px-4 py-2 bg-white border rounded-full text-sm text-slate-500 hover:border-pink-400 hover:text-pink-500 transition-colors">#연령_0-2세</span>
-            </div>
-        </div>
-      </div>
-    </div>
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-500 ease-in-out ${selectedEvent ? 'lg:grid-cols-2' : 'lg:grid-cols-3'}`}>
+            {EVENTS.map((event) => (
+              <div 
+                key={event.id}
+                onClick={() => setSelectedEvent(event)}
+                className={`bg-white dark:bg-[#1E1E1E] p-8 rounded-xl cursor-pointer transition-all duration-300 border ${selectedEvent?.id === event.id ? 'border-gray-900 dark:border-gray-400' : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700'} shadow-sm group`}
+              >
+                <div className="flex justify-between items-start mb-16">
+                  <span className="text-[10px] uppercase tracking-widest text-sage-600 font-bold bg-sage-50 dark:bg-sage-600/20 px-2.5 py-1 rounded-md">
+                    {event.age}
+                  </span>
+                  <span className={`material-symbols-outlined text-[20px] ${selectedEvent?.id === event.id ? 'text-gray-900 dark:text-white' : 'text-gray-300 dark:text-gray-600 group-hover:text-gray-400'}`}>
+                    bookmark
+                  </span>
+                </div>
+                <h3 className="text-xl font-medium mb-1.5">{event.title}</h3>
+                <p className="text-gray-400 text-sm flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px]">location_on</span>
+                  {event.location}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* --- Right Content: Sliding Side Panel --- */}
+        <aside className={`hidden lg:block w-[400px] xl:w-[480px] fixed top-0 h-screen bg-white dark:bg-[#1C1C1C] shadow-2xl border-l border-gray-100 dark:border-gray-800 overflow-y-auto custom-scrollbar z-30 transition-transform duration-500 ease-in-out ${selectedEvent ? 'translate-x-0' : 'right-0' : 'translate-x-full right-0'}`}>
+          {selectedEvent && (
+            <>
+              <div className="relative h-[45vh] w-full">
+                <Image 
+                  src={selectedEvent.image} 
+                  alt={selectedEvent.title}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1280px) 40vw, 480px"
+                />
+                <button onClick={() => setSelectedEvent(null)} className="absolute top-6 right-6 bg-white/80 dark:bg-black/80 backdrop-blur p-2 rounded-full shadow-lg hover:bg-white transition-colors">
+                  <span className="material-symbols-outlined text-gray-900">close</span>
+                </button>
+                <div className="absolute bottom-6 left-6 flex gap-2">
+                  {selectedEvent.tags?.map(tag => (
+                    <span key={tag} className="bg-white/80 backdrop-blur px-3 py-1 text-[10px] font-bold tracking-widest uppercase rounded">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="p-10">
+                <h2 className="text-3xl font-medium leading-tight mb-4">
+                  {selectedEvent.fullTitle || selectedEvent.title}
+                </h2>
+                <p className="text-gray-500 text-sm leading-relaxed font-light mb-12">
+                  {selectedEvent.description}
+                </p>
+
+                {selectedEvent.checklist.length > 0 && (
+                  <div className="mb-12">
+                    <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-gray-400 mb-8">Parental Checklist</h3>
+                    <div className="grid grid-cols-2 gap-y-10 gap-x-4">
+                      {selectedEvent.checklist.map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-4">
+                          <div className="w-10 h-10 border border-gray-100 dark:border-gray-700 flex items-center justify-center rounded-lg text-sage-600">
+                            <span className="material-symbols-outlined font-light">{item.icon}</span>
+                          </div>
+                          <div>
+                            <p className="text-[12px] font-medium">{item.label}</p>
+                            <p className="text-[11px] text-gray-400">{item.sub}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="border-t border-gray-100 dark:border-gray-800 pt-2 mb-12 space-y-0">
+                  <DetailRow label="Location" value={selectedEvent.fullLocation || selectedEvent.location} />
+                  <DetailRow label="Schedule" value={selectedEvent.schedule || ""} />
+                  <DetailRow label="Fee" value={selected.fee || ""} />
+                </div>
+
+                <button className="w-full bg-gray-900 text-white py-5 rounded-md font-medium tracking-widest uppercase text-[11px] hover:bg-black transition-all flex items-center justify-center gap-2 group shadow-xl">
+                  Apply for Session
+                  <span className="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </button>
+              </div>
+            </>
+          )}
+        </aside>
+      </main>
+    </>
   );
 }
