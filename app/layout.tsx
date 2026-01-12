@@ -36,7 +36,7 @@ export default function RootLayout({
             - max-w-screen-xl: 너무 넓어지지 않게 최대 너비 제한 (약 1280px)
             - mx-auto: 중앙 정렬
         */}
-        <main className="w-full max-w-screen-xl mx-auto min-h-screen bg-white shadow-sm">
+        <main className="w-full min-h-screen bg-white shadow-sm">
           <header className="p-4 border-b flex items-center justify-between sticky top-0 bg-white/80 backdrop-blur-md z-50">
             <h1 className="text-xl font-bold text-pink-500 flex items-center gap-2">
               <Heart size={24} fill="currentColor" />

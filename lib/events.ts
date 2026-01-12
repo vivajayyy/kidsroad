@@ -1,4 +1,4 @@
-import { createClient } from './supabase';
+import { supabase } from './supabase'; // Import the instance instead of the function
 import { Tables } from '../types/supabase';
 
 export type Event = Tables<'events'>;
@@ -18,8 +18,6 @@ export async function getEvents(params?: {
     sortBy?: keyof Event;
     ascending?: boolean;
 }): Promise<Event[]> {
-    const supabase = createClient(); // Uses anon key by default
-
     const page = params?.page || 1;
     const pageSize = params?.pageSize || 10;
     const sortBy = params?.sortBy || 'eventstartdate';
@@ -29,7 +27,7 @@ export async function getEvents(params?: {
     const to = from + pageSize - 1;
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabase // Use the imported instance directly
             .from('events')
             .select('*')
             .order(sortBy, { ascending })
@@ -46,3 +44,4 @@ export async function getEvents(params?: {
         return [];
     }
 }
+

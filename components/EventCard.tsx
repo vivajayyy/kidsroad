@@ -10,7 +10,7 @@ interface EventCardProps {
 }
 
 export default function EventCard({ event }: EventCardProps) {
-  const imageUrl = event.firstimage2 || '/images/default-event-thumbnail.jpg'; // 대체 이미지 경로 (추후 추가)
+  const imageUrl = event.firstimage || event.firstimage2 || '/images/default-event-thumbnail.jpg'; // 원본 이미지를 우선 사용
   const startDate = event.eventstartdate ? format(new Date(event.eventstartdate), 'yyyy.MM.dd', { locale: ko }) : '날짜 미정';
   const endDate = event.eventenddate ? format(new Date(event.eventenddate), 'yyyy.MM.dd', { locale: ko }) : '날짜 미정';
 
