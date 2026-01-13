@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+KR:wght@300;400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
 
 @tailwind base;
 @tailwind components;
@@ -20,20 +20,20 @@ body {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #E0E0E0;
+  background: #e0e0e0;
   border-radius: 10px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #CCCCCC;
+  background: #cccccc;
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #3A3A3A;
+  background: #3a3a3a;
 }
 
 .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #4A4A4A;
+  background: #4a4a4a;
 }
 
 /* Card hover effect */
@@ -42,10 +42,10 @@ body {
 }
 
 .card-hover:hover {
-  border-color: #2D2D2D;
+  border-color: #2d2d2d;
   transform: translateY(-2px);
 }
 
 .dark .card-hover:hover {
-  border-color: #2D2D2D;
+  border-color: #2d2d2d;
 }

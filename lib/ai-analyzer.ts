@@ -3,10 +3,10 @@
  * 블로그 콘텐츠에서 부모 체크리스트 정보를 AI로 추출
  */
 
-import Anthropic from '@anthropic-ai/sdk';
-import { EnrichmentResult } from '@/types/enrichment.types';
-import { BlogContent } from '@/types/blog.types';
-import { RateLimiter } from '@/utils/rate-limiter';
+import Anthropic from "@anthropic-ai/sdk";
+import { EnrichmentResult } from "@/types/enrichment.types";
+import { BlogContent } from "@/types/blog.types";
+import { RateLimiter } from "@/utils/rate-limiter";
 
 const rateLimiter = new RateLimiter(50 / 60); // 50 req/min
 
@@ -23,12 +23,12 @@ export async function analyzeBlogs(
   const apiKey = process.env.ANTHROPIC_API_KEY;
 
   if (!apiKey) {
-    console.warn('Anthropic API key not set, skipping AI analysis');
+    console.warn("Anthropic API key not set, skipping AI analysis");
     return null;
   }
 
   if (blogContents.length === 0) {
-    console.warn('No blog contents to analyze');
+    console.warn("No blog contents to analyze");
     return null;
   }
 
@@ -45,7 +45,7 @@ export async function analyzeBlogs(
 내용: ${blog.content.substring(0, 1500)}
 `
     )
-    .join('\n');
+    .join("\n");
 
   const prompt = `
 당신은 부모들을 위한 이벤트 정보 분석 전문가입니다.
@@ -84,29 +84,27 @@ ${combinedContent}
 
   try {
     const message = await client.messages.create({
-      model: 'claude-3-haiku-20240307',
+      model: "claude-3-haiku-20240307",
       max_tokens: 1024,
-      messages: [{ role: 'user', content: prompt }],
+      messages: [{ role: "user", content: prompt }],
     });
 
-    const textContent = message.content.find((c) => c.type === 'text');
-    if (!textContent || textContent.type !== 'text') {
-      console.error('No text content in AI response');
+    const textContent = message.content.find((c) => c.type === "text");
+    if (!textContent || textContent.type !== "text") {
+      console.error("No text content in AI response");
       return null;
     }
 
     // Extract JSON from response (handle markdown code blocks)
     let jsonText = textContent.text.trim();
-    if (jsonText.startsWith('```')) {
-      jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    if (jsonText.startsWith("```")) {
+      jsonText = jsonText.replace(/```json\n?/g, "").replace(/```\n?/g, "");
     }
 
     const result = JSON.parse(jsonText);
 
     // Calculate estimated token usage for logging
-    const estimatedTokens = Math.ceil(
-      (prompt.length + jsonText.length) / 4
-    );
+    const estimatedTokens = Math.ceil((prompt.length + jsonText.length) / 4);
     console.log(
       `[AI Analysis] Event: "${eventTitle}", Blogs: ${blogContents.length}, Est. tokens: ${estimatedTokens}`
     );
@@ -117,9 +115,9 @@ ${combinedContent}
       analyzed_at: new Date().toISOString(),
     };
   } catch (error) {
-    console.error('AI analysis failed:', error);
+    console.error("AI analysis failed:", error);
     if (error instanceof Error) {
-      console.error('Error details:', error.message);
+      console.error("Error details:", error.message);
     }
     return null;
   }

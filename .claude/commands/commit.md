@@ -125,6 +125,7 @@ When analyzing the diff, consider splitting commits based on these criteria:
 ## Examples
 
 Good commit messages (한글 커밋 메시지 예시):
+
 - ✨ feat: 사용자 인증 시스템 추가
 - 🐛 fix: 렌더링 프로세스 메모리 누수 해결
 - 📝 docs: 새로운 엔드포인트 포함하여 API 문서 업데이트
@@ -143,6 +144,7 @@ Good commit messages (한글 커밋 메시지 예시):
 - ♿️ feat: 스크린 리더를 위한 폼 접근성 개선
 
 Example of splitting commits (커밋 분리 예시):
+
 - First commit: ✨ feat: 새로운 solc 버전 타입 정의 추가
 - Second commit: 📝 docs: 새로운 solc 버전에 대한 문서 업데이트
 - Third commit: 🔧 chore: package.json 의존성 업데이트

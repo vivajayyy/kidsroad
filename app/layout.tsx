@@ -19,9 +19,7 @@ export default function RootLayout({
         className={`font-display antialiased bg-background-light text-gray-900 dark:bg-background-dark dark:text-gray-100 transition-colors duration-300`}
       >
         <Header />
-        <main className="pt-16">
-          {children}
-        </main>
+        <main className="pt-16">{children}</main>
       </body>
     </html>
   );

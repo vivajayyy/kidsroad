@@ -18,7 +18,7 @@
     - `docs/api` 내 매뉴얼 분석을 통해 핵심 API 규격 및 매핑 전략 정리 (`docs/TOUR_API_GUIDE.md`)
     - Kidsroad 특화 부모 체크리스트 데이터 변환 로직 초안 수립
   - **인증키 발급 완료**:
-    - 공공데이터포털을 통한 "한국관광공사_국문 관광정보 서비스_GW" 활용 신청 및 승인 완료
+    - 공공데이터포털을 통한 "한국관광공사\_국문 관광정보 서비스\_GW" 활용 신청 및 승인 완료
   - **TourAPI 환경변수 및 타입 정의**:
     - `.env.local`에 `NEXT_PUBLIC_TOUR_API_KEY` 등록 완료
     - TourAPI 응답 구조에 맞춘 TypeScript 인터페이스 정의 (`types/tour-api.ts`)

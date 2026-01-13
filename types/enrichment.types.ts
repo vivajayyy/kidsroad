@@ -16,7 +16,7 @@ export interface EnrichmentResult {
 }
 
 export interface EnrichmentMetadata {
-  source: 'blog_analysis' | 'rule_based';
+  source: "blog_analysis" | "rule_based";
   blog_count?: number;
   agreement_score?: number; // How many blogs agreed
   analyzed_at: string;

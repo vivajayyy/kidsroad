@@ -113,27 +113,28 @@
 
 #### 1. TourAPI 필드 (20개)
 
-| 필드명          | 타입           | 제약조건     | 설명                          | TourAPI 필드      |
-| --------------- | -------------- | ------------ | ----------------------------- | ----------------- |
-| id              | BIGSERIAL      | PRIMARY KEY  | 내부 고유 ID                  | -                 |
-| contentid       | VARCHAR(20)    | UNIQUE, NOT NULL | TourAPI 콘텐츠 ID (외부 참조) | contentid         |
-| title           | TEXT           | NOT NULL     | 행사명                        | title             |
-| addr1           | TEXT           | NULL         | 주소 (기본)                   | addr1             |
-| addr2           | TEXT           | NULL         | 주소 (상세)                   | addr2             |
-| mapx            | DECIMAL(11, 8) | NULL, CHECK  | 경도 (WGS84)                  | mapx              |
-| mapy            | DECIMAL(10, 8) | NULL, CHECK  | 위도 (WGS84)                  | mapy              |
-| tel             | VARCHAR(50)    | NULL         | 연락처                        | tel               |
-| firstimage      | TEXT           | NULL         | 대표 이미지 URL               | firstimage        |
-| firstimage2     | TEXT           | NULL         | 썸네일 이미지 URL             | firstimage2       |
-| eventstartdate  | DATE           | NOT NULL, CHECK | 행사 시작일                   | eventstartdate    |
-| eventenddate    | DATE           | NOT NULL, CHECK | 행사 종료일                   | eventenddate      |
-| eventplace      | TEXT           | NULL         | 행사장소명                    | eventplace (intro)|
-| playtime        | TEXT           | NULL         | 공연/행사 시간                | playtime (intro)  |
-| usetimefestival | TEXT           | NULL         | 이용요금 정보                 | usetimefestival   |
-| createdtime     | TIMESTAMP      | NULL         | TourAPI 데이터 생성 시각      | createdtime       |
-| modifiedtime    | TIMESTAMP      | NULL         | TourAPI 데이터 수정 시각      | modifiedtime      |
+| 필드명          | 타입           | 제약조건         | 설명                          | TourAPI 필드       |
+| --------------- | -------------- | ---------------- | ----------------------------- | ------------------ |
+| id              | BIGSERIAL      | PRIMARY KEY      | 내부 고유 ID                  | -                  |
+| contentid       | VARCHAR(20)    | UNIQUE, NOT NULL | TourAPI 콘텐츠 ID (외부 참조) | contentid          |
+| title           | TEXT           | NOT NULL         | 행사명                        | title              |
+| addr1           | TEXT           | NULL             | 주소 (기본)                   | addr1              |
+| addr2           | TEXT           | NULL             | 주소 (상세)                   | addr2              |
+| mapx            | DECIMAL(11, 8) | NULL, CHECK      | 경도 (WGS84)                  | mapx               |
+| mapy            | DECIMAL(10, 8) | NULL, CHECK      | 위도 (WGS84)                  | mapy               |
+| tel             | VARCHAR(50)    | NULL             | 연락처                        | tel                |
+| firstimage      | TEXT           | NULL             | 대표 이미지 URL               | firstimage         |
+| firstimage2     | TEXT           | NULL             | 썸네일 이미지 URL             | firstimage2        |
+| eventstartdate  | DATE           | NOT NULL, CHECK  | 행사 시작일                   | eventstartdate     |
+| eventenddate    | DATE           | NOT NULL, CHECK  | 행사 종료일                   | eventenddate       |
+| eventplace      | TEXT           | NULL             | 행사장소명                    | eventplace (intro) |
+| playtime        | TEXT           | NULL             | 공연/행사 시간                | playtime (intro)   |
+| usetimefestival | TEXT           | NULL             | 이용요금 정보                 | usetimefestival    |
+| createdtime     | TIMESTAMP      | NULL             | TourAPI 데이터 생성 시각      | createdtime        |
+| modifiedtime    | TIMESTAMP      | NULL             | TourAPI 데이터 수정 시각      | modifiedtime       |
 
 **CHECK 제약조건:**
+
 ```sql
 CHECK (eventstartdate <= eventenddate)
 CHECK (mapx IS NULL OR (mapx >= -180 AND mapx <= 180))
@@ -142,35 +143,37 @@ CHECK (mapy IS NULL OR (mapy >= -90 AND mapy <= 90))
 
 #### 2. Kidsroad 특화 필드 (9개)
 
-| 필드명               | 타입        | 기본값  | 설명                                      |
-| -------------------- | ----------- | ------- | ----------------------------------------- |
-| age_ranges           | TEXT[]      | '{}'    | 적합 연령대 ['0-2', '3-5', '6-9', '10+']  |
-| is_indoor            | BOOLEAN     | NULL    | 실내 여부 (null = 미확인)                 |
-| is_outdoor           | BOOLEAN     | NULL    | 실외 여부 (null = 미확인)                 |
-| has_stroller_access  | BOOLEAN     | false   | 유모차 접근 가능                          |
-| has_parking          | BOOLEAN     | false   | 주차 가능                                 |
-| is_free              | BOOLEAN     | false   | 무료 입장                                 |
-| has_nursing_room     | BOOLEAN     | false   | 수유실 있음                               |
-| has_diaper_station   | BOOLEAN     | false   | 기저귀 교환대 있음                        |
-| category             | VARCHAR(50) | NULL    | 카테고리 ('축제', '전시', '공연', '체험') |
-| tags                 | TEXT[]      | '{}'    | 태그 ['야외', '무료', '체험형']           |
-| description          | TEXT        | NULL    | 행사 상세 설명                            |
+| 필드명              | 타입        | 기본값 | 설명                                      |
+| ------------------- | ----------- | ------ | ----------------------------------------- |
+| age_ranges          | TEXT[]      | '{}'   | 적합 연령대 ['0-2', '3-5', '6-9', '10+']  |
+| is_indoor           | BOOLEAN     | NULL   | 실내 여부 (null = 미확인)                 |
+| is_outdoor          | BOOLEAN     | NULL   | 실외 여부 (null = 미확인)                 |
+| has_stroller_access | BOOLEAN     | false  | 유모차 접근 가능                          |
+| has_parking         | BOOLEAN     | false  | 주차 가능                                 |
+| is_free             | BOOLEAN     | false  | 무료 입장                                 |
+| has_nursing_room    | BOOLEAN     | false  | 수유실 있음                               |
+| has_diaper_station  | BOOLEAN     | false  | 기저귀 교환대 있음                        |
+| category            | VARCHAR(50) | NULL   | 카테고리 ('축제', '전시', '공연', '체험') |
+| tags                | TEXT[]      | '{}'   | 태그 ['야외', '무료', '체험형']           |
+| description         | TEXT        | NULL   | 행사 상세 설명                            |
 
 **설계 근거:**
+
 - `age_ranges`: 배열 타입으로 복수 선택 지원 (예: 3-5세와 6-9세 모두 적합)
 - `is_indoor`/`is_outdoor`: 분리된 필드 (일부 행사는 실내+실외 혼합)
 - 부모 체크리스트: 개별 BOOLEAN으로 인덱싱 효율 극대화
 
 #### 3. 시스템 필드 (5개)
 
-| 필드명       | 타입        | 기본값     | 설명                                   |
-| ------------ | ----------- | ---------- | -------------------------------------- |
-| data_source  | VARCHAR(50) | 'TourAPI'  | 데이터 출처 ('TourAPI', '문화포털' 등) |
-| is_published | BOOLEAN     | true       | 공개 여부 (관리자 제어)                |
-| created_at   | TIMESTAMP   | NOW()      | 레코드 생성 시각                       |
-| updated_at   | TIMESTAMP   | NOW()      | 레코드 수정 시각 (트리거 자동 갱신)    |
+| 필드명       | 타입        | 기본값    | 설명                                   |
+| ------------ | ----------- | --------- | -------------------------------------- |
+| data_source  | VARCHAR(50) | 'TourAPI' | 데이터 출처 ('TourAPI', '문화포털' 등) |
+| is_published | BOOLEAN     | true      | 공개 여부 (관리자 제어)                |
+| created_at   | TIMESTAMP   | NOW()     | 레코드 생성 시각                       |
+| updated_at   | TIMESTAMP   | NOW()     | 레코드 수정 시각 (트리거 자동 갱신)    |
 
 **Auto-update Trigger:**
+
 ```sql
 CREATE TRIGGER set_updated_at
 BEFORE UPDATE ON events
@@ -184,15 +187,15 @@ EXECUTE FUNCTION update_updated_at_column();
 
 ### 인덱스 목록 (7개)
 
-| 인덱스명                 | 타입  | 필드                                 | 목적                   | Partial Index |
-| ------------------------ | ----- | ------------------------------------ | ---------------------- | ------------- |
-| idx_events_date_range    | BTREE | eventstartdate, eventenddate         | 날짜 범위 검색 (가장 빈번) | WHERE is_published = true |
-| idx_events_location      | GIST  | ll_to_earth(mapy, mapx)              | 위치 기반 검색 (거리 계산) | WHERE mapx/mapy NOT NULL |
-| idx_events_age_ranges    | GIN   | age_ranges                           | 연령 배열 검색 (@> 연산자) | WHERE is_published = true |
-| idx_events_tags          | GIN   | tags                                 | 태그 배열 검색             | WHERE is_published = true |
-| idx_events_fulltext      | GIN   | to_tsvector('simple', title + desc)  | 전문 검색 (제목+설명)      | -             |
-| idx_events_category      | BTREE | category                             | 카테고리 필터              | WHERE is_published = true AND category IS NOT NULL |
-| idx_events_checklist     | BTREE | is_free, has_parking, has_stroller_access | 체크리스트 조합 검색 | WHERE is_published = true |
+| 인덱스명              | 타입  | 필드                                      | 목적                       | Partial Index                                      |
+| --------------------- | ----- | ----------------------------------------- | -------------------------- | -------------------------------------------------- |
+| idx_events_date_range | BTREE | eventstartdate, eventenddate              | 날짜 범위 검색 (가장 빈번) | WHERE is_published = true                          |
+| idx_events_location   | GIST  | ll_to_earth(mapy, mapx)                   | 위치 기반 검색 (거리 계산) | WHERE mapx/mapy NOT NULL                           |
+| idx_events_age_ranges | GIN   | age_ranges                                | 연령 배열 검색 (@> 연산자) | WHERE is_published = true                          |
+| idx_events_tags       | GIN   | tags                                      | 태그 배열 검색             | WHERE is_published = true                          |
+| idx_events_fulltext   | GIN   | to_tsvector('simple', title + desc)       | 전문 검색 (제목+설명)      | -                                                  |
+| idx_events_category   | BTREE | category                                  | 카테고리 필터              | WHERE is_published = true AND category IS NOT NULL |
+| idx_events_checklist  | BTREE | is_free, has_parking, has_stroller_access | 체크리스트 조합 검색       | WHERE is_published = true                          |
 
 ### 인덱스 사용 예시
 
@@ -243,10 +246,10 @@ ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 
 ### 정책 목록
 
-| 정책명                                 | 작업   | 대상                | 조건                   | 설명                       |
-| -------------------------------------- | ------ | ------------------- | ---------------------- | -------------------------- |
-| "Public events are viewable by everyone" | SELECT | anon, authenticated | is_published = true    | 공개된 행사는 모두 조회 가능 |
-| "Service role has full access"         | ALL    | service_role        | true                   | 백엔드 스크립트용 전체 권한 |
+| 정책명                                   | 작업   | 대상                | 조건                | 설명                         |
+| ---------------------------------------- | ------ | ------------------- | ------------------- | ---------------------------- |
+| "Public events are viewable by everyone" | SELECT | anon, authenticated | is_published = true | 공개된 행사는 모두 조회 가능 |
+| "Service role has full access"           | ALL    | service_role        | true                | 백엔드 스크립트용 전체 권한  |
 
 ### 추후 추가 예정 (Phase 2)
 
@@ -261,12 +264,12 @@ WITH CHECK (auth.jwt() ->> 'role' = 'admin');
 
 ### 권한 매트릭스
 
-| 역할           | SELECT | INSERT | UPDATE | DELETE | 비고                        |
-| -------------- | ------ | ------ | ------ | ------ | --------------------------- |
-| anon           | ✅ (공개만) | ❌      | ❌      | ❌      | 비로그인 사용자             |
-| authenticated  | ✅ (공개만) | ❌      | ❌      | ❌      | 로그인 사용자 (동일)        |
-| service_role   | ✅      | ✅      | ✅      | ✅      | 백엔드 데이터 수집 스크립트 |
-| admin (예정)   | ✅      | ✅      | ✅      | ✅      | 관리자 (Phase 2)            |
+| 역할          | SELECT      | INSERT | UPDATE | DELETE | 비고                        |
+| ------------- | ----------- | ------ | ------ | ------ | --------------------------- |
+| anon          | ✅ (공개만) | ❌     | ❌     | ❌     | 비로그인 사용자             |
+| authenticated | ✅ (공개만) | ❌     | ❌     | ❌     | 로그인 사용자 (동일)        |
+| service_role  | ✅          | ✅     | ✅     | ✅     | 백엔드 데이터 수집 스크립트 |
+| admin (예정)  | ✅          | ✅     | ✅     | ✅     | 관리자 (Phase 2)            |
 
 ---
 
@@ -355,15 +358,15 @@ CREATE INDEX idx_reviews_user ON reviews(user_id);
 ```typescript
 // 연령 추론
 function inferAgeRanges(title: string, description: string): string[] {
-  const text = (title + ' ' + description).toLowerCase();
+  const text = (title + " " + description).toLowerCase();
   const ranges: string[] = [];
 
-  if (/영아|0세|돌/.test(text)) ranges.push('0-2');
-  if (/유아|유치원|어린이집/.test(text)) ranges.push('3-5');
-  if (/초등|어린이/.test(text)) ranges.push('6-9');
-  if (/청소년|중학생/.test(text)) ranges.push('10+');
+  if (/영아|0세|돌/.test(text)) ranges.push("0-2");
+  if (/유아|유치원|어린이집/.test(text)) ranges.push("3-5");
+  if (/초등|어린이/.test(text)) ranges.push("6-9");
+  if (/청소년|중학생/.test(text)) ranges.push("10+");
 
-  return ranges.length > 0 ? ranges : ['3-5', '6-9']; // 기본값
+  return ranges.length > 0 ? ranges : ["3-5", "6-9"]; // 기본값
 }
 
 // 실내/실외 추론

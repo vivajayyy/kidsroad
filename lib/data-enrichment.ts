@@ -3,10 +3,10 @@
  * 블로그 크롤링과 AI 분석을 조율하여 이벤트 데이터 보강
  */
 
-import { TablesInsert } from '@/types/supabase';
-import { searchNaverBlogs, crawlMultipleBlogs } from './blog-crawler';
-import { analyzeBlogs, isConfidentResult } from './ai-analyzer';
-import { EnrichmentMetadata } from '@/types/enrichment.types';
+import { TablesInsert } from "@/types/supabase";
+import { searchNaverBlogs, crawlMultipleBlogs } from "./blog-crawler";
+import { analyzeBlogs, isConfidentResult } from "./ai-analyzer";
+import { EnrichmentMetadata } from "@/types/enrichment.types";
 
 interface EnrichmentOptions {
   /**
@@ -39,10 +39,10 @@ interface EnrichmentOptions {
  * @returns 보강된 이벤트 데이터와 메타데이터
  */
 export async function enrichEventData(
-  event: TablesInsert<'events'>,
+  event: TablesInsert<"events">,
   options: EnrichmentOptions = {}
 ): Promise<{
-  enrichedEvent: TablesInsert<'events'>;
+  enrichedEvent: TablesInsert<"events">;
   metadata: EnrichmentMetadata | null;
 }> {
   const {
@@ -91,8 +91,8 @@ export async function enrichEventData(
         .slice(0, maxBlogCrawl)
         .map((blog) => ({
           url: blog.link,
-          title: blog.title.replace(/<[^>]*>/g, ''), // Remove HTML tags
-          content: blog.description.replace(/<[^>]*>/g, ''), // Remove HTML tags
+          title: blog.title.replace(/<[^>]*>/g, ""), // Remove HTML tags
+          content: blog.description.replace(/<[^>]*>/g, ""), // Remove HTML tags
           crawledAt: new Date().toISOString(),
         }));
 
@@ -106,7 +106,10 @@ export async function enrichEventData(
       );
 
       // Continue with description-based contents
-      const aiResult = await analyzeBlogs(event.title, descriptionBasedContents);
+      const aiResult = await analyzeBlogs(
+        event.title,
+        descriptionBasedContents
+      );
 
       if (!aiResult) {
         console.log(`[Enrichment] AI analysis failed for: ${event.title}`);
@@ -121,7 +124,7 @@ export async function enrichEventData(
       }
 
       // Step 5: Merge AI results with TourAPI data
-      const enrichedEvent: TablesInsert<'events'> = {
+      const enrichedEvent: TablesInsert<"events"> = {
         ...event,
         has_parking: aiResult.has_parking ?? event.has_parking,
         has_stroller_access:
@@ -137,11 +140,11 @@ export async function enrichEventData(
       };
 
       const metadata: EnrichmentMetadata = {
-        source: 'blog_analysis',
+        source: "blog_analysis",
         blog_count: aiResult.source_blog_count,
         agreement_score: aiResult.confidence_score,
         analyzed_at: aiResult.analyzed_at,
-        model: 'claude-3-haiku',
+        model: "claude-3-haiku",
       };
 
       console.log(
@@ -173,7 +176,7 @@ export async function enrichEventData(
 
     // Step 5: Merge AI results with TourAPI data
     // Prefer AI results over TourAPI inferences when AI result is non-null
-    const enrichedEvent: TablesInsert<'events'> = {
+    const enrichedEvent: TablesInsert<"events"> = {
       ...event,
       // Parent checklist fields - prefer AI results
       has_parking: aiResult.has_parking ?? event.has_parking,
@@ -194,11 +197,11 @@ export async function enrichEventData(
     };
 
     const metadata: EnrichmentMetadata = {
-      source: 'blog_analysis',
+      source: "blog_analysis",
       blog_count: aiResult.source_blog_count,
       agreement_score: aiResult.confidence_score,
       analyzed_at: aiResult.analyzed_at,
-      model: 'claude-haiku-3.5',
+      model: "claude-haiku-3.5",
     };
 
     console.log(
@@ -220,11 +223,11 @@ export async function enrichEventData(
  * @returns 보강된 이벤트와 메타데이터 배열
  */
 export async function enrichMultipleEvents(
-  events: TablesInsert<'events'>[],
+  events: TablesInsert<"events">[],
   options: EnrichmentOptions = {}
 ): Promise<
   Array<{
-    enrichedEvent: TablesInsert<'events'>;
+    enrichedEvent: TablesInsert<"events">;
     metadata: EnrichmentMetadata | null;
   }>
 > {

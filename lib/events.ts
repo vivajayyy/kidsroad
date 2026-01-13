@@ -1,7 +1,7 @@
-import { supabase } from './supabase'; // Import the instance instead of the function
-import { Tables } from '../types/supabase';
+import { supabase } from "./supabase"; // Import the instance instead of the function
+import { Tables } from "../types/supabase";
 
-export type Event = Tables<'events'>;
+export type Event = Tables<"events">;
 
 /**
  * Fetches a list of events from Supabase.
@@ -13,35 +13,34 @@ export type Event = Tables<'events'>;
  * @returns {Promise<Event[]>} A promise that resolves to an array of events.
  */
 export async function getEvents(params?: {
-    page?: number;
-    pageSize?: number;
-    sortBy?: keyof Event;
-    ascending?: boolean;
+  page?: number;
+  pageSize?: number;
+  sortBy?: keyof Event;
+  ascending?: boolean;
 }): Promise<Event[]> {
-    const page = params?.page || 1;
-    const pageSize = params?.pageSize || 10;
-    const sortBy = params?.sortBy || 'eventstartdate';
-    const ascending = params?.ascending === undefined ? true : params.ascending;
+  const page = params?.page || 1;
+  const pageSize = params?.pageSize || 10;
+  const sortBy = params?.sortBy || "eventstartdate";
+  const ascending = params?.ascending === undefined ? true : params.ascending;
 
-    const from = (page - 1) * pageSize;
-    const to = from + pageSize - 1;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
 
-    try {
-        const { data, error } = await supabase // Use the imported instance directly
-            .from('events')
-            .select('*')
-            .order(sortBy, { ascending })
-            .range(from, to);
+  try {
+    const { data, error } = await supabase // Use the imported instance directly
+      .from("events")
+      .select("*")
+      .order(sortBy, { ascending })
+      .range(from, to);
 
-        if (error) {
-            console.error('Error fetching events:', error);
-            return [];
-        }
-
-        return data || [];
-    } catch (e) {
-        console.error('Unexpected error fetching events:', e);
-        return [];
+    if (error) {
+      console.error("Error fetching events:", error);
+      return [];
     }
-}
 
+    return data || [];
+  } catch (e) {
+    console.error("Unexpected error fetching events:", e);
+    return [];
+  }
+}

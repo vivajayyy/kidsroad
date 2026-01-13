@@ -1,12 +1,17 @@
 // lib/data-collection.ts
 
-import { createClient } from '@supabase/supabase-js';
-import type { Database } from '../types/supabase';
-import { fetchFestivalItems, fetchDetailCommon, fetchDetailIntroFestival, fetchDetailImages } from './tour-api';
-import { mapTourApiToEvent } from '../utils/mapper';
-import { enrichEventData } from './data-enrichment';
-import { generateTags } from './tag-generator';
-import pLimit from 'p-limit';
+import { createClient } from "@supabase/supabase-js";
+import type { Database } from "../types/supabase";
+import {
+  fetchFestivalItems,
+  fetchDetailCommon,
+  fetchDetailIntroFestival,
+  fetchDetailImages,
+} from "./tour-api";
+import { mapTourApiToEvent } from "../utils/mapper";
+import { enrichEventData } from "./data-enrichment";
+import { generateTags } from "./tag-generator";
+import pLimit from "p-limit";
 
 // This function can be called from a script or an API route.
 export async function collectAndSaveEvents() {
@@ -14,7 +19,9 @@ export async function collectAndSaveEvents() {
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!supabaseUrl || !supabaseServiceRoleKey) {
-    throw new Error('Supabase credentials are not set in environment variables.');
+    throw new Error(
+      "Supabase credentials are not set in environment variables."
+    );
   }
 
   // Initialize Supabase client within the function scope
@@ -24,10 +31,10 @@ export async function collectAndSaveEvents() {
     },
   });
 
-  console.log('--- Starting TourAPI Event Collection and Saving ---');
+  console.log("--- Starting TourAPI Event Collection and Saving ---");
 
   const today = new Date();
-  const eventStartDate = `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
+  const eventStartDate = `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, "0")}${today.getDate().toString().padStart(2, "0")}`;
 
   console.log(`Fetching festival items starting from ${eventStartDate}...`);
   const rawFestivalItems = await fetchFestivalItems({
@@ -37,8 +44,13 @@ export async function collectAndSaveEvents() {
   });
 
   if (rawFestivalItems.length === 0) {
-    console.log('No new festival items found from TourAPI.');
-    return { success: true, message: 'No new festival items found.', processedCount: 0, totalItems: 0 };
+    console.log("No new festival items found from TourAPI.");
+    return {
+      success: true,
+      message: "No new festival items found.",
+      processedCount: 0,
+      totalItems: 0,
+    };
   }
 
   console.log(`Found ${rawFestivalItems.length} festival items. Processing...`);
@@ -77,11 +89,14 @@ export async function collectAndSaveEvents() {
 
           try {
             console.log(`[Collection] Enriching: ${mappedEvent.title}`);
-            const { enrichedEvent, metadata } = await enrichEventData(mappedEvent, {
-              maxBlogSearch: 10,
-              maxBlogCrawl: 5,
-              minConfidence: 0.5,
-            });
+            const { enrichedEvent, metadata } = await enrichEventData(
+              mappedEvent,
+              {
+                maxBlogSearch: 10,
+                maxBlogCrawl: 5,
+                minConfidence: 0.5,
+              }
+            );
 
             if (metadata) {
               finalEvent = enrichedEvent;
@@ -111,8 +126,8 @@ export async function collectAndSaveEvents() {
 
           // Upsert to Supabase
           const { error } = await supabase
-            .from('events')
-            .upsert(finalEvent, { onConflict: 'contentid' });
+            .from("events")
+            .upsert(finalEvent, { onConflict: "contentid" });
 
           if (error) {
             throw error;
@@ -130,7 +145,7 @@ export async function collectAndSaveEvents() {
 
   // Count successes and enrichments
   results.forEach((result) => {
-    if (result.status === 'fulfilled') {
+    if (result.status === "fulfilled") {
       processedCount++;
       if (result.value.wasEnriched) {
         enrichedCount++;
@@ -142,7 +157,9 @@ export async function collectAndSaveEvents() {
 
   const resultMessage = `Successfully processed ${processedCount} out of ${rawFestivalItems.length} events. Enriched: ${enrichedCount}`;
   console.log(`--- Finished: ${resultMessage} ---`);
-  console.log(`📊 Stats: ${processedCount} processed, ${enrichedCount} enriched with blog data`);
+  console.log(
+    `📊 Stats: ${processedCount} processed, ${enrichedCount} enriched with blog data`
+  );
 
   return {
     success: errors.length === 0,
