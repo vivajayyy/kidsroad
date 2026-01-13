@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 
 // 나중에 DB에서 동적으로 가져올 수 있지만, 우선은 상수로 정의합니다.
 const CATEGORIES = ['전체', '축제/행사', '문화시설', '관광지', '레포츠'];
@@ -16,12 +16,12 @@ interface FilterBarProps {
   onFilterChange: (key: 'q' | 'category' | 'region', value: string) => void;
 }
 
-export default function FilterBar({
+const FilterBar = forwardRef<HTMLDivElement, FilterBarProps>(({
   currentQuery,
   currentCategory,
   currentRegion,
   onFilterChange,
-}: FilterBarProps) {
+}, ref) => {
   const [searchTerm, setSearchTerm] = useState(currentQuery);
 
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function FilterBar({
   }, [searchTerm, currentQuery, onFilterChange]);
 
   return (
-    <div className="mb-12">
+    <div className="mb-12" ref={ref}>
       {/* Search Input */}
       <div className="relative mb-6">
         <input
@@ -90,4 +90,8 @@ export default function FilterBar({
       </div>
     </div>
   );
-}
+});
+
+FilterBar.displayName = 'FilterBar';
+
+export default FilterBar;

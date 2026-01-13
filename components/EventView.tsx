@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import type { Tables } from '@/types/supabase';
@@ -19,13 +19,48 @@ function DetailRow({ label, value }: { label: string; value: string | null | und
 }
 
 export default function EventView({ events }: { events: Event[] }) {
-  // Use a derived state for selectedEvent to react to `events` prop changes
-  const initialEvent = useMemo(() => events[0] || null, [events]);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(initialEvent);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const panelRef = useRef<HTMLElement>(null);
+  const filterBarRef = useRef<HTMLDivElement>(null);
+
+  // Click outside to close side panel
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      const targetElement = event.target as Element;
+
+      // Do nothing if clicking inside the panel
+      if (panelRef.current && panelRef.current.contains(targetElement)) {
+        return;
+      }
+
+      // Do nothing if clicking inside the filter bar
+      if (filterBarRef.current && filterBarRef.current.contains(targetElement)) {
+        return;
+      }
+      
+      // Do nothing if clicking on a card (which opens the panel)
+      if (targetElement.closest('.event-card-trigger')) {
+        return;
+      }
+
+      // Otherwise, close the panel
+      setSelectedEvent(null);
+    }
+
+    if (selectedEvent) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [selectedEvent]);
 
   const handleFilterChange = useCallback(
     (key: string, value: string) => {
@@ -72,6 +107,7 @@ export default function EventView({ events }: { events: Event[] }) {
           </div>
 
           <FilterBar
+            ref={filterBarRef}
             currentQuery={searchParams.get('q') || ''}
             currentCategory={searchParams.get('category') || ''}
             currentRegion={searchParams.get('region') || ''}
@@ -84,7 +120,7 @@ export default function EventView({ events }: { events: Event[] }) {
                 <div
                   key={event.contentid}
                   onClick={() => setSelectedEvent(event)}
-                  className={`bg-white dark:bg-[#1E1E1E] p-8 rounded-xl card-hover cursor-pointer group shadow-sm border ${selectedEvent?.contentid === event.contentid ? 'border-primary dark:border-primary' : 'border-gray-100 dark:border-gray-800'}`}
+                  className={`bg-white dark:bg-[#1E1E1E] p-8 rounded-xl card-hover cursor-pointer group shadow-sm border event-card-trigger ${selectedEvent?.contentid === event.contentid ? 'border-primary dark:border-primary' : 'border-gray-100 dark:border-gray-800'}`}
                 >
                   <div className="flex justify-between items-start mb-16">
                     <span className="text-[10px] uppercase tracking-widest text-sage-600 font-bold bg-sage-50 dark:bg-sage-600/20 px-2.5 py-1 rounded-md">
@@ -110,7 +146,7 @@ export default function EventView({ events }: { events: Event[] }) {
         </section>
 
         {/* --- Right Content: Sliding Side Panel --- */}
-        <aside className={`hidden lg:block w-2/5 fixed right-0 top-0 h-screen bg-white dark:bg-[#161616] shadow-2xl z-[60] border-l border-gray-100 dark:border-gray-800 overflow-y-auto custom-scrollbar transition-transform duration-500 ease-in-out ${selectedEvent ? 'translate-x-0' : 'translate-x-full'}`}>
+        <aside ref={panelRef} className={`hidden lg:block w-2/5 fixed right-0 top-0 h-screen bg-white dark:bg-[#161616] shadow-2xl z-[60] border-l border-gray-100 dark:border-gray-800 overflow-y-auto custom-scrollbar transition-transform duration-500 ease-in-out ${selectedEvent ? 'translate-x-0' : 'translate-x-full'}`}>
           {selectedEvent && (
             <>
               <div className="relative h-[45vh] w-full">
