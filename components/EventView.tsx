@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import Image from 'next/image';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import type { Tables } from '@/types/supabase';
+import FilterBar from './FilterBar';
 
 type Event = Tables<'events'>;
 
@@ -17,8 +19,27 @@ function DetailRow({ label, value }: { label: string; value: string | null | und
 }
 
 export default function EventView({ events }: { events: Event[] }) {
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(events[0] || null);
+  // Use a derived state for selectedEvent to react to `events` prop changes
+  const initialEvent = useMemo(() => events[0] || null, [events]);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(initialEvent);
 
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handleFilterChange = useCallback(
+    (key: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+      router.push(`${pathname}?${params.toString()}`);
+    },
+    [searchParams, router, pathname]
+  );
+  
   const getChecklist = (event: Event) => {
     const checklist = [];
     if (event.has_parking) checklist.push({ icon: 'local_parking', label: 'Parking', sub: 'Available' });
@@ -50,29 +71,42 @@ export default function EventView({ events }: { events: Event[] }) {
             <p className="text-gray-500 dark:text-gray-400 text-sm">Minimalist discovery of children's premium experiences.</p>
           </div>
 
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-500 ease-in-out ${selectedEvent ? 'lg:grid-cols-2' : 'lg:grid-cols-3'}`}>
-            {events.map((event) => (
-              <div
-                key={event.contentid}
-                onClick={() => setSelectedEvent(event)}
-                className={`bg-white dark:bg-[#1E1E1E] p-8 rounded-xl card-hover cursor-pointer group shadow-sm border ${selectedEvent?.contentid === event.contentid ? 'border-primary dark:border-primary' : 'border-gray-100 dark:border-gray-800'}`}
-              >
-                <div className="flex justify-between items-start mb-16">
-                  <span className="text-[10px] uppercase tracking-widest text-sage-600 font-bold bg-sage-50 dark:bg-sage-600/20 px-2.5 py-1 rounded-md">
-                    {(event.age_ranges && event.age_ranges[0]) || 'All Ages'}
-                  </span>
-                  <span className={`material-symbols-outlined text-[20px] ${selectedEvent?.contentid === event.contentid ? 'text-gray-900 dark:text-white' : 'text-gray-300 dark:text-gray-600 group-hover:text-gray-400'}`}>
-                    bookmark
-                  </span>
+          <FilterBar
+            currentQuery={searchParams.get('q') || ''}
+            currentCategory={searchParams.get('category') || ''}
+            currentRegion={searchParams.get('region') || ''}
+            onFilterChange={handleFilterChange}
+          />
+
+          {events.length > 0 ? (
+            <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-500 ease-in-out ${selectedEvent ? 'lg:grid-cols-2' : 'lg:grid-cols-3'}`}>
+              {events.map((event) => (
+                <div
+                  key={event.contentid}
+                  onClick={() => setSelectedEvent(event)}
+                  className={`bg-white dark:bg-[#1E1E1E] p-8 rounded-xl card-hover cursor-pointer group shadow-sm border ${selectedEvent?.contentid === event.contentid ? 'border-primary dark:border-primary' : 'border-gray-100 dark:border-gray-800'}`}
+                >
+                  <div className="flex justify-between items-start mb-16">
+                    <span className="text-[10px] uppercase tracking-widest text-sage-600 font-bold bg-sage-50 dark:bg-sage-600/20 px-2.5 py-1 rounded-md">
+                      {(event.age_ranges && event.age_ranges[0]) || 'All Ages'}
+                    </span>
+                    <span className={`material-symbols-outlined text-[20px] ${selectedEvent?.contentid === event.contentid ? 'text-gray-900 dark:text-white' : 'text-gray-300 dark:text-gray-600 group-hover:text-gray-400'}`}>
+                      bookmark
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-medium mb-1.5">{event.title}</h3>
+                  <p className="text-gray-400 text-sm flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">location_on</span>
+                    {event.addr1}
+                  </p>
                 </div>
-                <h3 className="text-xl font-medium mb-1.5">{event.title}</h3>
-                <p className="text-gray-400 text-sm flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px]">location_on</span>
-                  {event.addr1}
-                </p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center py-20 text-center text-gray-500">
+              <p>검색 결과가 없습니다.<br/>다른 키워드로 검색해 보세요.</p>
+            </div>
+          )}
         </section>
 
         {/* --- Right Content: Sliding Side Panel --- */}

@@ -6,15 +6,39 @@ import EventView from '@/components/EventView';
 
 export const revalidate = 3600; // 1시간마다 데이터 재검증
 
-export default async function Home() {
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const supabase = createClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
 
-  const { data: events, error } = await supabase
-    .from('events')
-    .select('*')
+  const resolvedSearchParams = await searchParams;
+
+  const q = resolvedSearchParams['q'];
+  const cat = resolvedSearchParams['category'];
+  const reg = resolvedSearchParams['region'];
+
+  const query = typeof q === 'string' ? q : '';
+  const category = typeof cat === 'string' ? cat : '';
+  const region = typeof reg === 'string' ? reg : '';
+
+  let supabaseQuery = supabase.from('events').select('*');
+
+  if (query) {
+    supabaseQuery = supabaseQuery.ilike('title', `%${query}%`);
+  }
+  if (category) {
+    supabaseQuery = supabaseQuery.eq('category', category);
+  }
+  if (region) {
+    supabaseQuery = supabaseQuery.like('addr1', `${region}%`);
+  }
+
+  const { data: events, error } = await supabaseQuery
     .order('eventstartdate', { ascending: true });
 
   if (error) {
@@ -26,14 +50,6 @@ export default async function Home() {
     );
   }
 
-  if (!events || events.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-screen text-gray-500">
-        <p>표시할 이벤트가 없습니다.</p>
-      </div>
-    );
-  }
-
-  return <EventView events={events} />;
+  return <EventView events={events || []} />;
 }
 

@@ -1,24 +1,42 @@
-# Kidsroad 4주차 개발 목표
+# Kidsroad 5주차 개발 목표
 
-> **기간**: 4주차 (Core UI 개발)
-> **목표**: 실제 DB 데이터를 화면에 표시하고 UI 완성도를 높입니다.
+> **기간**: 5주차 (검색 및 필터 기능)
+> **목표**: 사용자가 원하는 정보를 쉽게 찾을 수 있도록 핵심 검색 및 필터 기능을 구현합니다.
 > **상태**: 시작 전 ⬜
 
 ---
 
-## 1. DB 데이터 연동 (Data-UI Binding)
+## 1. 검색 및 필터 UI 구현
 
-- [ ] **`app/page.tsx` 서버 컴포넌트 전환**
-  - [ ] `async` 함수로 변경하여 Supabase 데이터 직접 조회
-  - [ ] 하드코딩된 `dummyEvents` 배열 및 관련 코드 제거
-- [ ] **데이터 로딩 및 에러 상태 처리**
-  - [ ] `loading.tsx`가 정상 작동하는지 확인
-  - [ ] 데이터가 없을 경우 "표시할 이벤트가 없습니다" 메시지 표시
-- [ ] **`EventCard.tsx` 프롭스 타입 검증**
-  - [ ] DB에서 가져온 데이터 타입과 컴포넌트 프롭스 타입이 일치하는지 확인 및 수정
+- [ ] 메인 페이지에 검색 입력 필드 추가
+- [ ] 카테고리(예: '축제', '교육', '체험') 필터 UI 구현
+- [ ] 지역 필터 UI 구현 (시/도 단위)
+
+## 2. Supabase 쿼리 연동
+
+- [ ] 검색어에 따라 `events` 테이블을 필터링하는 Supabase 쿼리 로직 구현
+- [ ] 선택된 카테고리에 따라 `events` 테이블을 필터링하는 Supabase 쿼리 로직 구현
+- [ ] 선택된 지역에 따라 `events` 테이블을 필터링하는 Supabase 쿼리 로직 구현
+
+## 3. 사용자 인증 기능 (Kakao 로그인)
+
+- [ ] Kakao 개발자 등록 및 API 키 발급
+- [ ] Supabase Auth에 Kakao OAuth 연동 설정
+- [ ] Next.js 앱에 Kakao 로그인 UI 및 인증 흐름 구현
+
+## 4. `profiles` 테이블 생성 및 연동
+
+- [ ] `profiles` 테이블 스키마 설계 (사용자 닉네임, 프로필 이미지 등)
+- [ ] Supabase에서 `profiles` 테이블 생성
+- [ ] 사용자 가입 시 `profiles` 테이블에 기본 정보 저장 로직 구현
+
+## 5. `bookmarks` 테이블 생성
+
+- [ ] `bookmarks` 테이블 스키마 설계 (사용자 ID, 이벤트 ID)
+- [ ] Supabase에서 `bookmarks` 테이블 생성
 
 ---
 
 ## 📅 지난 주 완료 사항 (Archive)
 
-- [x] **Week 3**: [데이터 파이프라인 구축 완료](archive/Week3_Completed.md)
+- [x] **Week 4**: [Core UI 개발 (메인, 리스트, 상세 페이지)](archive/Week4_Completed.md)
