@@ -1,5 +1,6 @@
-/** @type {import('tailwindcss').Config} */
-module.exports = {
+import type { Config } from "tailwindcss";
+
+const config: Config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -28,13 +29,12 @@ module.exports = {
         'xl': '12px',
         '2xl': '24px'
       },
-      letterSpacing: {
-        tighter: "-0.05em",
-      },
     },
   },
   plugins: [
     require('@tailwindcss/typography'),
     require('@tailwindcss/forms'),
   ],
-}
+};
+
+export default config;

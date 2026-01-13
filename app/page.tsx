@@ -66,20 +66,20 @@ export default function KidsroadPage() {
 
   return (
     <>
-      <main className="pt-24 pb-12 px-8 max-w-[1440px] mx-auto flex gap-12">
+      <main className="pt-24 pb-12 px-8 max-w-[1440px] mx-auto flex gap-8">
         {/* --- Left Content: Event Grid --- */}
-        <section className="transition-all duration-500 ease-in-out w-full lg:w-[55%]">
-          <div className="mb-12">
-            <h2 className="text-4xl font-normal tracking-tight mb-2">Curated for your weekend.</h2>
-            <p className="text-gray-500 text-sm font-light">Minimalist discovery of children's premium experiences.</p>
+        <section className={`transition-all duration-500 ease-in-out ${selectedEvent ? 'w-full lg:w-3/5' : 'w-full'}`}>
+          <div className="mb-10">
+            <h2 className="text-3xl font-light mb-2">Curated for your weekend.</h2>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Minimalist discovery of children's premium experiences.</p>
           </div>
 
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-500 ease-in-out ${selectedEvent ? 'lg:grid-cols-2' : 'lg:grid-cols-3'}`}>
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-500 ease-in-out ${selectedEvent ? 'lg:grid-cols-2' : 'lg:grid-cols-3'}`}>
             {EVENTS.map((event) => (
-              <div 
+              <div
                 key={event.id}
                 onClick={() => setSelectedEvent(event)}
-                className={`bg-white dark:bg-[#1E1E1E] p-8 rounded-xl cursor-pointer transition-all duration-300 border ${selectedEvent?.id === event.id ? 'border-gray-900 dark:border-gray-400' : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700'} shadow-sm group`}
+                className={`bg-white dark:bg-[#1E1E1E] p-8 rounded-xl card-hover cursor-pointer group shadow-sm border ${selectedEvent?.id === event.id ? 'border-primary dark:border-primary' : 'border-gray-100 dark:border-gray-800'}`}
               >
                 <div className="flex justify-between items-start mb-16">
                   <span className="text-[10px] uppercase tracking-widest text-sage-600 font-bold bg-sage-50 dark:bg-sage-600/20 px-2.5 py-1 rounded-md">
@@ -100,7 +100,7 @@ export default function KidsroadPage() {
         </section>
 
         {/* --- Right Content: Sliding Side Panel --- */}
-        <aside className={`hidden lg:block w-[400px] xl:w-[480px] fixed top-0 h-screen bg-white dark:bg-[#1C1C1C] shadow-2xl border-l border-gray-100 dark:border-gray-800 overflow-y-auto custom-scrollbar z-30 transition-transform duration-500 ease-in-out ${selectedEvent ? 'translate-x-0' : 'right-0' : 'translate-x-full right-0'}`}>
+        <aside className={`hidden lg:block w-2/5 fixed right-0 top-0 h-screen bg-white dark:bg-[#161616] shadow-2xl z-[60] border-l border-gray-100 dark:border-gray-800 overflow-y-auto custom-scrollbar transition-transform duration-500 ease-in-out ${selectedEvent ? 'translate-x-0' : 'translate-x-full'}`}>
           {selectedEvent && (
             <>
               <div className="relative h-[45vh] w-full">
@@ -111,12 +111,12 @@ export default function KidsroadPage() {
                   className="object-cover"
                   sizes="(max-width: 1280px) 40vw, 480px"
                 />
-                <button onClick={() => setSelectedEvent(null)} className="absolute top-6 right-6 bg-white/80 dark:bg-black/80 backdrop-blur p-2 rounded-full shadow-lg hover:bg-white transition-colors">
-                  <span className="material-symbols-outlined text-gray-900">close</span>
+                <button onClick={() => setSelectedEvent(null)} className="absolute top-6 right-6 bg-white/90 dark:bg-black/80 backdrop-blur p-2 rounded-full shadow-lg">
+                  <span className="material-symbols-outlined text-primary dark:text-white">close</span>
                 </button>
                 <div className="absolute bottom-6 left-6 flex gap-2">
                   {selectedEvent.tags?.map(tag => (
-                    <span key={tag} className="bg-white/80 backdrop-blur px-3 py-1 text-[10px] font-bold tracking-widest uppercase rounded">
+                    <span key={tag} className="bg-white/90 dark:bg-black/80 px-3 py-1 text-[11px] font-bold tracking-widest uppercase rounded">
                       {tag}
                     </span>
                   ))}
@@ -153,10 +153,10 @@ export default function KidsroadPage() {
                 <div className="border-t border-gray-100 dark:border-gray-800 pt-2 mb-12 space-y-0">
                   <DetailRow label="Location" value={selectedEvent.fullLocation || selectedEvent.location} />
                   <DetailRow label="Schedule" value={selectedEvent.schedule || ""} />
-                  <DetailRow label="Fee" value={selected.fee || ""} />
+                  <DetailRow label="Fee" value={selectedEvent.fee || ""} />
                 </div>
 
-                <button className="w-full bg-gray-900 text-white py-5 rounded-md font-medium tracking-widest uppercase text-[11px] hover:bg-black transition-all flex items-center justify-center gap-2 group shadow-xl">
+                <button className="w-full bg-primary text-white py-5 rounded font-medium tracking-widest uppercase text-xs hover:bg-black transition-all flex items-center justify-center gap-2 group shadow-xl">
                   Apply for Session
                   <span className="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </button>

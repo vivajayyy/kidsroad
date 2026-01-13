@@ -5,3 +5,47 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Body base styles */
+body {
+  letter-spacing: -0.02em;
+}
+
+/* Custom scrollbar for detail panel */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #E0E0E0;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #CCCCCC;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #3A3A3A;
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #4A4A4A;
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  border-color: #2D2D2D;
+  transform: translateY(-2px);
+}
+
+.dark .card-hover:hover {
+  border-color: #2D2D2D;
+}
