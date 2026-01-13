@@ -4,6 +4,9 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '../types/supabase';
 import { fetchFestivalItems, fetchDetailCommon, fetchDetailIntroFestival, fetchDetailImages } from './tour-api';
 import { mapTourApiToEvent } from '../utils/mapper';
+import { enrichEventData } from './data-enrichment';
+import { generateTags } from './tag-generator';
+import pLimit from 'p-limit';
 
 // This function can be called from a script or an API route.
 export async function collectAndSaveEvents() {
@@ -41,47 +44,111 @@ export async function collectAndSaveEvents() {
   console.log(`Found ${rawFestivalItems.length} festival items. Processing...`);
 
   let processedCount = 0;
+  let enrichedCount = 0;
   const errors: string[] = [];
 
-  for (const festivalItem of rawFestivalItems) {
-    try {
-      const contentId = festivalItem.contentid;
-      
-      const [commonDetail, introFestival, images] = await Promise.all([
-        fetchDetailCommon(contentId),
-        fetchDetailIntroFestival(contentId),
-        fetchDetailImages(contentId),
-      ]);
+  // Limit concurrency to avoid overwhelming APIs
+  const limit = pLimit(3); // Process 3 events concurrently max
 
-      const mappedEvent = mapTourApiToEvent(
-        festivalItem,
-        commonDetail,
-        introFestival,
-        images
-      );
+  const results = await Promise.allSettled(
+    rawFestivalItems.map((festivalItem) =>
+      limit(async () => {
+        try {
+          const contentId = festivalItem.contentid;
 
-      const { error } = await supabase
-        .from('events')
-        .upsert(mappedEvent, { onConflict: 'contentid' });
+          // Fetch details from TourAPI
+          const [commonDetail, introFestival, images] = await Promise.all([
+            fetchDetailCommon(contentId),
+            fetchDetailIntroFestival(contentId),
+            fetchDetailImages(contentId),
+          ]);
 
-      if (error) {
-        throw error;
-      }
+          // Map TourAPI data to event schema
+          const mappedEvent = mapTourApiToEvent(
+            festivalItem,
+            commonDetail,
+            introFestival,
+            images
+          );
+
+          // Enrich with blog data (non-blocking, graceful degradation)
+          let finalEvent = mappedEvent;
+          let wasEnriched = false;
+
+          try {
+            console.log(`[Collection] Enriching: ${mappedEvent.title}`);
+            const { enrichedEvent, metadata } = await enrichEventData(mappedEvent, {
+              maxBlogSearch: 10,
+              maxBlogCrawl: 5,
+              minConfidence: 0.5,
+            });
+
+            if (metadata) {
+              finalEvent = enrichedEvent;
+              wasEnriched = true;
+              console.log(`[Collection] ✅ Enriched: ${mappedEvent.title}`);
+            }
+          } catch (enrichError) {
+            console.warn(
+              `[Collection] ⚠️ Enrichment failed for ${mappedEvent.title}, using TourAPI data only:`,
+              enrichError
+            );
+            // Continue with un-enriched data
+          }
+
+          // Generate tags
+          const tags = generateTags(
+            finalEvent.category,
+            finalEvent.title,
+            finalEvent.description,
+            finalEvent.age_ranges
+          );
+
+          finalEvent = {
+            ...finalEvent,
+            tags,
+          };
+
+          // Upsert to Supabase
+          const { error } = await supabase
+            .from('events')
+            .upsert(finalEvent, { onConflict: 'contentid' });
+
+          if (error) {
+            throw error;
+          }
+
+          return { success: true, wasEnriched, title: festivalItem.title };
+        } catch (e: any) {
+          const errorMessage = `Error processing event ${festivalItem.title} (contentId: ${festivalItem.contentid}): ${e.message}`;
+          console.error(`⚠️ ${errorMessage}`);
+          throw new Error(errorMessage);
+        }
+      })
+    )
+  );
+
+  // Count successes and enrichments
+  results.forEach((result) => {
+    if (result.status === 'fulfilled') {
       processedCount++;
-    } catch (e: any) {
-      const errorMessage = `Error processing event ${festivalItem.title} (contentId: ${festivalItem.contentid}): ${e.message}`;
-      console.error(`⚠️ ${errorMessage}`);
-      errors.push(errorMessage);
+      if (result.value.wasEnriched) {
+        enrichedCount++;
+      }
+    } else {
+      errors.push(result.reason.message);
     }
-  }
+  });
 
-  const resultMessage = `Successfully processed ${processedCount} out of ${rawFestivalItems.length} events.`;
+  const resultMessage = `Successfully processed ${processedCount} out of ${rawFestivalItems.length} events. Enriched: ${enrichedCount}`;
   console.log(`--- Finished: ${resultMessage} ---`);
-  
+  console.log(`📊 Stats: ${processedCount} processed, ${enrichedCount} enriched with blog data`);
+
   return {
     success: errors.length === 0,
     message: resultMessage,
     processedCount,
+    enrichedCount,
     totalItems: rawFestivalItems.length,
     errors,
   };
