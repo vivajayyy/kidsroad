@@ -23,6 +23,11 @@
 # misc
 .DS_Store
 *.pem
+nul
+
+# AI tools temp files
+.gemini/
+tmpclaude-*
 
 # debug
 npm-debug.log*
