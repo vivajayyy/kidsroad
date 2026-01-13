@@ -20,20 +20,20 @@
 
 ## 3. 사용자 인증 기능 (Kakao 로그인)
 
-- [ ] Kakao 개발자 등록 및 API 키 발급
-- [ ] Supabase Auth에 Kakao OAuth 연동 설정
-- [ ] Next.js 앱에 Kakao 로그인 UI 및 인증 흐름 구현
+- [x] Kakao 개발자 등록 및 API 키 발급
+- [x] Supabase Auth에 Kakao OAuth 연동 설정
+- [x] Next.js 앱에 Kakao 로그인 UI 및 인증 흐름 구현
 
 ## 4. `profiles` 테이블 생성 및 연동
 
-- [ ] `profiles` 테이블 스키마 설계 (사용자 닉네임, 프로필 이미지 등)
-- [ ] Supabase에서 `profiles` 테이블 생성
-- [ ] 사용자 가입 시 `profiles` 테이블에 기본 정보 저장 로직 구현
+- [x] `profiles` 테이블 스키마 설계 (사용자 닉네임, 프로필 이미지 등)
+- [x] Supabase에서 `profiles` 테이블 생성
+- [x] 사용자 가입 시 `profiles` 테이블에 기본 정보 저장 로직 구현
 
 ## 5. `bookmarks` 테이블 생성
 
-- [ ] `bookmarks` 테이블 스키마 설계 (사용자 ID, 이벤트 ID)
-- [ ] Supabase에서 `bookmarks` 테이블 생성
+- [x] `bookmarks` 테이블 스키마 설계 (사용자 ID, 이벤트 ID)
+- [x] Supabase에서 `bookmarks` 테이블 생성
 
 ---
 
