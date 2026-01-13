@@ -68,7 +68,7 @@ ${combinedContent}
 
 **규칙:**
 - has_parking: 주차 가능 여부. 주차장 언급이 있으면 true, 주차 어려움 언급이 있으면 false, 언급 없으면 null
-- has_stroller_access: 유모차 접근성. "유모차 OK", "유모차 대여" 등 긍정적 언급이 있으면 true, "유모차 불편", "계단 많음" 등이 있으면 false
+- has_stroller_access: **유모차 대여 가능 여부** (최우선). "유모차 대여", "유모차 렌탈" 언급이 있으면 true. 대여 언급이 없어도 "유모차 OK", "유모차 사용 가능", "베리어프리" 등 긍정적 접근성 언급이 있으면 true. "유모차 불편", "계단 많음", "경사 심함" 등이 있으면 false
 - has_nursing_room: 수유실 유무. 명시적으로 언급된 경우만 true
 - has_diaper_station: 기저귀 교환대. 명시적으로 언급된 경우만 true
 - age_ranges: 적합한 연령대 배열 (복수 선택 가능). 블로그에서 언급된 어린이 나이나 "아기", "유아", "초등학생" 등을 기반으로 판단
