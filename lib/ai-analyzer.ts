@@ -84,7 +84,7 @@ ${combinedContent}
 
   try {
     const message = await client.messages.create({
-      model: 'claude-haiku-3.5-20241022',
+      model: 'claude-3-haiku-20240307',
       max_tokens: 1024,
       messages: [{ role: 'user', content: prompt }],
     });

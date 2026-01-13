@@ -80,9 +80,75 @@ export async function enrichEventData(
 
     const blogContents = await crawlMultipleBlogs(urlsToCrawl, 3);
 
+    // Fallback: Use blog descriptions if crawling failed
     if (blogContents.length === 0) {
-      console.log(`[Enrichment] Failed to crawl blogs for: ${event.title}`);
-      return { enrichedEvent: event, metadata: null };
+      console.log(
+        `[Enrichment] Crawling failed, using blog descriptions for: ${event.title}`
+      );
+
+      // Convert blog search results to BlogContent format using descriptions
+      const descriptionBasedContents = blogResults
+        .slice(0, maxBlogCrawl)
+        .map((blog) => ({
+          url: blog.link,
+          title: blog.title.replace(/<[^>]*>/g, ''), // Remove HTML tags
+          content: blog.description.replace(/<[^>]*>/g, ''), // Remove HTML tags
+          crawledAt: new Date().toISOString(),
+        }));
+
+      if (descriptionBasedContents.length === 0) {
+        console.log(`[Enrichment] No blog data available for: ${event.title}`);
+        return { enrichedEvent: event, metadata: null };
+      }
+
+      console.log(
+        `[Enrichment] Using ${descriptionBasedContents.length} blog descriptions for: ${event.title}`
+      );
+
+      // Continue with description-based contents
+      const aiResult = await analyzeBlogs(event.title, descriptionBasedContents);
+
+      if (!aiResult) {
+        console.log(`[Enrichment] AI analysis failed for: ${event.title}`);
+        return { enrichedEvent: event, metadata: null };
+      }
+
+      // Step 4: Check confidence score
+      if (!isConfidentResult(aiResult, minConfidence)) {
+        console.log(
+          `[Enrichment] Low confidence (${aiResult.confidence_score}) for: ${event.title}`
+        );
+      }
+
+      // Step 5: Merge AI results with TourAPI data
+      const enrichedEvent: TablesInsert<'events'> = {
+        ...event,
+        has_parking: aiResult.has_parking ?? event.has_parking,
+        has_stroller_access:
+          aiResult.has_stroller_access ?? event.has_stroller_access,
+        has_nursing_room: aiResult.has_nursing_room ?? event.has_nursing_room,
+        has_diaper_station:
+          aiResult.has_diaper_station ?? event.has_diaper_station,
+        age_ranges: Array.from(
+          new Set([...(event.age_ranges || []), ...(aiResult.age_ranges || [])])
+        ).sort(),
+        is_indoor: aiResult.is_indoor ?? event.is_indoor,
+        is_outdoor: aiResult.is_outdoor ?? event.is_outdoor,
+      };
+
+      const metadata: EnrichmentMetadata = {
+        source: 'blog_analysis',
+        blog_count: aiResult.source_blog_count,
+        agreement_score: aiResult.confidence_score,
+        analyzed_at: aiResult.analyzed_at,
+        model: 'claude-3-haiku',
+      };
+
+      console.log(
+        `[Enrichment] ✅ Successfully enriched: ${event.title} (confidence: ${aiResult.confidence_score})`
+      );
+
+      return { enrichedEvent, metadata };
     }
 
     console.log(
