@@ -116,14 +116,17 @@ export default function EventView({ events }: { events: Event[] }) {
   };
 
   // Helper to format date strings
-  const formatDate = (dateStr: string) => {
+  const formatDate = (dateStr: string | null | undefined) => {
+    if (!dateStr || dateStr.length < 8) {
+      return "-"; // Return dash if invalid date
+    }
     try {
       const year = dateStr.substring(0, 4);
       const month = dateStr.substring(4, 6);
       const day = dateStr.substring(6, 8);
       return new Date(`${year}-${month}-${day}`).toLocaleDateString("ko-KR");
     } catch (e) {
-      return dateStr; // Return original string if parsing fails
+      return "-"; // Return dash if parsing fails
     }
   };
 
@@ -199,14 +202,22 @@ export default function EventView({ events }: { events: Event[] }) {
         >
           {selectedEvent && (
             <>
-              <div className="relative h-[45vh] w-full">
-                <Image
-                  src={selectedEvent.firstimage || "/placeholder.jpg"}
-                  alt={selectedEvent.title}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1280px) 40vw, 480px"
-                />
+              <div className="relative h-[45vh] w-full bg-gray-200 dark:bg-gray-800">
+                {selectedEvent.firstimage ? (
+                  <Image
+                    src={selectedEvent.firstimage}
+                    alt={selectedEvent.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 1280px) 40vw, 480px"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="material-symbols-outlined text-gray-400 text-6xl">
+                      image
+                    </span>
+                  </div>
+                )}
                 <button
                   onClick={() => setSelectedEvent(null)}
                   className="absolute top-6 right-6 bg-white/90 dark:bg-black/80 backdrop-blur p-2 rounded-full shadow-lg"
@@ -231,12 +242,14 @@ export default function EventView({ events }: { events: Event[] }) {
                 <h2 className="text-3xl font-medium leading-tight mb-4">
                   {selectedEvent.title}
                 </h2>
-                <div
-                  className="text-gray-500 text-sm leading-relaxed font-light mb-12"
-                  dangerouslySetInnerHTML={{
-                    __html: selectedEvent.description || "",
-                  }}
-                />
+                {selectedEvent.description && (
+                  <div
+                    className="text-gray-500 text-sm leading-relaxed font-light mb-12"
+                    dangerouslySetInnerHTML={{
+                      __html: selectedEvent.description,
+                    }}
+                  />
+                )}
 
                 {getChecklist(selectedEvent).length > 0 && (
                   <div className="mb-12">
@@ -267,10 +280,13 @@ export default function EventView({ events }: { events: Event[] }) {
 
                 <div className="border-t border-gray-100 dark:border-gray-800 pt-2 mb-12 space-y-0">
                   <DetailRow label="Location" value={selectedEvent.addr1} />
-                  <DetailRow
-                    label="Schedule"
-                    value={`${formatDate(selectedEvent.eventstartdate)} - ${formatDate(selectedEvent.eventenddate)}`}
-                  />
+                  {selectedEvent.eventstartdate &&
+                    selectedEvent.eventenddate && (
+                      <DetailRow
+                        label="Schedule"
+                        value={`${formatDate(selectedEvent.eventstartdate)} - ${formatDate(selectedEvent.eventenddate)}`}
+                      />
+                    )}
                   <DetailRow
                     label="Fee"
                     value={selectedEvent.usetimefestival}
