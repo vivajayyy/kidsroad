@@ -1,34 +1,24 @@
-# Kidsroad 3주차 개발 목표
+# Kidsroad 4주차 개발 목표
 
-> **기간**: 3주차 (데이터 파이프라인 구축)
-> **목표**: 데이터 수집 자동화 및 정제 로직 고도화
+> **기간**: 4주차 (Core UI 개발)
+> **목표**: 실제 DB 데이터를 화면에 표시하고 UI 완성도를 높입니다.
 > **상태**: 시작 전 ⬜
 
 ---
 
-## 1. 데이터 수집 자동화 (Automation)
+## 1. DB 데이터 연동 (Data-UI Binding)
 
-- [ ] **Vercel Cron 설정**
-  - [ ] `vercel.json` 파일 생성 또는 수정하여 Cronjob 정의
-  - [ ] `scripts/collect-events.ts`를 실행하는 API Route 생성 (`app/api/cron/collect-events/route.ts`)
-  - [ ] 매일 새벽 3시에 스크립트가 실행되도록 스케줄링
-- [ ] **보안 강화**
-  - [ ] Cronjob API Route에 Secret Key 인증 추가하여 무단 실행 방지
-
-## 2. 데이터 정제 및 고도화 (Enrichment)
-
-- [ ] **`utils/mapper.ts` 개선**
-  - [ ] `detailCommon2` API 호출 실패 문제 해결 또는 대안 모색
-  - [ ] 주차, 유모차 등 부모 체크리스트 필드에 대한 추론 로직 보강
-    - `docs/DATA_COVERAGE_ANALYSIS.md`에 따라 키워드 기반 추론 규칙 추가
-- [ ] **자동 태그 생성 로직 구현**
-  - [ ] `events` 테이블의 `tags` 필드를 채우는 함수 작성
-  - [ ] `title`과 `description`을 분석하여 '체험형', '교육적', '야외활동' 등 유의미한 태그 자동 생성
-- [ ] **데이터 수집 스크립트 업데이트**
-  - [ ] `scripts/collect-events.ts`에 자동 태그 생성 로직 연동
+- [ ] **`app/page.tsx` 서버 컴포넌트 전환**
+  - [ ] `async` 함수로 변경하여 Supabase 데이터 직접 조회
+  - [ ] 하드코딩된 `dummyEvents` 배열 및 관련 코드 제거
+- [ ] **데이터 로딩 및 에러 상태 처리**
+  - [ ] `loading.tsx`가 정상 작동하는지 확인
+  - [ ] 데이터가 없을 경우 "표시할 이벤트가 없습니다" 메시지 표시
+- [ ] **`EventCard.tsx` 프롭스 타입 검증**
+  - [ ] DB에서 가져온 데이터 타입과 컴포넌트 프롭스 타입이 일치하는지 확인 및 수정
 
 ---
 
 ## 📅 지난 주 완료 사항 (Archive)
 
-- [x] **Week 2**: [DB 구축 및 API 연동 완료](archive/Week2_Completed.md)
+- [x] **Week 3**: [데이터 파이프라인 구축 완료](archive/Week3_Completed.md)
