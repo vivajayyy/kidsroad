@@ -12,6 +12,7 @@ export interface CronResult {
   skippedCount: number;
   errors: string[];
   durationMs: number;
+  detailed_results?: string[];
 }
 
 /**
@@ -41,6 +42,16 @@ export async function sendTelegramNotification(result: CronResult): Promise<void
   message += `• 스킵: ${result.skippedCount}개\n`;
   message += `• 오류: ${result.errors.length}개\n\n`;
   message += `💰 *비용 절감*: ${costSavingPercent}% (AI 호출 ${result.skippedCount}회 스킵)\n`;
+
+  if (result.detailed_results && result.detailed_results.length > 0) {
+    message += `\n📋 *상세 내역*:\n`;
+    result.detailed_results.slice(0, 20).forEach((line) => {
+      message += `• ${line}\n`;
+    });
+    if (result.detailed_results.length > 20) {
+      message += `... 외 ${result.detailed_results.length - 20}개\n`;
+    }
+  }
 
   if (result.errors.length > 0) {
     message += `\n⚠️ *오류 목록*:\n`;

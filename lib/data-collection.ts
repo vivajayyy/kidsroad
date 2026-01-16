@@ -101,6 +101,8 @@ export async function collectAndSaveEvents() {
     (e) => e.existing && !e.decision.shouldEnrich
   );
 
+  const detailed_results: string[] = [];
+  
   console.log(`📊 Classification:`);
   console.log(`  - 신규: ${newEvents.length}`);
   console.log(`  - 재분석 필요: ${toReEnrich.length}`);
@@ -143,6 +145,7 @@ export async function collectAndSaveEvents() {
       );
 
       console.log(`  ✅ 스킵: ${festivalItem.title} (${decision.reason})`);
+      detailed_results.push(`스킵: ${festivalItem.title} (${decision.reason})`);
     } catch (error) {
       console.error(`  ⚠️ 스킵 처리 실패: ${festivalItem.title}`, error);
     }
@@ -247,7 +250,7 @@ export async function collectAndSaveEvents() {
 
           if (error) throw error;
 
-          return { success: true, wasEnriched, title: festivalItem.title };
+          return { success: true, wasEnriched, title: festivalItem.title, decision_reason: decision.reason };
         } catch (e: any) {
           const errorMessage = `Error processing event ${festivalItem.title}: ${e.message}`;
           console.error(`  ⚠️ ${errorMessage}`);
@@ -260,11 +263,13 @@ export async function collectAndSaveEvents() {
   // 결과 집계
   results.forEach((result) => {
     if (result.status === 'fulfilled') {
+      detailed_results.push(`처리: ${result.value.title} (${result.value.decision_reason})`);
       if (result.value.wasEnriched) {
         enrichedCount++;
       }
     } else {
       errors.push(result.reason.message);
+      detailed_results.push(`오류: ${result.reason.message}`);
     }
   });
 
@@ -321,6 +326,7 @@ export async function collectAndSaveEvents() {
       skippedCount: toSkip.length,
       errors,
       durationMs,
+      detailed_results,
     });
   } catch (telegramError) {
     console.error('⚠️ 텔레그램 알림 실패:', telegramError);
