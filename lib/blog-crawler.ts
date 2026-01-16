@@ -7,9 +7,9 @@ import {
   NaverBlogSearchResult,
   NaverBlogSearchResponse,
   BlogContent,
-} from '@/types/blog.types';
-import { RateLimiter } from '@/utils/rate-limiter';
-import * as cheerio from 'cheerio';
+} from "@/types/blog.types";
+import { RateLimiter } from "@/utils/rate-limiter";
+import * as cheerio from "cheerio";
 
 const rateLimiter = new RateLimiter(10); // 10 req/sec
 
@@ -27,7 +27,7 @@ export async function searchNaverBlogs(
   const clientSecret = process.env.NAVER_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    console.warn('Naver API credentials not set, skipping blog search');
+    console.warn("Naver API credentials not set, skipping blog search");
     return [];
   }
 
@@ -40,8 +40,8 @@ export async function searchNaverBlogs(
   try {
     const response = await fetch(url, {
       headers: {
-        'X-Naver-Client-Id': clientId,
-        'X-Naver-Client-Secret': clientSecret,
+        "X-Naver-Client-Id": clientId,
+        "X-Naver-Client-Secret": clientSecret,
       },
     });
 
@@ -53,7 +53,7 @@ export async function searchNaverBlogs(
     const data: NaverBlogSearchResponse = await response.json();
     return data.items || [];
   } catch (error) {
-    console.error('Failed to search Naver blogs:', error);
+    console.error("Failed to search Naver blogs:", error);
     return [];
   }
 }
@@ -113,8 +113,8 @@ export async function crawlBlogContent(
 
     const response = await fetch(url, {
       headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
       },
     });
 
@@ -127,26 +127,26 @@ export async function crawlBlogContent(
     const $ = cheerio.load(html);
 
     // Remove unnecessary elements
-    $('script, style, nav, footer, iframe, img').remove();
+    $("script, style, nav, footer, iframe, img").remove();
 
     // Extract title
     const title =
-      $('title').text() ||
-      $('h1').first().text() ||
-      $('meta[property="og:title"]').attr('content') ||
-      '';
+      $("title").text() ||
+      $("h1").first().text() ||
+      $('meta[property="og:title"]').attr("content") ||
+      "";
 
     // Extract main content
     // Naver blog specific selectors + generic fallbacks
     let content =
-      $('.se-main-container').text() || // Naver SmartEditor
-      $('#postViewArea').text() || // Old Naver blog
-      $('article').text() || // Generic article tag
-      $('.post-content').text() || // Generic post content
-      $('body').text(); // Fallback to body
+      $(".se-main-container").text() || // Naver SmartEditor
+      $("#postViewArea").text() || // Old Naver blog
+      $("article").text() || // Generic article tag
+      $(".post-content").text() || // Generic post content
+      $("body").text(); // Fallback to body
 
     // Clean up whitespace
-    content = content.replace(/\s+/g, ' ').trim();
+    content = content.replace(/\s+/g, " ").trim();
 
     // Limit content length to control API costs
     const maxLength = 5000;

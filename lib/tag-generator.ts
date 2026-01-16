@@ -7,7 +7,7 @@ import {
   CATEGORY_TAG_MAP,
   KEYWORD_TAG_MAP,
   MAX_TAGS_PER_EVENT,
-} from '@/types/tag.types';
+} from "@/types/tag.types";
 
 /**
  * 이벤트 정보를 기반으로 태그 생성
@@ -31,7 +31,7 @@ export function generateTags(
   }
 
   // 2. Keyword-based tags from title + description
-  const text = `${title} ${description || ''}`.toLowerCase();
+  const text = `${title} ${description || ""}`.toLowerCase();
 
   Object.entries(KEYWORD_TAG_MAP).forEach(([keyword, tag]) => {
     if (text.includes(keyword)) {
@@ -42,64 +42,68 @@ export function generateTags(
   // 3. Age-based tags
   if (ageRanges && ageRanges.length > 0) {
     // If includes babies/toddlers (0-2)
-    if (ageRanges.includes('0-2')) {
-      tags.add('baby-friendly');
+    if (ageRanges.includes("0-2")) {
+      tags.add("baby-friendly");
     }
     // If includes all age ranges, it's family-friendly
     if (ageRanges.length >= 3) {
-      tags.add('family');
+      tags.add("family");
     }
   }
 
   // 4. Special tags based on patterns
   // Free events
-  if (text.includes('무료') || text.includes('free')) {
-    tags.add('free');
+  if (text.includes("무료") || text.includes("free")) {
+    tags.add("free");
   }
 
   // Night events
   if (
-    text.includes('야간') ||
-    text.includes('밤') ||
-    text.includes('night') ||
-    text.includes('저녁')
+    text.includes("야간") ||
+    text.includes("밤") ||
+    text.includes("night") ||
+    text.includes("저녁")
   ) {
-    tags.add('night');
+    tags.add("night");
   }
 
   // Weekend events
-  if (text.includes('주말') || text.includes('weekend')) {
-    tags.add('weekend');
+  if (text.includes("주말") || text.includes("weekend")) {
+    tags.add("weekend");
   }
 
   // Seasonal tags
-  if (text.includes('봄') || text.includes('spring') || text.includes('벚꽃')) {
-    tags.add('spring');
+  if (text.includes("봄") || text.includes("spring") || text.includes("벚꽃")) {
+    tags.add("spring");
   }
   if (
-    text.includes('여름') ||
-    text.includes('summer') ||
-    text.includes('물놀이')
+    text.includes("여름") ||
+    text.includes("summer") ||
+    text.includes("물놀이")
   ) {
-    tags.add('summer');
+    tags.add("summer");
   }
-  if (text.includes('가을') || text.includes('autumn') || text.includes('단풍')) {
-    tags.add('autumn');
+  if (
+    text.includes("가을") ||
+    text.includes("autumn") ||
+    text.includes("단풍")
+  ) {
+    tags.add("autumn");
   }
-  if (text.includes('겨울') || text.includes('winter') || text.includes('눈')) {
-    tags.add('winter');
+  if (text.includes("겨울") || text.includes("winter") || text.includes("눈")) {
+    tags.add("winter");
   }
 
   // Holiday tags
   if (
-    text.includes('크리스마스') ||
-    text.includes('christmas') ||
-    text.includes('성탄')
+    text.includes("크리스마스") ||
+    text.includes("christmas") ||
+    text.includes("성탄")
   ) {
-    tags.add('christmas');
+    tags.add("christmas");
   }
-  if (text.includes('할로윈') || text.includes('halloween')) {
-    tags.add('halloween');
+  if (text.includes("할로윈") || text.includes("halloween")) {
+    tags.add("halloween");
   }
 
   // Convert Set to Array and limit to MAX_TAGS_PER_EVENT

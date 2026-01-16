@@ -76,12 +76,14 @@ The project follows an 8-week MVP roadmap:
 - `main` - Production-ready code only, triggers Vercel deployment
 
 **Commit Message Format**: `<type>: <description>`
+
 - **Language**: **MUST be written in Korean ONLY** (커밋 메시지는 반드시 한글로 작성)
 - **Types**: `feat`, `fix`, `refactor`, `style`, `docs`, `chore`, `test`
 - **Example**: `feat: 연령별 필터 기능 추가`
 - **Commit Granularity**: Group changes into meaningful atomic commits (의미 있는 기능 단위로 묶어서 커밋)
 
 **AI Commit Proposal Process**:
+
 - **Case A (Safe Changes)**: Documentation (`docs`), simple config (`chore`)
   → Commit to `dev` then propose immediate merge to `main`
 - **Case B (Feature Dev)**: Features (`feat`), Fixes (`fix`), Refactor (`refactor`)
@@ -133,6 +135,7 @@ git push origin main
 ### Coding Best Practices
 
 #### TypeScript & Type Safety
+
 - Always define explicit types for function parameters and return values
 - Use `interface` for object shapes, `type` for unions/intersections
 - Avoid `any` type - use `unknown` if type is truly unknown, then narrow it
@@ -140,6 +143,7 @@ git push origin main
 - Prefer `const` assertions for literal types
 
 #### Error Handling
+
 - Always handle errors explicitly - never use empty catch blocks
 - Use try-catch for async operations
 - Provide meaningful error messages in Korean for user-facing errors
@@ -147,6 +151,7 @@ git push origin main
 - Use error boundaries for React components
 
 #### Component Design
+
 - Keep components small and focused (single responsibility)
 - Extract reusable logic into custom hooks
 - Use Server Components by default, Client Components only when needed (`'use client'`)
@@ -154,6 +159,7 @@ git push origin main
 - Prefer composition over prop drilling - use Context API for deep nesting
 
 #### Performance
+
 - Use Next.js Image component for all images
 - Implement proper loading states and error boundaries
 - Lazy load heavy components with `dynamic()` import
@@ -161,12 +167,14 @@ git push origin main
 - Use React Server Components to reduce client-side JavaScript
 
 #### Code Organization
+
 - One component per file, named exports preferred
 - Group related files in feature folders when appropriate
 - Keep utility functions pure (no side effects)
 - Extract constants to separate files (`lib/constants.ts`)
 
 #### Comments & Documentation
+
 - Write self-documenting code - prefer clear naming over comments
 - Add JSDoc comments for public APIs and complex logic
 - Explain "why" not "what" in comments
@@ -174,6 +182,7 @@ git push origin main
 - Mark TODOs with context: `// TODO: [context] description`
 
 #### Security
+
 - Never commit API keys or secrets - use environment variables
 - Validate and sanitize user inputs
 - Use parameterized queries for database operations (when Supabase integrated)
@@ -302,6 +311,7 @@ NAVER_MAP_CLIENT_ID=
 ## Communication & Task Management
 
 **Task-based Guidance**: Provide a **complete, end-to-end guide** for a specific task (e.g., a "TODO" item). Do not fragment instructions into button clicks; enable the user to complete the full task in one go.
+
 - 클릭 단위가 아닌, "기능/Task 완성" 단위로 전체 가이드를 제공하세요
 - 한 번에 하나씩, 명확한 단계별 가이드를 제공하세요
 

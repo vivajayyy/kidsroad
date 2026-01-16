@@ -5,6 +5,45 @@
 
 ---
 
+## 2026-01-13 (월)
+
+### 🎉 Week 5 완료: 검색/필터 + Kakao 로그인
+
+- **분류**: `Feature` / `Auth` / `Database`
+- **작업 내용**:
+  - **검색 및 필터 UI 구현**:
+    - FilterBar 컴포넌트 생성 (검색어, 카테고리, 지역)
+    - 300ms debounce로 성능 최적화
+    - URL 쿼리 파라미터로 상태 관리
+  - **Supabase 쿼리 연동**:
+    - 검색어 필터링 (`ilike`)
+    - 카테고리 필터링 (`eq`)
+    - 지역 필터링 (`like`)
+  - **Kakao 소셜 로그인 구현**:
+    - @supabase/ssr 패키지 추가
+    - 서버/클라이언트 Auth 헬퍼 생성
+    - AuthButton 컴포넌트 (카카오 공식 스타일)
+    - OAuth callback 라우트 구현
+    - Header에 로그인/로그아웃 UI 통합
+  - **데이터베이스 확장**:
+    - profiles 테이블 생성 (닉네임, 프로필 이미지)
+    - bookmarks 테이블 생성 (사용자별 북마크)
+    - 자동 프로필 생성 트리거 추가
+    - RLS 정책 적용 (보안)
+  - **버그 수정**:
+    - 이미지 로딩 에러 해결 (HTTP 프로토콜 추가)
+    - Null 데이터 처리 개선 (이미지/날짜/설명)
+    - Next.js Image 설정 마이그레이션 (remotePatterns)
+- **관련 파일**:
+  - `components/FilterBar.tsx`, `components/AuthButton.tsx`
+  - `lib/auth/server.ts`, `lib/auth/client.ts`
+  - `app/auth/callback/route.ts`
+  - `supabase/migrations/20260113_create_profiles_and_bookmarks.sql`
+  - `docs/KAKAO_LOGIN_SETUP_GUIDE.md`
+  - `docs/archive/Week5_Completed.md`
+
+---
+
 ## 2026-01-06 (화)
 
 ### 📝 TourAPI 인증키 발급 및 문서 최신화
@@ -18,7 +57,7 @@
     - `docs/api` 내 매뉴얼 분석을 통해 핵심 API 규격 및 매핑 전략 정리 (`docs/TOUR_API_GUIDE.md`)
     - Kidsroad 특화 부모 체크리스트 데이터 변환 로직 초안 수립
   - **인증키 발급 완료**:
-    - 공공데이터포털을 통한 "한국관광공사_국문 관광정보 서비스_GW" 활용 신청 및 승인 완료
+    - 공공데이터포털을 통한 "한국관광공사\_국문 관광정보 서비스\_GW" 활용 신청 및 승인 완료
   - **TourAPI 환경변수 및 타입 정의**:
     - `.env.local`에 `NEXT_PUBLIC_TOUR_API_KEY` 등록 완료
     - TourAPI 응답 구조에 맞춘 TypeScript 인터페이스 정의 (`types/tour-api.ts`)
