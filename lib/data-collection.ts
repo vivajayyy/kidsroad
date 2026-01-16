@@ -145,7 +145,6 @@ export async function collectAndSaveEvents() {
       );
 
       console.log(`  ✅ 스킵: ${festivalItem.title} (${decision.reason})`);
-      detailed_results.push(`스킵: ${festivalItem.title} (${decision.reason})`);
     } catch (error) {
       console.error(`  ⚠️ 스킵 처리 실패: ${festivalItem.title}`, error);
     }
