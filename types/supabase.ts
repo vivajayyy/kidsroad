@@ -171,6 +171,54 @@ export type Database = {
         }
         Relationships: []
       }
+      cron_logs: {
+        Row: {
+          id: number
+          job_name: string
+          executed_at: string
+          duration_ms: number | null
+          success: boolean
+          message: string | null
+          total_items: number
+          processed_count: number
+          enriched_count: number
+          skipped_count: number
+          error_count: number
+          errors: unknown | null
+          metadata: unknown | null
+        }
+        Insert: {
+          id?: number
+          job_name?: string
+          executed_at?: string
+          duration_ms?: number | null
+          success: boolean
+          message?: string | null
+          total_items?: number
+          processed_count?: number
+          enriched_count?: number
+          skipped_count?: number
+          error_count?: number
+          errors?: unknown | null
+          metadata?: unknown | null
+        }
+        Update: {
+          id?: number
+          job_name?: string
+          executed_at?: string
+          duration_ms?: number | null
+          success?: boolean
+          message?: string | null
+          total_items?: number
+          processed_count?: number
+          enriched_count?: number
+          skipped_count?: number
+          error_count?: number
+          errors?: unknown | null
+          metadata?: unknown | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

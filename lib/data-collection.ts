@@ -15,6 +15,7 @@ import { mapTourApiToEvent } from '../utils/mapper';
 import { enrichEventData } from './data-enrichment';
 import { generateTags } from './tag-generator';
 import { shouldReEnrich, EventStatus } from './enrichment-policy';
+import { sendTelegramNotification } from './telegram-notifier';
 import pLimit from 'p-limit';
 
 /**
@@ -22,6 +23,7 @@ import pLimit from 'p-limit';
  * 재분석 정책에 따라 신규/재분석/스킵 분류하여 비용 최적화
  */
 export async function collectAndSaveEvents() {
+  const startTime = Date.now();
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -268,6 +270,9 @@ export async function collectAndSaveEvents() {
 
   const processedCount = results.filter((r) => r.status === 'fulfilled').length;
 
+  const durationMs = Date.now() - startTime;
+  const costSavingPercent = ((toSkip.length / rawFestivalItems.length) * 100).toFixed(1);
+
   console.log(`\n--- 완료 ---`);
   console.log(`📊 최종 통계:`);
   console.log(`  - 처리 완료: ${processedCount}/${toEnrich.length}`);
@@ -275,8 +280,52 @@ export async function collectAndSaveEvents() {
   console.log(`  - 스킵: ${toSkip.length}`);
   console.log(`  - 오류: ${errors.length}`);
   console.log(
-    `💰 비용 절감: ${((toSkip.length / rawFestivalItems.length) * 100).toFixed(1)}% (${toSkip.length}/${rawFestivalItems.length} AI 호출 스킵)`
+    `💰 비용 절감: ${costSavingPercent}% (${toSkip.length}/${rawFestivalItems.length} AI 호출 스킵)`
   );
+  console.log(`⏱️ 실행 시간: ${(durationMs / 1000).toFixed(1)}초`);
+
+  // Step 6: 실행 결과를 DB에 저장
+  try {
+    await supabase.from('cron_logs').insert({
+      job_name: 'collect-events',
+      executed_at: new Date().toISOString(),
+      duration_ms: durationMs,
+      success: errors.length === 0,
+      message: `Processed ${processedCount}, Enriched ${enrichedCount}, Skipped ${toSkip.length}`,
+      total_items: rawFestivalItems.length,
+      processed_count: processedCount,
+      enriched_count: enrichedCount,
+      skipped_count: toSkip.length,
+      error_count: errors.length,
+      errors: errors.length > 0 ? errors : null,
+      metadata: {
+        new_events: newEvents.length,
+        re_enriched: toReEnrich.length,
+        cost_saving_percent: parseFloat(costSavingPercent),
+      },
+    });
+    console.log('✅ 실행 로그 저장 완료');
+  } catch (logError) {
+    console.error('⚠️ 로그 저장 실패:', logError);
+    // 로그 저장 실패해도 메인 프로세스는 성공으로 처리
+  }
+
+  // Step 7: 텔레그램 알림 (선택사항)
+  try {
+    await sendTelegramNotification({
+      success: errors.length === 0,
+      message: `Processed ${processedCount}, Enriched ${enrichedCount}, Skipped ${toSkip.length}`,
+      totalItems: rawFestivalItems.length,
+      processedCount,
+      enrichedCount,
+      skippedCount: toSkip.length,
+      errors,
+      durationMs,
+    });
+  } catch (telegramError) {
+    console.error('⚠️ 텔레그램 알림 실패:', telegramError);
+    // 텔레그램 알림 실패해도 메인 프로세스는 성공으로 처리
+  }
 
   return {
     success: errors.length === 0,
