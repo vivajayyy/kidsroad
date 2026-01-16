@@ -4,7 +4,11 @@
  */
 
 import { TablesInsert } from '@/types/supabase';
-import { searchNaverBlogs, crawlMultipleBlogs } from './blog-crawler';
+import {
+  searchNaverBlogs,
+  crawlMultipleBlogs,
+  filterBlogsByDateRange,
+} from './blog-crawler';
 import { analyzeBlogs, isConfidentResult } from './ai-analyzer';
 import { EnrichmentMetadata } from '@/types/enrichment.types';
 
@@ -30,6 +34,15 @@ interface EnrichmentOptions {
    * 블로그 검색/크롤링 비활성화 (테스트용)
    */
   skipEnrichment?: boolean;
+
+  /**
+   * 블로그 날짜 필터 (선택적)
+   * 지정된 날짜 범위 내의 블로그만 크롤링
+   */
+  blogDateFilter?: {
+    startDate: Date;
+    endDate: Date;
+  };
 }
 
 /**
@@ -50,6 +63,7 @@ export async function enrichEventData(
     maxBlogCrawl = 5,
     minConfidence = 0.5,
     skipEnrichment = false,
+    blogDateFilter,
   } = options;
 
   // Skip enrichment if disabled
@@ -62,7 +76,7 @@ export async function enrichEventData(
     const searchQuery = `${event.title} 후기 유모차 주차 수유실`;
     console.log(`[Enrichment] Searching blogs for: ${event.title}`);
 
-    const blogResults = await searchNaverBlogs(searchQuery, maxBlogSearch);
+    let blogResults = await searchNaverBlogs(searchQuery, maxBlogSearch);
 
     if (blogResults.length === 0) {
       console.log(`[Enrichment] No blogs found for: ${event.title}`);
@@ -72,6 +86,28 @@ export async function enrichEventData(
     console.log(
       `[Enrichment] Found ${blogResults.length} blogs for: ${event.title}`
     );
+
+    // NEW: Apply date filter if provided
+    if (blogDateFilter && blogResults.length > 0) {
+      const beforeFilter = blogResults.length;
+      blogResults = filterBlogsByDateRange(
+        blogResults,
+        blogDateFilter.startDate,
+        blogDateFilter.endDate
+      );
+      const afterFilter = blogResults.length;
+
+      console.log(
+        `[Enrichment] 날짜 필터 적용: ${beforeFilter} → ${afterFilter} (${blogDateFilter.startDate.toISOString().split('T')[0]} ~ ${blogDateFilter.endDate.toISOString().split('T')[0]})`
+      );
+
+      if (afterFilter === 0) {
+        console.log(
+          `[Enrichment] 날짜 필터 후 블로그 없음: ${event.title}`
+        );
+        return { enrichedEvent: event, metadata: null };
+      }
+    }
 
     // Step 2: Crawl blog contents (limit to maxBlogCrawl to control costs)
     const urlsToCrawl = blogResults

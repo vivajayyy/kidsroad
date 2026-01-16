@@ -73,6 +73,8 @@ export type Database = {
           title: string
           updated_at: string | null
           usetimefestival: string | null
+          last_enriched_at: string | null
+          enrichment_confidence: number | null
         }
         Insert: {
           addr1?: string | null
@@ -107,6 +109,8 @@ export type Database = {
           title: string
           updated_at?: string | null
           usetimefestival?: string | null
+          last_enriched_at?: string | null
+          enrichment_confidence?: number | null
         }
         Update: {
           addr1?: string | null
@@ -141,6 +145,8 @@ export type Database = {
           title?: string
           updated_at?: string | null
           usetimefestival?: string | null
+          last_enriched_at?: string | null
+          enrichment_confidence?: number | null
         }
         Relationships: []
       }

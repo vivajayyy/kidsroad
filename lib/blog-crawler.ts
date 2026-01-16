@@ -59,6 +59,48 @@ export async function searchNaverBlogs(
 }
 
 /**
+ * 블로그 검색 결과를 날짜 범위로 필터링
+ * 네이버 API는 날짜 필터를 지원하지 않으므로 클라이언트에서 필터링
+ *
+ * @param blogs 네이버 블로그 검색 결과
+ * @param startDate 시작 날짜 (이 날짜 이후 게시물만)
+ * @param endDate 종료 날짜 (이 날짜 이전 게시물만)
+ * @returns 날짜 범위 내의 블로그 결과
+ */
+export function filterBlogsByDateRange(
+  blogs: NaverBlogSearchResult[],
+  startDate: Date,
+  endDate: Date
+): NaverBlogSearchResult[] {
+  return blogs.filter((blog) => {
+    // postdate는 YYYYMMDD 형식 (예: "20260115")
+    const postdate = blog.postdate;
+    if (!postdate || postdate.length !== 8) {
+      console.warn(`Invalid postdate format: ${postdate} for blog: ${blog.title}`);
+      return false; // 잘못된 날짜 형식은 제외
+    }
+
+    try {
+      // YYYYMMDD → Date 객체로 변환
+      const year = parseInt(postdate.substring(0, 4), 10);
+      const month = parseInt(postdate.substring(4, 6), 10) - 1; // 0-indexed
+      const day = parseInt(postdate.substring(6, 8), 10);
+      const blogDate = new Date(year, month, day);
+
+      // 날짜 비교를 위해 시간 부분 제거
+      const start = new Date(startDate.setHours(0, 0, 0, 0));
+      const end = new Date(endDate.setHours(23, 59, 59, 999));
+
+      // 날짜 범위 체크
+      return blogDate >= start && blogDate <= end;
+    } catch (error) {
+      console.error(`Failed to parse postdate: ${postdate}`, error);
+      return false;
+    }
+  });
+}
+
+/**
  * 블로그 게시글 내용 크롤링
  * @param url 블로그 게시글 URL
  * @returns 크롤링된 블로그 콘텐츠
