@@ -1,11 +1,15 @@
 "use client";
 
+import { useState, useTransition } from "react";
 import type { Event } from "../lib/events";
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
+import { toggleBookmark } from "@/lib/bookmarks";
+import { useRouter } from "next/navigation";
 
 interface EventCardProps {
   event: Event;
+  initialIsBookmarked?: boolean;
 }
 
 const formatAgeRanges = (ranges: string[] | null): string => {
@@ -23,8 +27,33 @@ const formatAgeRanges = (ranges: string[] | null): string => {
   return `Age ${min}-${max}`;
 };
 
-export default function EventCard({ event }: EventCardProps) {
+export default function EventCard({
+  event,
+  initialIsBookmarked = false,
+}: EventCardProps) {
   const ageRangesText = formatAgeRanges(event.age_ranges);
+  const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  const handleToggle = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isPending) return;
+
+    const nextState = !isBookmarked;
+    setIsBookmarked(nextState);
+
+    startTransition(async () => {
+      try {
+        await toggleBookmark(event.contentid);
+        router.refresh();
+      } catch (error) {
+        console.error(error);
+        setIsBookmarked(!nextState);
+        alert("오류가 발생했습니다.");
+      }
+    });
+  };
 
   return (
     <div className="bg-white dark:bg-[#1E1E1E] border border-gray-100 dark:border-gray-800 p-8 rounded-xl card-hover cursor-pointer group shadow-sm">
@@ -32,9 +61,22 @@ export default function EventCard({ event }: EventCardProps) {
         <span className="text-[10px] uppercase tracking-widest text-sage-600 font-bold bg-sage-50 dark:bg-sage-600/10 px-2 py-1 rounded">
           {ageRangesText}
         </span>
-        <span className="material-symbols-outlined text-gray-300 group-hover:text-primary transition-colors">
-          bookmark
-        </span>
+        <button
+          onClick={handleToggle}
+          disabled={isPending}
+          className="hover:bg-gray-100 dark:hover:bg-gray-700 p-1 rounded-full transition-colors focus:outline-none"
+        >
+          <span
+            className={`material-symbols-outlined text-[20px] transition-colors ${
+              isBookmarked
+                ? "text-primary dark:text-white fill-icon"
+                : "text-gray-300 dark:text-gray-600 group-hover:text-gray-400"
+            }`}
+            style={isBookmarked ? { fontVariationSettings: "'FILL' 1" } : {}}
+          >
+            bookmark
+          </span>
+        </button>
       </div>
       <h3 className="text-xl font-medium mb-1">{event.title}</h3>
       <p className="text-gray-400 text-sm mb-0 flex items-center gap-1">
