@@ -13,6 +13,7 @@ export default function Header({ user }: HeaderProps) {
 
   // 컴포넌트가 마운트된 후에만 다크 모드 토글이 가능하도록 처리
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMounted(true);
   }, []);
 

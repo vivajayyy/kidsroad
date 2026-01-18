@@ -46,6 +46,7 @@ export default async function MyPage() {
       <div className="flex items-center gap-4 p-6 bg-white dark:bg-[#1E1E1E] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
         <div className="w-16 h-16 rounded-full bg-sage-100 flex items-center justify-center text-2xl overflow-hidden">
           {profile?.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={profile.avatar_url}
               alt={profile.nickname || "User"}
