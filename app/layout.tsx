@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "../components/Header";
 import { createClient } from "@/lib/auth/server";
+import Script from "next/script";
 
 export const metadata: Metadata = {
   title: "Kidsroad | 우리 아이와 함께 걷는 가장 예쁜 길",
@@ -26,6 +27,10 @@ export default async function RootLayout({
       >
         <Header user={user} />
         <main className="pt-16">{children}</main>
+        <Script
+          strategy="afterInteractive"
+          src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID}`}
+        />
       </body>
     </html>
   );
