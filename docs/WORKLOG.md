@@ -5,6 +5,66 @@
 
 ---
 
+## 2026-01-19 (월)
+
+### 👤 마이페이지 및 북마크 UI 구현
+
+- **분류**: `Feature` / `UI`
+- **작업 내용**:
+  - **마이페이지 라우트 생성**: `/my` 경로에 사용자 프로필 및 북마크 목록 페이지 구현
+  - **데이터 연동**:
+    - Supabase `profiles` 테이블에서 사용자 정보 조회
+    - `bookmarks` 테이블과 `events` 테이블을 연동하여 찜한 행사 목록 조회
+  - **UI 구현**:
+    - 사용자 프로필 섹션 (아바타/닉네임)
+    - 북마크 목록 그리드 뷰 (`EventCard` 재사용)
+    - 빈 상태(Empty State) 디자인 적용 (북마크 없을 시 탐색 유도)
+  - **보안**: 서버 사이드 세션 확인 및 미로그인 시 리다이렉트 처리
+- **관련 파일**:
+  - `app/my/page.tsx`, `app/my/layout.tsx`
+  - `components/EventCard.tsx`
+
+### 🗺️ 네이버 지도 컴포넌트 구현
+
+- **분류**: `Feature` / `Map`
+- **작업 내용**:
+  - **지도 스크립트 로드**: `next/script`를 사용하여 Naver Maps API v3 비동기 로드 구현 (`app/layout.tsx`)
+  - **NaverMap 컴포넌트 개발**:
+    - `components/NaverMap.tsx` 생성
+    - 이벤트 좌표(`mapx`, `mapy`) 기반 마커 렌더링
+    - 마커 클릭 시 InfoWindow(제목, 주소) 표시
+    - `LatLngBounds`를 이용한 자동 줌/중심 조정 기능 추가
+  - **환경 변수 설정**: `.env.example`에 `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID` 추가
+- **관련 파일**:
+  - `components/NaverMap.tsx`
+  - `app/layout.tsx`
+
+### 🔄 리스트/지도 뷰 통합
+
+- **분류**: `Feature` / `UI`
+- **작업 내용**:
+  - **뷰 모드 토글**: `EventView` 컴포넌트에 리스트/지도 전환 기능 추가
+  - **지도 연동**: `NaverMap` 컴포넌트를 통합하여 지도 뷰에서 이벤트 위치 시각화
+  - **인터랙션 통합**: 지도 마커 클릭 시 사이드 패널(`DetailPanel`)이 열리도록 연결 (`onEventSelect`)
+  - **UX 개선**: 뷰 전환 시 상태 유지 및 부드러운 전환 처리
+- **관련 파일**:
+  - `components/EventView.tsx`
+  - `components/NaverMap.tsx`
+
+### 💅 UX 개선 및 반응형 최적화
+
+- **분류**: `Feature` / `UX`
+- **작업 내용**:
+  - **마이페이지 로딩 UI**: `app/my/loading.tsx` 추가로 프로필/북마크 스켈레톤 구현
+  - **모바일 반응형 개선**: `DetailPanel`이 모바일에서 정상적으로 오버레이되도록 CSS 수정 (hidden 제거 및 translate 적용)
+  - **북마크 인터랙션 강화**: `EventCard` 내에서 북마크 토글 기능 직접 지원 및 낙관적 업데이트 적용
+- **관련 파일**:
+  - `app/my/loading.tsx`
+  - `components/EventView.tsx`
+  - `components/EventCard.tsx`
+
+---
+
 ## 2026-01-13 (월)
 
 ### 🎉 Week 5 완료: 검색/필터 + Kakao 로그인
