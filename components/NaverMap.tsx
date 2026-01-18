@@ -13,9 +13,19 @@ declare global {
 interface NaverMapProps {
   events: Event[];
   onEventSelect?: (event: Event) => void;
+  onBoundsChanged?: (bounds: {
+    south: number;
+    west: number;
+    north: number;
+    east: number;
+  }) => void;
 }
 
-export default function NaverMap({ events, onEventSelect }: NaverMapProps) {
+export default function NaverMap({
+  events,
+  onEventSelect,
+  onBoundsChanged,
+}: NaverMapProps) {
   const mapElement = useRef<HTMLDivElement>(null);
   const mapRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
@@ -42,6 +52,18 @@ export default function NaverMap({ events, onEventSelect }: NaverMapProps) {
           },
         };
         mapRef.current = new naver.maps.Map(mapElement.current, mapOptions);
+
+        if (onBoundsChanged) {
+          naver.maps.Event.addListener(mapRef.current, "idle", () => {
+            const bounds = mapRef.current.getBounds();
+            onBoundsChanged({
+              south: bounds.getSouth(),
+              west: bounds.getWest(),
+              north: bounds.getNorth(),
+              east: bounds.getEast(),
+            });
+          });
+        }
       }
 
       // Clear existing markers
@@ -114,7 +136,7 @@ export default function NaverMap({ events, onEventSelect }: NaverMapProps) {
     }, 100);
 
     return () => clearInterval(interval);
-  }, [events, onEventSelect]);
+  }, [events, onEventSelect, onBoundsChanged]);
 
   return (
     <div

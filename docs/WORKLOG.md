@@ -63,6 +63,19 @@
   - `components/EventView.tsx`
   - `components/EventCard.tsx`
 
+### 🌍 지도 필터링 및 알림 UX 개선
+
+- **분류**: `Feature` / `UX`
+- **작업 내용**:
+  - **지도 영역 필터링**: `NaverMap`의 Bounds 변경 감지 및 '이 지역에서 검색' 버튼 구현
+  - **Toast 알림 시스템**: `ToastProvider` 및 `useToast` 훅 구현, 북마크 작업 시 피드백 제공
+  - **UX 디테일**: 지도 이동 시 검색 버튼 오버레이, 북마크 성공/취소/에러 상황별 메시지 처리
+- **관련 파일**:
+  - `components/NaverMap.tsx`
+  - `components/EventView.tsx`
+  - `components/ui/Toast.tsx`
+  - `app/layout.tsx`
+
 ---
 
 ## 2026-01-13 (월)

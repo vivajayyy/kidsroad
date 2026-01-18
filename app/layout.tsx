@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import { createClient } from "@/lib/auth/server";
 import Script from "next/script";
+import { ToastProvider } from "@/components/ui/Toast";
 
 export const metadata: Metadata = {
   title: "Kidsroad | 우리 아이와 함께 걷는 가장 예쁜 길",
@@ -25,8 +26,10 @@ export default async function RootLayout({
       <body
         className={`font-display antialiased bg-background-light text-gray-900 dark:bg-background-dark dark:text-gray-100 transition-colors duration-300`}
       >
-        <Header user={user} />
-        <main className="pt-16">{children}</main>
+        <ToastProvider>
+          <Header user={user} />
+          <main className="pt-16">{children}</main>
+        </ToastProvider>
         <Script
           strategy="afterInteractive"
           src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID}`}

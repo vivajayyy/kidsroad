@@ -7,6 +7,7 @@ import type { Tables } from "@/types/supabase";
 import FilterBar from "./FilterBar";
 import { getUserBookmarkedEventIds, toggleBookmark } from "@/lib/bookmarks";
 import NaverMap from "./NaverMap";
+import { useToast } from "./ui/Toast";
 
 type Event = Tables<"events">;
 
@@ -32,6 +33,45 @@ export default function EventView({ events }: { events: Event[] }) {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [bookmarkedIds, setBookmarkedIds] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [filteredEvents, setFilteredEvents] = useState<Event[]>(events);
+  const { showToast } = useToast();
+
+  // Update filteredEvents when initial events change (e.g. search)
+  useEffect(() => {
+    setFilteredEvents(events);
+  }, [events]);
+
+  const [showSearchHere, setShowSearchHere] = useState(false);
+  const [currentBounds, setCurrentBounds] = useState<{
+    south: number;
+    west: number;
+    north: number;
+    east: number;
+  } | null>(null);
+
+  const onBoundsChanged = useCallback((bounds: { south: number; west: number; north: number; east: number }) => {
+     setCurrentBounds(bounds);
+     setShowSearchHere(true);
+  }, []);
+
+  const handleSearchInArea = () => {
+    if (!currentBounds) return;
+    const visible = events.filter((event) => {
+        if (!event.mapy || !event.mapx) return false;
+        return (
+          event.mapy >= currentBounds.south &&
+          event.mapy <= currentBounds.north &&
+          event.mapx >= currentBounds.west &&
+          event.mapx <= currentBounds.east
+        );
+      });
+      setFilteredEvents(visible);
+      setShowSearchHere(false);
+      // Optional: switch to list view to see results? Or just stay in map?
+      // If we stay in map, the markers are already there.
+      // If we switch to list, we see the filtered list.
+      // Let's just filter.
+  };
 
   // Optimistic UI state for bookmarks
   const [optimisticBookmarkedIds, addOptimisticId] = useOptimistic(
@@ -81,8 +121,10 @@ export default function EventView({ events }: { events: Event[] }) {
         const next = new Set(prev);
         if (result.bookmarked) {
           next.add(eventId);
+          showToast("관심 행사에 저장되었습니다.", "success");
         } else {
           next.delete(eventId);
+          showToast("저장이 취소되었습니다.", "success");
         }
         return next;
       });
@@ -90,10 +132,10 @@ export default function EventView({ events }: { events: Event[] }) {
       const err = error as Error;
       // Revert optimistic update implicitly by not updating real state if error
       if (err.message.includes("Unauthorized")) {
-        alert("로그인이 필요한 서비스입니다.");
+        showToast("로그인이 필요한 서비스입니다.", "error");
       } else {
         console.error("Bookmark toggle failed:", error);
-        alert("북마크 저장 중 오류가 발생했습니다.");
+        showToast("북마크 저장 중 오류가 발생했습니다.", "error");
       }
     }
   };
@@ -242,12 +284,27 @@ export default function EventView({ events }: { events: Event[] }) {
             </button>
           </div>
 
+          {/* "Search Here" Button Overlay */}
+          {viewMode === "map" && showSearchHere && (
+            <div className="absolute top-24 left-1/2 transform -translate-x-1/2 z-[50]">
+              <button
+                onClick={handleSearchInArea}
+                className="bg-white dark:bg-[#1E1E1E] text-primary px-4 py-2 rounded-full shadow-lg font-medium text-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  refresh
+                </span>
+                이 지역에서 검색
+              </button>
+            </div>
+          )}
+
           {viewMode === "list" ? (
-             events.length > 0 ? (
+             filteredEvents.length > 0 ? (
                 <div
                   className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-500 ease-in-out ${selectedEvent ? "lg:grid-cols-2" : "lg:grid-cols-3"}`}
                 >
-                  {events.map((event) => {
+                  {filteredEvents.map((event) => {
                     const isBookmarked = optimisticBookmarkedIds.has(event.contentid);
                     return (
                       <div
@@ -297,7 +354,11 @@ export default function EventView({ events }: { events: Event[] }) {
               )
           ) : (
              <div className="h-[600px] w-full relative">
-               <NaverMap events={events} onEventSelect={setSelectedEvent} />
+               <NaverMap 
+                 events={filteredEvents} 
+                 onEventSelect={setSelectedEvent} 
+                 onBoundsChanged={onBoundsChanged}
+               />
              </div>
           )}
         </section>

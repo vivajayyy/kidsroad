@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import { toggleBookmark } from "@/lib/bookmarks";
 import { useRouter } from "next/navigation";
+import { useToast } from "./ui/Toast";
 
 interface EventCardProps {
   event: Event;
@@ -35,6 +36,7 @@ export default function EventCard({
   const [isBookmarked, setIsBookmarked] = useState(initialIsBookmarked);
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const { showToast } = useToast();
 
   const handleToggle = async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -46,11 +48,20 @@ export default function EventCard({
     startTransition(async () => {
       try {
         await toggleBookmark(event.contentid);
+        showToast(
+          nextState ? "관심 행사에 저장되었습니다." : "저장이 취소되었습니다.",
+          "success"
+        );
         router.refresh();
-      } catch (error) {
-        console.error(error);
+      } catch (error: unknown) {
+        const err = error as Error;
+        console.error(err);
         setIsBookmarked(!nextState);
-        alert("오류가 발생했습니다.");
+        if (err.message.includes("Unauthorized")) {
+           showToast("로그인이 필요한 서비스입니다.", "error");
+        } else {
+           showToast("오류가 발생했습니다.", "error");
+        }
       }
     });
   };
