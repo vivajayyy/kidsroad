@@ -1,0 +1,174 @@
+{
+  "tasks": [
+    {
+      "id": "edcfba17-a0f8-4c23-a060-4d10960b828f",
+      "name": "북마크 백엔드 로직 구현",
+      "description": "Supabase에서 북마크를 관리하기 위한 유틸리티 함수를 생성합니다. 북마크 여부 확인, 추가 및 삭제 기능이 포함됩니다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-01-18T14:48:22.084Z",
+      "updatedAt": "2026-01-18T15:10:21.546Z",
+      "relatedFiles": [
+        {
+          "path": "lib/bookmarks.ts",
+          "type": "CREATE",
+          "description": "북마크 관련 유틸리티 함수"
+        }
+      ],
+      "implementationGuide": "1. `lib/bookmarks.ts`를 생성합니다.\\n2. Supabase 클라이언트를 사용하여 `isEventBookmarked(userId, eventId)`, `addBookmark(userId, eventId)`, `removeBookmark(userId, eventId)`를 구현합니다.\\n3. `types/supabase.ts`에서 타입을 정확하게 가져와 사용합니다.",
+      "verificationCriteria": "유틸리티 함수가 Supabase의 `bookmarks` 테이블과 성공적으로 상호작용하며, 가상의 사용자 ID와 이벤트 ID로 테스트 시 정상 동작해야 함.",
+      "analysisResult": "6주차 개발 목표인 북마크 기능과 네이버 지도 연동을 위한 상세 구현 계획이 확정되었습니다. 모든 태스크는 프로젝트 규칙(한국어 작성, 아키텍처 준수)을 따릅니다.",
+      "summary": "`lib/bookmarks.ts` 파일을 생성하고 3가지 핵심 유틸리티 함수(`toggleBookmark`, `getUserBookmarkedEventIds`, `isEventBookmarked`)를 구현했습니다. Supabase Server Client를 사용하여 인증 및 DB 연동을 안전하게 처리했습니다. Server Actions(`\"use server\"`) 패턴을 적용하여 클라이언트 컴포넌트에서 직접 호출이 가능하도록 설계했습니다.",
+      "completedAt": "2026-01-18T15:10:21.545Z"
+    },
+    {
+      "id": "c17e2f9e-179f-45eb-a3b1-b15ec7650bbc",
+      "name": "UI 북마크 토글 기능 추가",
+      "description": "EventCard 또는 EventView에 북마크 버튼을 통합하고 낙관적 업데이트(Optimistic Update)를 적용한 토글 로직을 구현합니다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "edcfba17-a0f8-4c23-a060-4d10960b828f"
+        }
+      ],
+      "createdAt": "2026-01-18T14:48:22.084Z",
+      "updatedAt": "2026-01-18T15:12:40.314Z",
+      "relatedFiles": [
+        {
+          "path": "components/EventView.tsx",
+          "type": "TO_MODIFY",
+          "description": "이벤트 그리드에 북마크 로직 추가"
+        }
+      ],
+      "implementationGuide": "1. `components/EventView.tsx`를 업데이트하여 각 이벤트의 북마크 상태를 포함합니다.\\n2. 그리드의 북마크 아이콘에 `isBookmarked` 상태와 `onToggleBookmark` 핸들러를 전달합니다.\\n3. 즉각적인 피드백을 위해 `useOptimistic` 또는 상태 업데이트를 사용하여 토글 로직을 구현합니다.\\n4. 로그인 확인 로직을 추가하여 로그인하지 않은 경우 알림을 표시하거나 로그인 페이지로 유도합니다.",
+      "verificationCriteria": "북마크 아이콘 클릭 시 시각적으로 즉시 상태가 변경되고 데이터베이스가 업데이트됨. 로그아웃 상태에서는 로그인 안내가 표시됨.",
+      "analysisResult": "6주차 개발 목표인 북마크 기능과 네이버 지도 연동을 위한 상세 구현 계획이 확정되었습니다. 모든 태스크는 프로젝트 규칙(한국어 작성, 아키텍처 준수)을 따릅니다.",
+      "summary": "`EventView.tsx` 컴포넌트 수정을 완료하여 UI에서의 북마크 토글 기능을 성공적으로 구현했습니다.\n1. `useEffect`를 통해 컴포넌트 마운트 시 `getUserBookmarkedEventIds`를 호출하여 초기 북마크 상태를 로드합니다.\n2. `useOptimistic` 훅을 도입하여 네트워크 요청 완료 전 즉각적인 UI 상태 변경(Optimistic Update)을 제공, 사용자 경험을 향상시켰습니다.\n3. `handleToggleBookmark` 함수에서 `toggleBookmark` Server Action을 호출하여 DB와 동기화하며, 에러 발생 시(예: 비로그인) `alert`를 통해 사용자에게 알립니다.\n4. 북마크 상태에 따라 아이콘 스타일(채워짐/테두리)과 `font-variation-settings`를 동적으로 적용했습니다.",
+      "completedAt": "2026-01-18T15:12:40.312Z"
+    },
+    {
+      "id": "327ee588-e2fd-4e60-adae-50bdfa33994c",
+      "name": "마이페이지 라우트 및 레이아웃 생성",
+      "description": "사용자 프로필과 북마크된 이벤트 목록을 표시할 `/my` 라우트를 구현합니다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-01-18T14:48:22.084Z",
+      "updatedAt": "2026-01-18T15:18:13.242Z",
+      "relatedFiles": [
+        {
+          "path": "app/my/page.tsx",
+          "type": "CREATE",
+          "description": "사용자 프로필 및 북마크 페이지"
+        }
+      ],
+      "implementationGuide": "1. `app/my/page.tsx`를 생성합니다.\\n2. `lib/auth/server.ts`를 사용하여 현재 사용자 세션을 가져옵니다.\\n3. 사용자가 없으면 홈으로 리다이렉트합니다.\\n4. `profiles` 테이블에서 사용자 정보를, `bookmarks`와 `events` 조인을 통해 북마크된 이벤트를 가져옵니다.\\n5. 사용자의 닉네임과 북마크 목록(비어있는 경우 'Empty State')을 렌더링합니다.",
+      "verificationCriteria": "로그인 후 `/my`로 접속 시 닉네임과 북마크한 이벤트가 정상 표시됨. 로그아웃 상태에서는 홈으로 리다이렉트됨.",
+      "analysisResult": "6주차 개발 목표인 북마크 기능과 네이버 지도 연동을 위한 상세 구현 계획이 확정되었습니다. 모든 태스크는 프로젝트 규칙(한국어 작성, 아키텍처 준수)을 따릅니다.",
+      "summary": "Completed implementation of My Page route and layout.\n- Created `app/my/layout.tsx` for consistent layout structure.\n- Created `app/my/page.tsx` with:\n  - Server-side session check and redirect if not logged in.\n  - Fetching user profile from `profiles` table.\n  - Fetching bookmarked events from `bookmarks` joining `events` table (via 2 queries as strict FK not guaranteed in types).\n  - Displaying user profile (avatar/nickname).\n  - Displaying list of bookmarked events using `EventCard` component.\n  - Handling empty state for bookmarks.\n- Verified linting (warning for `<img>` is acceptable as safe fallback for external avatars).",
+      "completedAt": "2026-01-18T15:18:13.241Z"
+    },
+    {
+      "id": "b669bb96-6922-4860-8f2c-0911e7d857f8",
+      "name": "네이버 지도 컴포넌트 구현",
+      "description": "이벤트 좌표를 기반으로 마커를 표시하는 재사용 가능한 네이버 지도 컴포넌트를 생성합니다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-01-18T14:48:22.084Z",
+      "updatedAt": "2026-01-18T15:20:21.248Z",
+      "relatedFiles": [
+        {
+          "path": "components/NaverMap.tsx",
+          "type": "CREATE",
+          "description": "네이버 지도 통합 컴포넌트"
+        },
+        {
+          "path": "app/layout.tsx",
+          "type": "TO_MODIFY",
+          "description": "네이버 지도 스크립트 추가"
+        }
+      ],
+      "implementationGuide": "1. `.env`에 `NAVER_MAP_CLIENT_ID`를 추가합니다.\\n2. `app/layout.tsx`에서 `next/script`를 사용하여 네이버 지도 스크립트를 로드합니다.\\n3. `components/NaverMap.tsx`를 생성합니다.\\n4. 네이버 지도 API를 사용하여 지도를 초기화하고 이벤트 목록(`mapx`, `mapy` 사용)에 대한 마커를 표시합니다.\\n5. 마커 클릭 시 정보창(InfoWindow) 표시 또는 콜백 로직을 구현합니다.",
+      "verificationCriteria": "네이버 지도가 정상적으로 렌더링되고, 이벤트의 GPS 좌표에 마커가 표시되며 마커 클릭 시 핸들링이 가능함.",
+      "analysisResult": "6주차 개발 목표인 북마크 기능과 네이버 지도 연동을 위한 상세 구현 계획이 확정되었습니다. 모든 태스크는 프로젝트 규칙(한국어 작성, 아키텍처 준수)을 따릅니다.",
+      "summary": "Implemented Naver Map component.\n- Added `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID` to `.env.example`.\n- Added `next/script` to `app/layout.tsx` to load Naver Maps API v3.\n- Created `components/NaverMap.tsx` which:\n  - Initializes map centered on events or default location.\n  - Displays markers for each event with valid coordinates.\n  - Shows InfoWindow on marker click.\n  - Automatically fits map bounds to show all markers.\n  - Handles script loading asynchronously.\n- Addressed linting issues by disabling `no-explicit-any` for the map integration file.",
+      "completedAt": "2026-01-18T15:20:21.247Z"
+    },
+    {
+      "id": "a2a4cdac-04e2-4dd9-9e4e-6d46de1a32fa",
+      "name": "지도 뷰 통합 및 전환 기능 추가",
+      "description": "메인 탐색 페이지에 리스트 뷰와 지도 뷰를 전환할 수 있는 토글 기능을 추가합니다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "b669bb96-6922-4860-8f2c-0911e7d857f8"
+        }
+      ],
+      "createdAt": "2026-01-18T14:48:22.084Z",
+      "updatedAt": "2026-01-18T15:22:57.524Z",
+      "relatedFiles": [
+        {
+          "path": "components/EventView.tsx",
+          "type": "TO_MODIFY",
+          "description": "뷰 모드 토글 및 NaverMap 통합"
+        }
+      ],
+      "implementationGuide": "1. `components/EventView.tsx`에 뷰 모드 상태(`list` | `map`)를 추가합니다.\\n2. 필터바 또는 그리드 상단에 전환 버튼을 추가합니다.\\n3. 'map' 모드일 때 그리드 대신 `NaverMap` 컴포넌트를 렌더링합니다.\\n4. 지도에서 마커 클릭 시 우측 상세 패널(`DetailPanel`)이 정상적으로 열리는지 확인합니다.",
+      "verificationCriteria": "리스트와 지도 뷰 간 전환이 가능하며, 지도의 마커 클릭 시 우측에 이벤트 상세 정보가 정상적으로 표시됨.",
+      "analysisResult": "6주차 개발 목표인 북마크 기능과 네이버 지도 연동을 위한 상세 구현 계획이 확정되었습니다. 모든 태스크는 프로젝트 규칙(한국어 작성, 아키텍처 준수)을 따릅니다.",
+      "summary": "Integrated Map View into the main event list.\n- Added `viewMode` state (`list` | `map`) to `components/EventView.tsx`.\n- Added toggle buttons to switch between Grid View and Map View.\n- Integrated `NaverMap` component, conditionally rendering it when in Map View.\n- Updated `NaverMap` to handle `onEventSelect` callback.\n- Wired map marker clicks to open the `DetailPanel` (slide-out side panel), ensuring consistent UX between list and map views.\n- Fixed linting issues (unescaped quotes, explicit any, missing dependencies).",
+      "completedAt": "2026-01-18T15:22:57.523Z"
+    },
+    {
+      "id": "aea95f51-6660-4dea-ad26-d95d02fba939",
+      "name": "최종 UX 폴리싱 및 정리",
+      "description": "새로운 기능들에 대한 로딩 상태, 빈 상태(Empty State), 반응형 디자인을 개선합니다.",
+      "status": "completed",
+      "dependencies": [
+        {
+          "taskId": "c17e2f9e-179f-45eb-a3b1-b15ec7650bbc"
+        },
+        {
+          "taskId": "327ee588-e2fd-4e60-adae-50bdfa33994c"
+        },
+        {
+          "taskId": "a2a4cdac-04e2-4dd9-9e4e-6d46de1a32fa"
+        }
+      ],
+      "createdAt": "2026-01-18T14:48:22.084Z",
+      "updatedAt": "2026-01-18T15:25:18.940Z",
+      "implementationGuide": "1. 지도 및 마이페이지에 필요한 경우 `components/LoadingSkeleton.tsx`를 업데이트합니다.\\n2. 북마크 버튼과 지도가 모바일에서 정상적으로 동작하는지 확인합니다.\\n3. 새로운 기능과 관련된 콘솔 오류나 경고를 확인하고 수정합니다.",
+      "verificationCriteria": "콘솔 오류가 없으며, 데스크톱과 모바일 모두에서 UI가 깔끔하게 동작함. 로딩 상태가 매끄럽게 처리됨.",
+      "analysisResult": "6주차 개발 목표인 북마크 기능과 네이버 지도 연동을 위한 상세 구현 계획이 확정되었습니다. 모든 태스크는 프로젝트 규칙(한국어 작성, 아키텍처 준수)을 따릅니다.",
+      "summary": "Completed Final UX Polishing and Cleanup.\n- Created `app/my/loading.tsx` to provide a dedicated skeleton loader for the My Page, mimicking the profile and bookmark grid layout.\n- Improved Mobile Responsiveness for `EventView`:\n  - Adjusted `DetailPanel` CSS to remove `hidden lg:block` and instead use fixed positioning with `translate` transitions, ensuring it works as a full-screen or side overlay on mobile devices.\n- Enhanced `EventCard` functionality:\n  - Updated `EventCard` to handle bookmark toggling internally with optimistic UI.\n  - Added `initialIsBookmarked` prop to support pre-filled state on My Page.\n- Updated `app/my/page.tsx` to pass `initialIsBookmarked={true}` to `EventCard`, enabling functional bookmark removal directly from the profile page.",
+      "completedAt": "2026-01-18T15:25:18.939Z"
+    },
+    {
+      "id": "ec68649f-6ec7-47b2-be1e-09a1fbe6569b",
+      "name": "지도 영역 기반 이벤트 필터링 구현",
+      "description": "네이버 지도의 영역(Bounds) 변경 이벤트를 감지하여, 현재 지도 화면에 보이는 이벤트만 리스트에 표시하거나 필터링하는 기능을 구현합니다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-01-18T15:33:42.133Z",
+      "updatedAt": "2026-01-18T15:34:41.312Z",
+      "implementationGuide": "1. `components/NaverMap.tsx`에 `bounds_changed` 또는 `idle` 이벤트 리스너를 추가합니다.\n2. 현재 지도의 좌표 경계(Bounds)를 계산하여 상위 컴포넌트(`EventView`)로 전달하는 콜백(`onBoundsChanged`)을 구현합니다.\n3. `EventView.tsx`에서 이 경계 정보를 받아 `events` 리스트를 필터링하는 로직(클라이언트 사이드)을 추가합니다.\n4. 지도 위에 '현 지도에서 검색' 버튼을 추가하여 사용자가 원할 때만 필터링을 적용하도록 UX를 구성합니다 (선택적).",
+      "verificationCriteria": "지도를 이동한 후 필터링을 적용했을 때, 지도 영역 내에 포함된 이벤트만 리스트(또는 마커)에 남아 있어야 함.",
+      "analysisResult": "6주차 잔여 작업: 지도 영역 기반 필터링 및 북마크 UX 개선.\n1. 사용자가 지도 이동 시 현재 보고 있는 영역(Bounds) 내의 행사만 필터링하여 볼 수 있는 기능을 구현합니다.\n2. 북마크 추가/삭제 시 사용자에게 명확한 피드백을 주기 위해 토스트(Toast) 알림 시스템을 도입합니다.",
+      "summary": "Implemented Map Area Based Filtering.\n- Updated `components/NaverMap.tsx` to capture the map's `idle` event and expose `onBoundsChanged`.\n- Updated `components/EventView.tsx`:\n  - Maintained a `filteredEvents` state.\n  - Added a \"Search Here\" (이 지역에서 검색) button that appears when the map is moved (`showSearchHere` state).\n  - Implemented client-side filtering logic to update `filteredEvents` based on the current map bounds when the button is clicked.\n  - Ensured both the List View and Map View reflect the filtered dataset.\n- Verified that the \"Search Here\" button overlays correctly on the map and triggers the filtering.",
+      "completedAt": "2026-01-18T15:34:41.311Z"
+    },
+    {
+      "id": "9a90fc16-1edb-4a92-83c5-8b99b3f91eba",
+      "name": "북마크 토글 UX 개선 및 토스트 알림 추가",
+      "description": "북마크 추가/제거 시 사용자에게 작업 성공 여부를 알리는 토스트 알림 컴포넌트를 구현하고 적용합니다.",
+      "status": "completed",
+      "dependencies": [],
+      "createdAt": "2026-01-18T15:33:42.133Z",
+      "updatedAt": "2026-01-18T15:35:50.333Z",
+      "implementationGuide": "1. `components/ui/Toast.tsx` (또는 `ToastProvider`)를 생성하여 전역 알림 컨텍스트를 구성합니다.\n2. `app/layout.tsx`에 Provider를 래핑합니다.\n3. `components/EventCard.tsx`와 `EventView.tsx`의 북마크 토글 함수(`handleToggle`)에서 작업 완료 시 토스트 함수를 호출하도록 수정합니다.\n4. 북마크 추가 시 '저장되었습니다', 삭제 시 '삭제되었습니다' 메시지를 노출합니다.",
+      "verificationCriteria": "이벤트 카드의 북마크 버튼을 클릭하면 화면 하단(또는 상단)에 토스트 알림이 나타나고 일정 시간 후 사라져야 함.",
+      "analysisResult": "6주차 잔여 작업: 지도 영역 기반 필터링 및 북마크 UX 개선.\n1. 사용자가 지도 이동 시 현재 보고 있는 영역(Bounds) 내의 행사만 필터링하여 볼 수 있는 기능을 구현합니다.\n2. 북마크 추가/삭제 시 사용자에게 명확한 피드백을 주기 위해 토스트(Toast) 알림 시스템을 도입합니다.",
+      "summary": "Completed Bookmark UX Improvement and Toast Notifications.\n- Created `components/ui/Toast.tsx` providing a global `ToastProvider` and `useToast` hook for success/error/info notifications.\n- Wrapped the entire application with `ToastProvider` in `app/layout.tsx`.\n- Integrated `useToast` into `components/EventCard.tsx` and `components/EventView.tsx` to provide feedback:\n  - \"관심 행사에 저장되었습니다\" (Saved to favorites)\n  - \"저장이 취소되었습니다\" (Save canceled)\n  - \"로그인이 필요한 서비스입니다\" (Login required)\n  - \"오류가 발생했습니다\" (Error occurred)\n- Verified that notifications appear in the bottom-center of the screen with appropriate styling for success/error states.\n- Fixed linting errors (`any` type, unused variables).",
+      "completedAt": "2026-01-18T15:35:50.332Z"
+    }
+  ]
+}

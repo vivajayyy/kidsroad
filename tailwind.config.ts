@@ -1,37 +1,56 @@
 import type { Config } from "tailwindcss";
+import forms from "@tailwindcss/forms";
+import typography from "@tailwindcss/typography";
 
-const config: Config = {
+export default {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "class",
   theme: {
     extend: {
       colors: {
-        primary: "#2D2D2D",
-        sage: {
-          50: "#f4f7f4",
-          100: "#e9eee9",
-          200: "#d3ded3",
-          600: "#7A8C7A",
+        background: {
+          light: "#F9FAFB", // cool gray 50
+          dark: "#121212", // almost black
         },
-        "background-light": "#F8F8F8",
-        "background-dark": "#121212",
+        primary: "#FF6B6B", // soft coral
+        secondary: "#4ECDC4", // medium turquoise
+        sage: {
+          50: "#F6F7F6",
+          100: "#E3E8E3",
+          200: "#C5D1C5",
+          300: "#A3B5A3",
+          400: "#859D85",
+          500: "#698469",
+          600: "#526B52",
+        },
+        dark: {
+          surface: "#1E1E1E",
+          border: "#2E2E2E",
+        },
       },
       fontFamily: {
-        display: ["Inter", "Noto Sans KR", "sans-serif"],
-        sans: ["Inter", "Noto Sans KR", "sans-serif"],
+        sans: ["Pretendard", "sans-serif"],
+        display: ["Cabinet Grotesk", "Pretendard", "sans-serif"],
       },
-      borderRadius: {
-        DEFAULT: "4px",
-        xl: "12px",
-        "2xl": "24px",
+      animation: {
+        "fade-in": "fadeIn 0.5s ease-out",
+        "slide-up": "slideUp 0.5s ease-out",
+      },
+      keyframes: {
+        fadeIn: {
+          "0%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
+        slideUp: {
+          "0%": { transform: "translateY(20px)", opacity: "0" },
+          "100%": { transform: "translateY(0)", opacity: "1" },
+        },
       },
     },
   },
-  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms")],
-};
-
-export default config;
+  darkMode: "class",
+  plugins: [forms, typography],
+} satisfies Config;
