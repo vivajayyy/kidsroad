@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/auth/server";
 import { redirect } from "next/navigation";
 import EventCard from "@/components/EventCard";
+import Avatar from "@/components/ui/Avatar";
+import EmptyState from "@/components/ui/EmptyState";
 import { Event } from "@/lib/events";
-import Link from "next/link";
 
 export default async function MyPage() {
   const supabase = await createClient();
@@ -40,35 +41,30 @@ export default async function MyPage() {
     events = data || [];
   }
 
+  const displayName = profile?.nickname || user.email?.split("@")[0] || "사용자";
+
   return (
     <div className="space-y-8">
-      {/* Profile Section */}
-      <div className="flex items-center gap-4 p-6 bg-white dark:bg-[#1E1E1E] rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm">
-        <div className="w-16 h-16 rounded-full bg-sage-100 flex items-center justify-center text-2xl overflow-hidden">
-          {profile?.avatar_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={profile.avatar_url}
-              alt={profile.nickname || "User"}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <span className="text-sage-600 font-bold">
-              {profile?.nickname?.[0] || user.email?.[0]?.toUpperCase()}
-            </span>
-          )}
-        </div>
+      {/* 프로필 섹션 */}
+      <div className="flex items-center gap-4 p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
+        <Avatar
+          src={profile?.avatar_url}
+          name={displayName}
+          size="lg"
+        />
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            {profile?.nickname || user.email?.split("@")[0]}
+          <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+            {displayName}
           </h1>
-          <p className="text-gray-500 text-sm">{user.email}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            {user.email}
+          </p>
         </div>
       </div>
 
-      {/* Bookmarks Section */}
+      {/* 관심 행사 */}
       <div>
-        <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
+        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">
             bookmark
           </span>
@@ -86,18 +82,11 @@ export default async function MyPage() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border-2 border-dashed border-gray-200 dark:border-gray-700">
-            <span className="material-symbols-outlined text-4xl text-gray-300 mb-2">
-              bookmark_border
-            </span>
-            <p className="text-gray-500">아직 저장한 행사가 없습니다.</p>
-            <Link
-              href="/"
-              className="text-primary hover:underline mt-2 inline-block"
-            >
-              행사 둘러보기
-            </Link>
-          </div>
+          <EmptyState
+            icon="bookmark_border"
+            title="아직 저장한 행사가 없어요"
+            description="마음에 드는 행사를 북마크하면 여기서 모아볼 수 있어요"
+          />
         )}
       </div>
     </div>
