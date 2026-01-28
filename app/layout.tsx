@@ -24,7 +24,7 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body
-        className={`font-display antialiased bg-background-light text-gray-900 dark:bg-background-dark dark:text-gray-100 transition-colors duration-300`}
+        className={`font-sans antialiased bg-background-light text-gray-900 dark:bg-background-dark dark:text-gray-100 transition-colors duration-300`}
       >
         <ToastProvider>
           <Header user={user} />
