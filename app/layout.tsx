@@ -24,6 +24,12 @@ export default async function RootLayout({
 
   return (
     <html lang="ko">
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+        />
+      </head>
       <body
         className={`font-sans antialiased bg-background-light text-gray-900 dark:bg-background-dark dark:text-gray-100 transition-colors duration-300`}
       >
