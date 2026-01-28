@@ -4,7 +4,7 @@ This file provides guidance to Cursor AI when working with code in this reposito
 
 ## Project Overview
 
-**Kidsroad (키즈로드)** is a mobile-first web service that helps parents find age-appropriate festivals and events for their children. The platform aggregates scattered information from public APIs and provides curated, parent-focused filtering (age ranges, stroller access, parking, indoor/outdoor, etc.).
+**Kidsroad (키즈로드)** is a desktop-first responsive web service (with strong mobile support) that helps parents find age-appropriate festivals and events for their children. The platform aggregates scattered information from public APIs and provides curated, parent-focused filtering (age ranges, stroller access, parking, indoor/outdoor, etc.).
 
 **Slogan**: "아이와 함께하는 모든 순간, 키즈로드가 안내합니다" (Kidsroad guides every moment with your child)
 
@@ -95,7 +95,7 @@ This file provides guidance to Cursor AI when working with code in this reposito
 
 ### UI/UX Principles
 
-- **Mobile-first**: Design for mobile, enhance for desktop
+- **Desktop-first**: Design for desktop, adapt for mobile using responsive design
 - **Quick scanning**: Use clear tags, icons, and concise information
 - **Parent-focused**: Highlight practical info (parking, stroller access, etc.)
 - **Fast decisions**: Enable filtering to relevant options in 2-3 clicks
