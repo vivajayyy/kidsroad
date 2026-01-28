@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ko" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>키즈로드 - 아이와 함께하는 모든 순간</title>
+
+    <!-- Pretendard Variable Font -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+
+    <!-- Material Symbols Outlined -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B35',
+                        secondary: '#22B595',
+                        accent: '#8B5CF6',
+                        surface: '#FAFAF8',
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard Variable', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+            font-size: 20px;
+            vertical-align: middle;
+        }
+
+        /* Smooth scroll for carousel */
+        .carousel-container {
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .carousel-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .carousel-card {
+            scroll-snap-align: start;
+        }
+
+        /* Hover effects */
+        .event-card img {
+            transition: transform 0.3s ease;
+        }
+
+        .event-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .event-card {
+            transition: box-shadow 0.3s ease;
+        }
+
+        .event-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Dark mode styles */
+        .dark {
+            background-color: #1a1a1a;
+            color: #e5e5e5;
+        }
+
+        .dark .bg-white {
+            background-color: #262626;
+        }
+
+        .dark .bg-surface {
+            background-color: #1f1f1f;
+        }
+
+        .dark .text-gray-900 {
+            color: #e5e5e5;
+        }
+
+        .dark .text-gray-700 {
+            color: #a3a3a3;
+        }
+
+        .dark .text-gray-600 {
+            color: #737373;
+        }
+
+        .dark .text-gray-500 {
+            color: #525252;
+        }
+
+        .dark .border-gray-200 {
+            border-color: #404040;
+        }
+
+        .dark .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        /* Active filter styles */
+        .filter-chip-active {
+            background-color: #FF6B35;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
+        }
+
+        .checklist-chip-active {
+            background-color: #FF6B35;
+            color: white;
+        }
+
+        .checklist-chip-active .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface dark:bg-[#1a1a1a] antialiased">
+
+    <!-- Desktop Header -->
+    <header class="hidden md:flex items-center justify-between px-8 lg:px-12 h-[72px] bg-white dark:bg-[#262626] sticky top-0 z-50 shadow-sm">
+        <!-- Logo -->
+        <div class="flex-shrink-0">
+            <h1 class="text-2xl font-medium tracking-tight text-gray-900 dark:text-white">키즈로드</h1>
+        </div>
+
+        <!-- Center: Nav + Search -->
+        <div class="flex items-center gap-8 flex-1 justify-center max-w-3xl mx-8">
+            <!-- Nav Tabs -->
+            <nav class="flex gap-6">
+                <button class="text-sm font-medium text-gray-900 dark:text-white border-b-2 border-primary pb-1">탐색</button>
+                <button class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">지도</button>
+                <button class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">저장</button>
+            </nav>
+
+            <!-- Search Bar -->
+            <div class="flex-1 max-w-md">
+                <div class="relative">
+                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">search</span>
+                    <input type="text" placeholder="행사 검색하기" class="w-full pl-12 pr-4 py-3 rounded-full bg-gray-50 dark:bg-[#1f1f1f] border border-gray-200 dark:border-[#404040] focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all text-sm">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Dark Mode + Avatar -->
+        <div class="flex items-center gap-4 flex-shrink-0">
+            <button onclick="toggleDarkMode()" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#404040] transition-colors">
+                <span class="material-symbols-outlined text-gray-700 dark:text-gray-300">dark_mode</span>
+            </button>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent"></div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pb-20 md:pb-8">
+
+        <!-- Hero Section -->
+        <section class="relative h-[320px] md:h-[380px] bg-gradient-to-br from-[#FFB088] via-[#FF8B6A] to-[#FF6B35] flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+            <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+                <h2 class="text-4xl md:text-5xl lg:text-6xl font-medium text-white mb-4 tracking-tight leading-tight">이번 주말, 아이와<br class="md:hidden"> 어디 갈까?</h2>
+                <p class="text-lg md:text-xl text-white/90 font-light">우리 아이에게 딱 맞는 행사를 찾아보세요</p>
+            </div>
+        </section>
+
+        <!-- Curation Carousel -->
+        <section class="px-6 md:px-8 lg:px-12 -mt-16 mb-12 relative z-20">
+            <div class="carousel-container flex gap-4 overflow-x-auto pb-4">
+
+                <div class="carousel-card flex-shrink-0 w-[280px] h-[180px] rounded-3xl bg-gradient-to-br from-[#FF9A76] to-[#FF6B35] p-6 flex flex-col justify-end shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-medium text-white leading-tight">이번 주<br>무료 행사</h3>
+                </div>
+
+                <div class="carousel-card flex-shrink-0 w-[280px] h-[180px] rounded-3xl bg-gradient-to-br from-[#4ECDC4] to-[#22B595] p-6 flex flex-col justify-end shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-medium text-white leading-tight">유모차 OK<br>실내 축제</h3>
+                </div>
+
+                <div class="carousel-card flex-shrink-0 w-[280px] h-[180px] rounded-3xl bg-gradient-to-br from-[#A18CD1] to-[#8B5CF6] p-6 flex flex-col justify-end shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-medium text-white leading-tight">눈 와도 걱정없는<br>실내 행사</h3>
+                </div>
+
+                <div class="carousel-card flex-shrink-0 w-[280px] h-[180px] rounded-3xl bg-gradient-to-br from-[#FFA07A] to-[#FF7F50] p-6 flex flex-col justify-end shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-medium text-white leading-tight">주차 편한<br>가족 나들이</h3>
+                </div>
+
+                <div class="carousel-card flex-shrink-0 w-[280px] h-[180px] rounded-3xl bg-gradient-to-br from-[#FF9AA2] to-[#FFB7B2] p-6 flex flex-col justify-end shadow-lg hover:shadow-xl transition-shadow cursor-pointer">
+                    <h3 class="text-xl font-medium text-white leading-tight">수유실 있는 곳만<br>모아봤어요</h3>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Age Filter Chips -->
+        <section class="px-6 md:px-8 lg:px-12 mb-6">
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button onclick="toggleAgeFilter(this)" class="filter-chip px-6 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">전체</button>
+                <button onclick="toggleAgeFilter(this)" class="filter-chip px-6 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">0~2세</button>
+                <button onclick="toggleAgeFilter(this)" class="filter-chip px-6 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">3~5세</button>
+                <button onclick="toggleAgeFilter(this)" class="filter-chip px-6 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">6~9세</button>
+                <button onclick="toggleAgeFilter(this)" class="filter-chip px-6 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">10세+</button>
+            </div>
+        </section>
+
+        <!-- Checklist Filter Chips -->
+        <section class="px-6 md:px-8 lg:px-12 mb-12">
+            <div class="flex flex-wrap gap-3 justify-center">
+                <button onclick="toggleChecklistFilter(this)" class="checklist-chip flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">
+                    <span class="material-symbols-outlined">confirmation_number</span>
+                    무료
+                </button>
+                <button onclick="toggleChecklistFilter(this)" class="checklist-chip flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">
+                    <span class="material-symbols-outlined">home</span>
+                    실내
+                </button>
+                <button onclick="toggleChecklistFilter(this)" class="checklist-chip flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">
+                    <span class="material-symbols-outlined">park</span>
+                    실외
+                </button>
+                <button onclick="toggleChecklistFilter(this)" class="checklist-chip flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">
+                    <span class="material-symbols-outlined">local_parking</span>
+                    주차
+                </button>
+                <button onclick="toggleChecklistFilter(this)" class="checklist-chip flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">
+                    <span class="material-symbols-outlined">stroller</span>
+                    유모차
+                </button>
+                <button onclick="toggleChecklistFilter(this)" class="checklist-chip flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium bg-white dark:bg-[#262626] border border-gray-200 dark:border-[#404040] text-gray-700 dark:text-gray-300 hover:border-primary transition-all">
+                    <span class="material-symbols-outlined">child_care</span>
+                    수유실
+                </button>
+            </div>
+        </section>
+
+        <!-- Event Cards Grid -->
+        <section class="px-6 md:px-8 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+
+                <!-- Event Card 1 -->
+                <div class="event-card rounded-2xl overflow-hidden bg-white dark:bg-[#262626] cursor-pointer">
+                    <div class="relative aspect-[3/2] overflow-hidden bg-gradient-to-br from-purple-200 to-purple-400">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect fill='%23A18CD1' width='600' height='400'/%3E%3Ctext x='50%25' y='50%25' fill='white' font-size='24' text-anchor='middle' dy='.3em' font-family='sans-serif'%3E어린이 뮤지컬%3C/text%3E%3C/svg%3E" alt="어린이 뮤지컬" class="w-full h-full object-cover">
+                        <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 dark:bg-black/50 flex items-center justify-center hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-white text-[20px]">favorite_border</span>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-base font-medium text-gray-900 dark:text-white mb-2 line-clamp-2 leading-snug">신나는 어린이 뮤지컬 - 마법의 성</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">서울 강남구</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">1월 30일 ~ 2월 15일</p>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">home</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">local_parking</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">stroller</span>
+                        </div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">15,000원</p>
+                    </div>
+                </div>
+
+                <!-- Event Card 2 -->
+                <div class="event-card rounded-2xl overflow-hidden bg-white dark:bg-[#262626] cursor-pointer">
+                    <div class="relative aspect-[3/2] overflow-hidden bg-gradient-to-br from-green-200 to-green-400">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect fill='%2322B595' width='600' height='400'/%3E%3Ctext x='50%25' y='50%25' fill='white' font-size='24' text-anchor='middle' dy='.3em' font-family='sans-serif'%3E과학 체험전%3C/text%3E%3C/svg%3E" alt="과학 체험전" class="w-full h-full object-cover">
+                        <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 dark:bg-black/50 flex items-center justify-center hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-white text-[20px]">favorite_border</span>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-base font-medium text-gray-900 dark:text-white mb-2 line-clamp-2 leading-snug">신기한 과학 체험전 - 겨울 특별전</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">서울 종로구</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">2월 1일 ~ 2월 28일</p>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">home</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">child_care</span>
+                        </div>
+                        <p class="text-sm font-medium text-secondary">무료</p>
+                    </div>
+                </div>
+
+                <!-- Event Card 3 -->
+                <div class="event-card rounded-2xl overflow-hidden bg-white dark:bg-[#262626] cursor-pointer">
+                    <div class="relative aspect-[3/2] overflow-hidden bg-gradient-to-br from-orange-200 to-orange-400">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect fill='%23FF9A76' width='600' height='400'/%3E%3Ctext x='50%25' y='50%25' fill='white' font-size='24' text-anchor='middle' dy='.3em' font-family='sans-serif'%3E키즈 카페%3C/text%3E%3C/svg%3E" alt="키즈 카페" class="w-full h-full object-cover">
+                        <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 dark:bg-black/50 flex items-center justify-center hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-[20px]">favorite</span>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-base font-medium text-gray-900 dark:text-white mb-2 line-clamp-2 leading-snug">프리미엄 키즈 카페 & 플레이존</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">경기 성남시</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">상시 운영</p>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">home</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">local_parking</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">child_care</span>
+                        </div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">12,000원</p>
+                    </div>
+                </div>
+
+                <!-- Event Card 4 -->
+                <div class="event-card rounded-2xl overflow-hidden bg-white dark:bg-[#262626] cursor-pointer">
+                    <div class="relative aspect-[3/2] overflow-hidden bg-gradient-to-br from-blue-200 to-blue-400">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 400'%3E%3Crect fill='%235B9BD5' width='600' height='400'/%3E%3Ctext x='50%25' y='50%25' fill='white' font-size='24' text-anchor='middle' dy='.3em' font-family='sans-serif'%3E수족관 투어%3C/text%3E%3C/svg%3E" alt="수족관 투어" class="w-full h-full object-cover">
+                        <button class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/90 dark:bg-black/50 flex items-center justify-center hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-gray-700 dark:text-white text-[20px]">favorite_border</span>
+                        </button>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="text-base font-medium text-gray-900 dark:text-white mb-2 line-clamp-2 leading-snug">아쿠아리움 겨울 특별 프로그램</h3>
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">서울 송파구</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-500 mb-4">1월 15일 ~ 3월 15일</p>
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">home</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">local_parking</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">stroller</span>
+                            <span class="material-symbols-outlined text-gray-400 text-[18px]">child_care</span>
+                        </div>
+                        <p class="text-sm font-medium text-gray-900 dark:text-white">28,000원</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-[#262626] border-t border-gray-200 dark:border-[#404040] z-50">
+        <div class="flex justify-around items-center h-16">
+            <button class="flex flex-col items-center gap-1 text-primary">
+                <span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;">explore</span>
+                <span class="text-xs font-medium">탐색</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400">
+                <span class="material-symbols-outlined text-[24px]">map</span>
+                <span class="text-xs">지도</span>
+            </button>
+            <button class="flex flex-col items-center gap-1 text-gray-500 dark:text-gray-400">
+                <span class="material-symbols-outlined text-[24px]">person</span>
+                <span class="text-xs">마이</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // Dark mode toggle
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Age filter toggle
+        function toggleAgeFilter(button) {
+            const allButtons = document.querySelectorAll('.filter-chip');
+            allButtons.forEach(btn => {
+                btn.classList.remove('filter-chip-active');
+                btn.classList.add('bg-white', 'dark:bg-[#262626]', 'border', 'border-gray-200', 'dark:border-[#404040]', 'text-gray-700', 'dark:text-gray-300');
+            });
+
+            button.classList.add('filter-chip-active');
+            button.classList.remove('bg-white', 'dark:bg-[#262626]', 'border', 'border-gray-200', 'dark:border-[#404040]', 'text-gray-700', 'dark:text-gray-300');
+        }
+
+        // Checklist filter toggle
+        function toggleChecklistFilter(button) {
+            if (button.classList.contains('checklist-chip-active')) {
+                button.classList.remove('checklist-chip-active');
+                button.classList.add('bg-white', 'dark:bg-[#262626]', 'border', 'border-gray-200', 'dark:border-[#404040]', 'text-gray-700', 'dark:text-gray-300');
+            } else {
+                button.classList.add('checklist-chip-active');
+                button.classList.remove('bg-white', 'dark:bg-[#262626]', 'border', 'border-gray-200', 'dark:border-[#404040]', 'text-gray-700', 'dark:text-gray-300');
+            }
+        }
+    </script>
+
+</body>
+</html>
