@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 
 interface EventGridProps {
   events: Event[];
-  selectedEventId?: string | null;
   onEventSelect?: (event: Event) => void;
   bookmarkedIds?: Set<string>;
 }
