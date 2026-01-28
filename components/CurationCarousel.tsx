@@ -15,41 +15,39 @@ const curationData: CurationItem[] = [
   {
     title: "이번 주 무료 행사",
     description: "돈 안들이고 즐기기",
-    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+    gradient: "linear-gradient(135deg, #FF6B35 0%, #FF9567 100%)",
     filterParams: "free=true",
     count: 12,
   },
   {
     title: "유모차 OK 실내 축제",
     description: "편하게 다녀오세요",
-    gradient: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+    gradient: "linear-gradient(135deg, #22B595 0%, #47CBAB 100%)",
     filterParams: "stroller=true&indoor=true",
     count: 8,
   },
   {
     title: "비 와도 걱정없는 실내 행사",
     description: "날씨 걱정 끝",
-    gradient: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+    gradient: "linear-gradient(135deg, #4A6FA5 0%, #6B8FC4 100%)",
     filterParams: "indoor=true",
     count: 15,
   },
   {
     title: "주차 편한 가족 나들이",
     description: "주차 스트레스 제로",
-    gradient: "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+    gradient: "linear-gradient(135deg, #FF9567 0%, #FFB08D 100%)",
     filterParams: "parking=true",
     count: 10,
   },
   {
     title: "수유실 있는 곳만 모았어요",
     description: "엄마도 편하게",
-    gradient: "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
+    gradient: "linear-gradient(135deg, #8B5CF6 0%, #A87DFB 100%)",
     filterParams: "nursing=true",
     count: 6,
   },
 ];
-
-const AUTO_SCROLL_INTERVAL = 5000;
 
 export default function CurationCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -64,19 +62,6 @@ export default function CurationCarousel() {
       container.scrollTo({ left: card.offsetLeft - 24, behavior: "smooth" });
     }
   }, []);
-
-  // 자동 롤링
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => {
-        const next = (prev + 1) % curationData.length;
-        scrollToIndex(next);
-        return next;
-      });
-    }, AUTO_SCROLL_INTERVAL);
-
-    return () => clearInterval(interval);
-  }, [scrollToIndex]);
 
   // 스크롤 위치 감지
   useEffect(() => {
@@ -103,7 +88,7 @@ export default function CurationCarousel() {
       {/* 캐러셀 */}
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto gap-4 px-4 md:px-0 scrollbar-hide"
+        className="flex overflow-x-auto gap-4 scrollbar-hide"
         style={{ scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch" }}
       >
         {curationData.map((item, index) => (
@@ -139,12 +124,16 @@ export default function CurationCarousel() {
               setActiveIndex(index);
               scrollToIndex(index);
             }}
-            className={`w-2 h-2 rounded-full transition-colors ${
-              index === activeIndex
-                ? "bg-gray-900 dark:bg-white"
-                : "bg-gray-300 dark:bg-gray-700"
-            }`}
-          />
+            className="p-2 -m-1"
+          >
+            <span
+              className={`block w-2 h-2 rounded-full transition-colors ${
+                index === activeIndex
+                  ? "bg-gray-900 dark:bg-white"
+                  : "bg-gray-300 dark:bg-gray-700"
+              }`}
+            />
+          </button>
         ))}
       </div>
     </section>

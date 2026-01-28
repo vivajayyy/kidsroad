@@ -8,6 +8,7 @@ import { ko } from "date-fns/locale";
 import { notFound } from "next/navigation";
 import Badge from "@/components/ui/Badge";
 import BookmarkButton from "./BookmarkButton";
+import ShareButton from "./ShareButton";
 
 type Event = Database["public"]["Tables"]["events"]["Row"];
 
@@ -108,10 +109,18 @@ export default async function EventDetailPage({
       ? `https://map.naver.com/v5/search/${encodeURIComponent(event.title)}?c=${event.mapx},${event.mapy},15,0,0,0,dh`
       : `https://map.naver.com/v5/search/${encodeURIComponent(event.addr1 || event.title)}`;
 
+  const CATEGORY_GRADIENTS: Record<string, string> = {
+    "축제/행사": "linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)",
+    "문화시설": "linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)",
+    "관광지": "linear-gradient(135deg, #d299c2 0%, #fef9d7 100%)",
+    "레포츠": "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
+    default: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  };
+
   return (
     <div className="min-h-screen bg-white dark:bg-[#0a0a0a]">
       {/* 상단 네비게이션 */}
-      <nav className="sticky top-0 z-30 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800">
+      <nav className="sticky top-14 md:top-16 z-30 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-lg border-b border-gray-100 dark:border-gray-800">
         <div className="max-w-3xl mx-auto px-4 md:px-6 h-14 flex items-center justify-between">
           <Link
             href="/"
@@ -120,7 +129,7 @@ export default async function EventDetailPage({
             <span className="material-symbols-outlined text-xl">
               arrow_back
             </span>
-            <span className="text-sm font-medium">목록</span>
+            <span className="text-sm font-medium">뒤로</span>
           </Link>
           <BookmarkButton contentid={event.contentid} />
         </div>
@@ -128,7 +137,7 @@ export default async function EventDetailPage({
 
       <article className="max-w-3xl mx-auto">
         {/* 히어로 이미지 */}
-        <div className="relative w-full aspect-[16/9] bg-gray-200 dark:bg-gray-800 overflow-hidden">
+        <div className="relative w-full aspect-[16/10] bg-gray-200 dark:bg-gray-800 overflow-hidden">
           {event.firstimage ? (
             <Image
               src={event.firstimage}
@@ -139,11 +148,7 @@ export default async function EventDetailPage({
               priority
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="material-symbols-outlined text-gray-400 text-6xl">
-                image
-              </span>
-            </div>
+            <div className="w-full h-full" style={{ background: CATEGORY_GRADIENTS[event.category || ""] || CATEGORY_GRADIENTS.default }} />
           )}
 
           {/* 연령 뱃지 */}
@@ -153,7 +158,7 @@ export default async function EventDetailPage({
         </div>
 
         {/* 콘텐츠 */}
-        <div className="px-4 md:px-6 py-8">
+        <div className="px-5 md:px-6 py-8">
           {/* 제목 */}
           <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white leading-tight mb-6">
             {event.title}
@@ -161,8 +166,8 @@ export default async function EventDetailPage({
 
           {/* 핵심 정보 */}
           <div className="space-y-4 mb-8">
-            <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-xl text-gray-400 mt-0.5">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-xl text-gray-400 w-6 h-6 flex items-center justify-center flex-shrink-0">
                 calendar_today
               </span>
               <div>
@@ -178,8 +183,8 @@ export default async function EventDetailPage({
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
-              <span className="material-symbols-outlined text-xl text-gray-400 mt-0.5">
+            <div className="flex items-center gap-3">
+              <span className="material-symbols-outlined text-xl text-gray-400 w-6 h-6 flex items-center justify-center flex-shrink-0">
                 location_on
               </span>
               <div>
@@ -198,8 +203,8 @@ export default async function EventDetailPage({
             </div>
 
             {event.usetimefestival && (
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-xl text-gray-400 mt-0.5">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-xl text-gray-400 w-6 h-6 flex items-center justify-center flex-shrink-0">
                   payments
                 </span>
                 <div>
@@ -214,8 +219,8 @@ export default async function EventDetailPage({
             )}
 
             {event.tel && (
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-xl text-gray-400 mt-0.5">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-xl text-gray-400 w-6 h-6 flex items-center justify-center flex-shrink-0">
                   call
                 </span>
                 <div>
@@ -230,8 +235,8 @@ export default async function EventDetailPage({
             )}
 
             {event.playtime && (
-              <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-xl text-gray-400 mt-0.5">
+              <div className="flex items-center gap-3">
+                <span className="material-symbols-outlined text-xl text-gray-400 w-6 h-6 flex items-center justify-center flex-shrink-0">
                   schedule
                 </span>
                 <div>
@@ -294,17 +299,7 @@ export default async function EventDetailPage({
               </span>
               길찾기
             </a>
-            <a
-              href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(`${process.env.NEXT_PUBLIC_SITE_URL || ""}/events/${event.contentid}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-12 flex items-center justify-center border border-gray-200 dark:border-gray-700 rounded-button hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-              aria-label="공유"
-            >
-              <span className="material-symbols-outlined text-gray-600 dark:text-gray-400">
-                share
-              </span>
-            </a>
+            <ShareButton title={event.title} contentid={event.contentid} />
           </div>
         </div>
       </article>

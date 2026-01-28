@@ -36,14 +36,24 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           <div
             key={toast.id}
             className={`px-6 py-3 rounded-full shadow-lg text-sm font-medium animate-slide-up flex items-center gap-2 ${
-              toast.type === "success"
-                ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                : "bg-red-500 text-white"
+              toast.type === "error"
+                ? "bg-red-500 text-white"
+                : "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
             }`}
           >
             {toast.type === "success" && (
               <span className="material-symbols-outlined text-[18px]">
                 check_circle
+              </span>
+            )}
+            {toast.type === "error" && (
+              <span className="material-symbols-outlined text-[18px]">
+                error
+              </span>
+            )}
+            {toast.type === "info" && (
+              <span className="material-symbols-outlined text-[18px]">
+                info
               </span>
             )}
             {toast.message}

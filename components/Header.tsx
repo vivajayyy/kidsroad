@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import AuthButton from "./AuthButton";
 import type { User } from "@supabase/supabase-js";
 
@@ -17,6 +18,8 @@ const navLinks = [
 
 export default function Header({ user }: HeaderProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -29,6 +32,12 @@ export default function Header({ user }: HeaderProps) {
     }
   };
 
+  const isActive = (href: string) => {
+    if (href === "/") return pathname === "/" && searchParams.get("view") !== "map";
+    if (href === "/?view=map") return pathname === "/" && searchParams.get("view") === "map";
+    return pathname === href;
+  };
+
   return (
     <header className="fixed top-0 w-full z-50 bg-white/80 dark:bg-black/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
@@ -36,7 +45,7 @@ export default function Header({ user }: HeaderProps) {
         <div className="flex items-center gap-8">
           <Link href="/" aria-label="키즈로드 홈">
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">
-              키즈로드
+              키즈<span className="text-primary">로드</span>
             </h1>
           </Link>
 
@@ -44,15 +53,22 @@ export default function Header({ user }: HeaderProps) {
             className="hidden md:flex items-center gap-6"
             aria-label="메인 내비게이션"
           >
-            {navLinks.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="text-sm font-medium text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.label}
+                  href={link.href}
+                  className={`text-sm font-medium transition-colors ${
+                    active
+                      ? "text-gray-900 dark:text-white"
+                      : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
 
@@ -61,6 +77,13 @@ export default function Header({ user }: HeaderProps) {
           {/* 모바일: 검색 아이콘 */}
           <button
             className="md:hidden p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            onClick={() => {
+              const searchInput = document.querySelector('input[aria-label="행사 검색"]') as HTMLInputElement;
+              if (searchInput) {
+                searchInput.focus();
+                searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }
+            }}
             aria-label="검색"
           >
             <span className="material-symbols-outlined text-[20px] text-gray-700 dark:text-gray-300">

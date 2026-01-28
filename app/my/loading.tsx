@@ -5,15 +5,15 @@ export default function Loading() {
       <div className="flex items-center gap-4 p-6 bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800">
         <div className="w-14 h-14 rounded-full shimmer" />
         <div className="space-y-2">
-          <div className="h-6 w-32 shimmer rounded" />
-          <div className="h-4 w-48 shimmer rounded" />
+          <div className="h-5 w-40 shimmer rounded" />
+          <div className="h-4 w-56 shimmer rounded" />
         </div>
       </div>
 
       {/* 북마크 목록 스켈레톤 */}
       <div>
         <div className="h-7 w-36 shimmer rounded mb-6" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}

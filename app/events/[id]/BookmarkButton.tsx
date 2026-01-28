@@ -46,7 +46,7 @@ export default function BookmarkButton({ contentid }: BookmarkButtonProps) {
     <button
       onClick={handleToggle}
       disabled={isPending}
-      className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+      className="p-3 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:ring-2 focus-visible:ring-primary"
       aria-label={isBookmarked ? "북마크 해제" : "북마크 추가"}
     >
       <span

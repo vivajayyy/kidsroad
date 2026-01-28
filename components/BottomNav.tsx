@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 const tabs = [
   { href: "/", icon: "explore", label: "탐색" },
@@ -11,10 +11,11 @@ const tabs = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const isActive = (href: string) => {
-    if (href === "/") return pathname === "/" && !href.includes("view=map");
-    if (href === "/?view=map") return pathname === "/" && typeof window !== "undefined" && window.location.search.includes("view=map");
+    if (href === "/") return pathname === "/" && searchParams.get("view") !== "map";
+    if (href === "/?view=map") return pathname === "/" && searchParams.get("view") === "map";
     return pathname === href;
   };
 
@@ -37,7 +38,7 @@ export default function BottomNav() {
                 className={`material-symbols-outlined text-2xl transition-colors ${
                   active
                     ? "text-gray-900 dark:text-white"
-                    : "text-gray-400 dark:text-gray-600 group-hover:text-gray-900 dark:group-hover:text-white"
+                    : "text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
                 }`}
                 style={
                   active
@@ -51,7 +52,7 @@ export default function BottomNav() {
                 className={`text-xs transition-colors ${
                   active
                     ? "font-semibold text-gray-900 dark:text-white"
-                    : "font-medium text-gray-400 dark:text-gray-600 group-hover:text-gray-900 dark:group-hover:text-white"
+                    : "font-medium text-gray-400 dark:text-gray-500 group-hover:text-gray-900 dark:group-hover:text-white"
                 }`}
               >
                 {tab.label}

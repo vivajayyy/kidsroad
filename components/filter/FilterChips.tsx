@@ -59,42 +59,32 @@ export default function FilterChips({
   return (
     <div className="space-y-4">
       {/* 연령 필터 */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-          연령
-        </h3>
-        <div className="flex overflow-x-auto scrollbar-hide gap-2">
-          {AGE_OPTIONS.map((option) => (
-            <Chip
-              key={option.value}
-              label={option.label}
-              active={
-                option.value === ""
-                  ? isAllAge
-                  : selectedAges.includes(option.value)
-              }
-              onClick={() => handleAgeClick(option.value)}
-            />
-          ))}
-        </div>
+      <div className="flex overflow-x-auto scrollbar-hide gap-2">
+        {AGE_OPTIONS.map((option) => (
+          <Chip
+            key={option.value}
+            label={option.label}
+            active={
+              option.value === ""
+                ? isAllAge
+                : selectedAges.includes(option.value)
+            }
+            onClick={() => handleAgeClick(option.value)}
+          />
+        ))}
       </div>
 
       {/* 체크리스트 필터 */}
-      <div>
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">
-          편의시설
-        </h3>
-        <div className="flex overflow-x-auto scrollbar-hide gap-2">
-          {CHECKLIST_OPTIONS.map((option) => (
-            <Chip
-              key={option.value}
-              label={option.label}
-              icon={option.icon}
-              active={currentChecklist[option.value] || false}
-              onClick={() => handleChecklistClick(option.value)}
-            />
-          ))}
-        </div>
+      <div className="flex overflow-x-auto scrollbar-hide gap-2">
+        {CHECKLIST_OPTIONS.map((option) => (
+          <Chip
+            key={option.value}
+            label={option.label}
+            icon={option.icon}
+            active={currentChecklist[option.value] || false}
+            onClick={() => handleChecklistClick(option.value)}
+          />
+        ))}
       </div>
     </div>
   );

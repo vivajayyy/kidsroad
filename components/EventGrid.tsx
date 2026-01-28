@@ -38,7 +38,7 @@ export default function EventGrid({
         <div
           key={event.contentid}
           className="animate-fade-in"
-          style={{ animationDelay: `${index * 50}ms`, animationFillMode: "both" }}
+          style={{ animationDelay: `${Math.min(index * 50, 300)}ms`, animationFillMode: "both" }}
         >
           <EventCard
             event={event}

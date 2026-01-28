@@ -80,7 +80,7 @@ const FilterBar = forwardRef<HTMLDivElement, FilterBarProps>(
     }
 
     return (
-      <div className="mb-8 space-y-6" ref={ref}>
+      <div className="mb-6 space-y-5" ref={ref}>
         {/* 검색 Input (pill 스타일) */}
         <div className="relative">
           <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-[20px]">
@@ -108,7 +108,7 @@ const FilterBar = forwardRef<HTMLDivElement, FilterBarProps>(
           <div className="flex-1">
             <label
               htmlFor="category-select"
-              className="text-xs text-gray-500 mb-2 block"
+              className="text-xs font-medium text-gray-600 mb-2 block"
             >
               카테고리
             </label>
@@ -116,7 +116,7 @@ const FilterBar = forwardRef<HTMLDivElement, FilterBarProps>(
               id="category-select"
               value={currentCategory}
               onChange={(e) => onFilterChange("category", e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-button bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition text-sm"
+              className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition text-sm"
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat} value={cat === "전체" ? "" : cat}>
@@ -129,7 +129,7 @@ const FilterBar = forwardRef<HTMLDivElement, FilterBarProps>(
           <div className="flex-1">
             <label
               htmlFor="region-select"
-              className="text-xs text-gray-500 mb-2 block"
+              className="text-xs font-medium text-gray-600 mb-2 block"
             >
               지역
             </label>
@@ -137,7 +137,7 @@ const FilterBar = forwardRef<HTMLDivElement, FilterBarProps>(
               id="region-select"
               value={currentRegion}
               onChange={(e) => onFilterChange("region", e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-button bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition text-sm"
+              className="w-full px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-full bg-white dark:bg-gray-800 focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition text-sm"
             >
               {REGIONS.map((reg) => (
                 <option key={reg} value={reg === "전체" ? "" : reg}>

@@ -64,7 +64,7 @@ export default async function MyPage() {
 
       {/* 관심 행사 */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
           <span className="material-symbols-outlined text-primary">
             bookmark
           </span>
@@ -72,7 +72,7 @@ export default async function MyPage() {
         </h2>
 
         {events.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {events.map((event) => (
               <EventCard
                 key={event.id}
@@ -86,6 +86,7 @@ export default async function MyPage() {
             icon="bookmark_border"
             title="아직 저장한 행사가 없어요"
             description="마음에 드는 행사를 북마크하면 여기서 모아볼 수 있어요"
+            action={{ label: "행사 둘러보기", href: "/" }}
           />
         )}
       </div>

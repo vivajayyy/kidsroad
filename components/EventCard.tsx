@@ -101,6 +101,12 @@ export default function EventCard({
   return (
     <article
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
       className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden cursor-pointer transition-all card-hover focus-visible:ring-2 focus-visible:ring-primary"
       tabIndex={0}
       role="button"
@@ -129,7 +135,7 @@ export default function EventCard({
         <button
           onClick={handleToggle}
           disabled={isPending}
-          className="absolute top-3 right-3 p-1.5 bg-white/90 dark:bg-gray-900/90 rounded-full hover:bg-white dark:hover:bg-gray-900 transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+          className="absolute top-3 right-3 p-2.5 bg-white/90 dark:bg-gray-900/90 rounded-full hover:bg-white dark:hover:bg-gray-900 transition-colors focus-visible:ring-2 focus-visible:ring-primary"
           aria-label={isBookmarked ? "북마크 해제" : "북마크 추가"}
         >
           <span
@@ -159,14 +165,14 @@ export default function EventCard({
       </div>
 
       {/* 카드 콘텐츠 */}
-      <div className="p-6">
+      <div className="p-5">
         <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2 leading-tight">
           {event.title}
         </h3>
 
         <div className="space-y-1.5 mb-4">
           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <span className="material-symbols-outlined text-lg">
+            <span className="material-symbols-outlined text-lg leading-none">
               calendar_today
             </span>
             <span className="font-medium">
@@ -182,7 +188,7 @@ export default function EventCard({
           </div>
 
           <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-            <span className="material-symbols-outlined text-lg">
+            <span className="material-symbols-outlined text-lg leading-none">
               location_on
             </span>
             <span className="font-medium">

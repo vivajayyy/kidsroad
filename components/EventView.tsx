@@ -137,9 +137,9 @@ export default function EventView({ events }: { events: Event[] }) {
   return (
     <main className="px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
       {/* 히어로 */}
-      <section className="pt-8 pb-4 md:pt-12 md:pb-6">
+      <section className="pt-6 pb-2 md:pt-10 md:pb-4">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white mb-2 leading-tight">
-          이번 주말, 아이와 어디 갈까?
+          이번 주말, 아이와 <span className="text-primary">어디 갈까?</span>
         </h2>
         <p className="text-sm md:text-base text-gray-500 dark:text-gray-400 font-medium">
           우리 아이에게 딱 맞는 행사를 찾아보세요
@@ -168,7 +168,7 @@ export default function EventView({ events }: { events: Event[] }) {
       />
 
       {/* 뷰 모드 토글 */}
-      <div className="flex justify-end mb-6">
+      <div className="flex justify-end mb-4">
         <SegmentedControl
           options={VIEW_OPTIONS}
           value={viewMode}

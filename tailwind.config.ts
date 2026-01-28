@@ -84,6 +84,7 @@ export default {
         "card-hover": "0 8px 25px rgba(0, 0, 0, 0.1)",
         panel: "0 0 40px rgba(0, 0, 0, 0.08)",
         "bottom-nav": "0 -1px 3px rgba(0, 0, 0, 0.05)",
+        dropdown: "0 4px 24px rgba(0, 0, 0, 0.12)",
       },
       borderRadius: {
         card: "1rem",

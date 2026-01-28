@@ -35,7 +35,7 @@ export default async function RootLayout({
       >
         <ToastProvider>
           <Header user={user} />
-          <main className="pt-14 pb-20 md:pb-0">{children}</main>
+          <main className="pt-14 md:pt-16 pb-20 md:pb-0">{children}</main>
           <BottomNav />
         </ToastProvider>
         <Script

@@ -30,9 +30,8 @@ body {
 
 /* Focus-visible global style */
 :focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px #ff6b35;
-  border-radius: 4px;
+  outline: 2px solid #ff6b35;
+  outline-offset: 2px;
 }
 
 /* Reduced motion preference */

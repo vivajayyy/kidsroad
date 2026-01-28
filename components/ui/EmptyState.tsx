@@ -1,12 +1,15 @@
 "use client";
 
+import Link from "next/link";
+
 interface EmptyStateProps {
   icon: string;
   title: string;
   description: string;
   action?: {
     label: string;
-    onClick: () => void;
+    onClick?: () => void;
+    href?: string;
   };
   className?: string;
 }
@@ -33,13 +36,22 @@ export default function EmptyState({
         {description}
       </p>
       {action && (
-        <button
-          type="button"
-          onClick={action.onClick}
-          className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.97]"
-        >
-          {action.label}
-        </button>
+        action.href ? (
+          <Link
+            href={action.href}
+            className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.97] inline-block"
+          >
+            {action.label}
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={action.onClick}
+            className="px-5 py-2.5 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.97]"
+          >
+            {action.label}
+          </button>
+        )
       )}
     </div>
   );
