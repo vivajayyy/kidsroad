@@ -211,9 +211,10 @@ export default async function EventDetailPage({
                   <span className="text-xs text-gray-500 dark:text-gray-400 block mb-0.5">
                     요금
                   </span>
-                  <span className="font-medium text-gray-900 dark:text-white text-sm">
-                    {event.usetimefestival}
-                  </span>
+                  <span
+                    className="font-medium text-gray-900 dark:text-white text-sm"
+                    dangerouslySetInnerHTML={{ __html: event.usetimefestival }}
+                  />
                 </div>
               </div>
             )}
@@ -243,9 +244,10 @@ export default async function EventDetailPage({
                   <span className="text-xs text-gray-500 dark:text-gray-400 block mb-0.5">
                     이용 시간
                   </span>
-                  <span className="font-medium text-gray-900 dark:text-white text-sm">
-                    {event.playtime}
-                  </span>
+                  <span
+                    className="font-medium text-gray-900 dark:text-white text-sm"
+                    dangerouslySetInnerHTML={{ __html: event.playtime }}
+                  />
                 </div>
               </div>
             )}

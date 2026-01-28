@@ -135,14 +135,14 @@ export default function EventCard({
         <button
           onClick={handleToggle}
           disabled={isPending}
-          className="absolute top-3 right-3 p-2.5 bg-white/90 dark:bg-gray-900/90 rounded-full hover:bg-white dark:hover:bg-gray-900 transition-colors focus-visible:ring-2 focus-visible:ring-primary"
+          className="absolute top-3 right-3 p-1.5 bg-black/20 hover:bg-black/40 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-primary"
           aria-label={isBookmarked ? "북마크 해제" : "북마크 추가"}
         >
           <span
-            className={`material-symbols-outlined text-xl ${
+            className={`material-symbols-outlined text-[20px] ${
               isBookmarked
                 ? "text-primary"
-                : "text-gray-700 dark:text-gray-300"
+                : "text-white"
             }`}
             style={
               isBookmarked
