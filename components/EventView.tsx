@@ -256,6 +256,15 @@ export default function EventView({ events }: { events: Event[] }) {
             currentQuery={searchParams.get("q") || ""}
             currentCategory={searchParams.get("category") || ""}
             currentRegion={searchParams.get("region") || ""}
+            currentAge={searchParams.get("age") || ""}
+            currentChecklist={{
+              free: searchParams.get("free") === "true",
+              indoor: searchParams.get("indoor") === "true",
+              outdoor: searchParams.get("outdoor") === "true",
+              parking: searchParams.get("parking") === "true",
+              stroller: searchParams.get("stroller") === "true",
+              nursing: searchParams.get("nursing") === "true",
+            }}
             onFilterChange={handleFilterChange}
           />
           
