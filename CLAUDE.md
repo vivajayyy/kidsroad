@@ -81,6 +81,7 @@ The project follows an 8-week MVP roadmap:
 - **Types**: `feat`, `fix`, `refactor`, `style`, `docs`, `chore`, `test`
 - **Example**: `feat: 연령별 필터 기능 추가`
 - **Commit Granularity**: Group changes into meaningful atomic commits (의미 있는 기능 단위로 묶어서 커밋)
+- **Task 완료 시 자동 커밋**: Shrimp Task Manager 기준 task 하나가 완료될 때마다 반드시 커밋을 진행한다 (task 단위 = commit 단위)
 
 **AI Commit Proposal Process**:
 
