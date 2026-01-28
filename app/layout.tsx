@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "../components/Header";
+import BottomNav from "../components/BottomNav";
 import { createClient } from "@/lib/auth/server";
 import Script from "next/script";
 import { ToastProvider } from "@/components/ui/Toast";
@@ -28,7 +29,8 @@ export default async function RootLayout({
       >
         <ToastProvider>
           <Header user={user} />
-          <main className="pt-16">{children}</main>
+          <main className="pt-14 pb-20 md:pb-0">{children}</main>
+          <BottomNav />
         </ToastProvider>
         <Script
           strategy="afterInteractive"
