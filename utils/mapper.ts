@@ -71,8 +71,8 @@ export function mapTourApiToEvent(
     tel: commonDetail?.tel || festivalItem.tel || null,
     firstimage: commonDetail?.firstimage || festivalItem.firstimage || null, // Prefer commonDetail
     firstimage2: commonDetail?.firstimage2 || festivalItem.firstimage2 || null, // Prefer commonDetail
-    eventstartdate: eventStartDate,
-    eventenddate: eventEndDate,
+    eventstartdate: eventStartDate || '',
+    eventenddate: eventEndDate || '',
     eventplace: introFestival?.eventplace || null, // From introFestival
     playtime: introFestival?.playtime || null, // From introFestival
     usetimefestival: introFestival?.usetimefestival || null, // Only from introFestival
