@@ -183,6 +183,7 @@ export async function fetchEventsByKeyword(
 /**
  * 아이 친화적 행사만 검색
  * 여러 키워드로 검색 후 중복 제거하여 반환
+ * (날짜 필터링은 data-collection.ts에서 수행)
  * @param params 추가 파라미터
  * @returns 중복 제거된 아이 관련 축제 목록
  */

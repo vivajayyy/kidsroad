@@ -196,6 +196,23 @@ export async function collectAndSaveEvents() {
             };
           }
 
+          // 종료일이 오늘 이전인 행사는 스킵 (지난 행사 제외)
+          const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+          if (mappedEvent.eventenddate < todayStr) {
+            console.log(
+              `  ⏭️ 지난 행사 스킵: ${festivalItem.title} (종료: ${mappedEvent.eventenddate})`
+            );
+            return {
+              success: true,
+              wasEnriched: false,
+              wasSkippedNotKidFriendly: false,
+              wasSkippedNoDate: false,
+              wasSkippedPastEvent: true,
+              title: festivalItem.title,
+              decision_reason: '지난 행사'
+            };
+          }
+
           // Enrichment 수행 (블로그 날짜 필터 적용)
           let finalEvent: TablesInsert<'events'> = mappedEvent;
           let wasEnriched = false;
@@ -304,11 +321,13 @@ export async function collectAndSaveEvents() {
 
   // 결과 집계
   let skippedNoDate = 0;
+  let skippedPastEvent = 0;
   results.forEach((result) => {
     if (result.status === 'fulfilled') {
       const value = result.value as {
         wasSkippedNotKidFriendly?: boolean;
         wasSkippedNoDate?: boolean;
+        wasSkippedPastEvent?: boolean;
         wasEnriched?: boolean;
         title?: string;
         decision_reason?: string;
@@ -319,6 +338,9 @@ export async function collectAndSaveEvents() {
       } else if (value.wasSkippedNoDate) {
         skippedNoDate++;
         detailed_results.push(`스킵(날짜없음): ${value.title}`);
+      } else if (value.wasSkippedPastEvent) {
+        skippedPastEvent++;
+        detailed_results.push(`스킵(지난행사): ${value.title}`);
       } else {
         detailed_results.push(`처리: ${value.title} (${value.decision_reason})`);
         if (value.wasEnriched) {
@@ -334,7 +356,8 @@ export async function collectAndSaveEvents() {
   const processedCount = results.filter(
     (r) => r.status === 'fulfilled' &&
       !(r.value as any).wasSkippedNotKidFriendly &&
-      !(r.value as any).wasSkippedNoDate
+      !(r.value as any).wasSkippedNoDate &&
+      !(r.value as any).wasSkippedPastEvent
   ).length;
 
   const durationMs = Date.now() - startTime;
@@ -343,6 +366,7 @@ export async function collectAndSaveEvents() {
   console.log(`\n--- 완료 ---`);
   console.log(`📊 최종 통계:`);
   console.log(`  - 키워드 검색 결과: ${keywordSearchResults.length}개`);
+  console.log(`  - 지난 행사 스킵: ${skippedPastEvent}개`);
   console.log(`  - AI 판단 부적합: ${skippedNotKidFriendly}개`);
   console.log(`  - 날짜 정보 없음: ${skippedNoDate}개`);
   console.log(`  - 처리 완료 (DB 저장): ${processedCount}개`);
