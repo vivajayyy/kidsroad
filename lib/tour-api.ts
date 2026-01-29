@@ -142,3 +142,91 @@ export async function fetchDetailImages(
     imageYN: "Y",
   });
 }
+
+/**
+ * 아이 관련 행사 검색을 위한 키워드 목록
+ */
+const KID_FRIENDLY_KEYWORDS = [
+  "어린이",
+  "키즈",
+  "가족",
+  "유아",
+  "아이",
+  "체험",
+  "놀이",
+  "동화",
+] as const;
+
+/**
+ * 키워드로 축제/행사 검색
+ * @param keyword 검색 키워드
+ * @param params 추가 파라미터 (pageNo, numOfRows, areaCode)
+ * @returns 검색된 축제 목록
+ */
+export async function fetchEventsByKeyword(
+  keyword: string,
+  params?: {
+    pageNo?: number;
+    numOfRows?: number;
+    areaCode?: string;
+  }
+): Promise<FestivalItem[]> {
+  return fetchTourApi<FestivalItem>("searchKeyword2", {
+    keyword: encodeURIComponent(keyword),
+    contentTypeId: "15", // 축제/행사
+    numOfRows: params?.numOfRows || 50,
+    pageNo: params?.pageNo || 1,
+    ...(params?.areaCode && { areaCode: params.areaCode }),
+  });
+}
+
+/**
+ * 아이 친화적 행사만 검색
+ * 여러 키워드로 검색 후 중복 제거하여 반환
+ * @param params 추가 파라미터
+ * @returns 중복 제거된 아이 관련 축제 목록
+ */
+export async function fetchKidFriendlyEvents(params?: {
+  numOfRows?: number;
+  areaCode?: string;
+}): Promise<FestivalItem[]> {
+  console.log(
+    `🔍 아이 친화적 행사 검색 시작 (키워드: ${KID_FRIENDLY_KEYWORDS.join(", ")})`
+  );
+
+  const allResults: FestivalItem[] = [];
+  const seenContentIds = new Set<string>();
+
+  // 각 키워드로 병렬 검색
+  const searchPromises = KID_FRIENDLY_KEYWORDS.map(async (keyword) => {
+    try {
+      const results = await fetchEventsByKeyword(keyword, {
+        numOfRows: params?.numOfRows || 30,
+        areaCode: params?.areaCode,
+      });
+      console.log(`  - "${keyword}" 검색 결과: ${results.length}개`);
+      return results;
+    } catch (error) {
+      console.error(`  - "${keyword}" 검색 실패:`, error);
+      return [];
+    }
+  });
+
+  const resultsPerKeyword = await Promise.all(searchPromises);
+
+  // 결과 병합 및 중복 제거
+  for (const results of resultsPerKeyword) {
+    for (const item of results) {
+      if (!seenContentIds.has(item.contentid)) {
+        seenContentIds.add(item.contentid);
+        allResults.push(item);
+      }
+    }
+  }
+
+  console.log(
+    `✅ 총 ${allResults.length}개 행사 수집 (중복 제거 후)`
+  );
+
+  return allResults;
+}

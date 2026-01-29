@@ -56,6 +56,7 @@ ${combinedContent}
 다음 정보를 추출하여 **반드시 유효한 JSON 형식으로만** 응답하세요:
 
 {
+  "is_kid_friendly": true/false/null,
   "has_parking": true/false/null,
   "has_stroller_access": true/false/null,
   "has_nursing_room": true/false/null,
@@ -67,11 +68,18 @@ ${combinedContent}
 }
 
 **규칙:**
+- is_kid_friendly: **[최우선 판단]** 이 행사가 아이와 함께 참여하기에 적합한지 판단
+  - true: 아이 동반 가능, 가족 친화적 내용, 어린이 대상 프로그램
+  - false: 성인 전용, 신체적으로 어린이에게 부적합, 위험한 활동
+  - null: 판단 불가 (정보 부족)
+  - **중요**: 마라톤, 철인3종, 등산, 트레킹 등 신체적 요구사항이 높은 활동은 반드시 false
+  - **중요**: 와인, 맥주, 주류 관련 행사는 반드시 false
+  - **중요**: 성인 전용, 19금 콘텐츠는 반드시 false
 - has_parking: 주차 가능 여부. 주차장 언급이 있으면 true, 주차 어려움 언급이 있으면 false, 언급 없으면 null
 - has_stroller_access: **유모차 대여 가능 여부** (최우선). "유모차 대여", "유모차 렌탈" 언급이 있으면 true. 대여 언급이 없어도 "유모차 OK", "유모차 사용 가능", "베리어프리" 등 긍정적 접근성 언급이 있으면 true. "유모차 불편", "계단 많음", "경사 심함" 등이 있으면 false
 - has_nursing_room: 수유실 유무. 명시적으로 언급된 경우만 true
 - has_diaper_station: 기저귀 교환대. 명시적으로 언급된 경우만 true
-- age_ranges: 적합한 연령대 배열 (복수 선택 가능). 블로그에서 언급된 어린이 나이나 "아기", "유아", "초등학생" 등을 기반으로 판단
+- age_ranges: 적합한 연령대 배열 (복수 선택 가능). 블로그에서 언급된 어린이 나이나 "아기", "유아", "초등학생" 등을 기반으로 판단. is_kid_friendly가 false면 빈 배열 [] 반환
 - is_indoor: 실내 시설이면 true, 야외면 false, 혼합이거나 불명확하면 null
 - is_outdoor: 야외 시설이면 true, 실내면 false, 혼합이거나 불명확하면 null
 - confidence_score: 분석 신뢰도 (0.0-1.0). 블로그가 많고 정보가 일치할수록 높게, 정보가 부족하거나 상충되면 낮게

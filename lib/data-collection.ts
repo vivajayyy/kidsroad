@@ -6,7 +6,7 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database, Tables, TablesInsert } from '../types/supabase';
 import {
-  fetchFestivalItems,
+  fetchKidFriendlyEvents,
   fetchDetailCommon,
   fetchDetailIntroFestival,
   fetchDetailImages,
@@ -16,6 +16,7 @@ import { enrichEventData } from './data-enrichment';
 import { generateTags } from './tag-generator';
 import { shouldReEnrich, EventStatus } from './enrichment-policy';
 import { sendTelegramNotification } from './telegram-notifier';
+import { isExcludedEvent } from './kid-friendly-filter';
 import pLimit from 'p-limit';
 
 /**
@@ -37,30 +38,49 @@ export async function collectAndSaveEvents() {
     auth: { persistSession: false },
   });
 
-  console.log('--- Starting Intelligent Event Collection ---');
+  console.log('--- Starting Intelligent Event Collection (Kid-Friendly Mode) ---');
 
-  // Step 1: TourAPI에서 이벤트 가져오기
+  // Step 1: TourAPI에서 아이 관련 키워드로 이벤트 검색
   const today = new Date();
-  const eventStartDate = `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`;
 
-  console.log(`Fetching festival items starting from ${eventStartDate}...`);
-  const rawFestivalItems = await fetchFestivalItems({
-    eventStartDate,
-    numOfRows: 100,
-    pageNo: 1,
+  console.log(`🔍 아이 친화적 행사 키워드 검색 시작...`);
+  const keywordSearchResults = await fetchKidFriendlyEvents({
+    numOfRows: 50,
   });
 
-  if (rawFestivalItems.length === 0) {
-    console.log('No new festival items found from TourAPI.');
+  if (keywordSearchResults.length === 0) {
+    console.log('No kid-friendly events found from TourAPI keyword search.');
     return {
       success: true,
-      message: 'No new festival items found.',
+      message: 'No kid-friendly events found.',
       processedCount: 0,
       totalItems: 0,
     };
   }
 
-  console.log(`Found ${rawFestivalItems.length} festival items.`);
+  console.log(`📋 키워드 검색 결과: ${keywordSearchResults.length}개`);
+
+  // Step 1.5: 제외 키워드 필터링 (마라톤, 성인, 주류 등)
+  const rawFestivalItems = keywordSearchResults.filter((item) => {
+    const excluded = isExcludedEvent(item.title);
+    if (excluded) {
+      console.log(`  ❌ 제외: ${item.title} (제외 키워드 포함)`);
+    }
+    return !excluded;
+  });
+
+  const excludedCount = keywordSearchResults.length - rawFestivalItems.length;
+  console.log(`🚫 제외 필터링: ${excludedCount}개 제외, ${rawFestivalItems.length}개 통과`);
+
+  if (rawFestivalItems.length === 0) {
+    console.log('All events were filtered out by exclude keywords.');
+    return {
+      success: true,
+      message: 'All events filtered out.',
+      processedCount: 0,
+      totalItems: keywordSearchResults.length,
+    };
+  }
 
   // Step 2: DB에서 기존 이벤트 조회 (enrichment 상태 포함)
   const contentIds = rawFestivalItems.map((item) => item.contentid);
@@ -153,6 +173,7 @@ export async function collectAndSaveEvents() {
   // Step 5: 신규 + 재분석 대상 이벤트 - 전체 프로세스 수행
   const toEnrich = [...newEvents, ...toReEnrich];
   let enrichedCount = 0;
+  let skippedNotKidFriendly = 0;
   const errors: string[] = [];
 
   console.log(`\n[Processing] 신규/재분석 대상 처리 중...`);
@@ -199,6 +220,21 @@ export async function collectAndSaveEvents() {
             );
 
             if (metadata) {
+              // AI 분석 결과에서 is_kid_friendly 확인 (TablesInsert 타입에 추가 필드 가능)
+              const enrichedWithAiResult = enrichedEvent as TablesInsert<'events'> & { is_kid_friendly?: boolean | null };
+              if (enrichedWithAiResult.is_kid_friendly === false) {
+                console.log(
+                  `  ⏭️ 아이 부적합 행사 스킵: ${mappedEvent.title} (AI 판단: is_kid_friendly=false)`
+                );
+                return {
+                  success: true,
+                  wasEnriched: false,
+                  wasSkippedNotKidFriendly: true,
+                  title: festivalItem.title,
+                  decision_reason: 'AI 판단: 아이 부적합'
+                };
+              }
+
               finalEvent = {
                 ...enrichedEvent,
                 last_enriched_at: new Date().toISOString(),
@@ -249,9 +285,15 @@ export async function collectAndSaveEvents() {
 
           if (error) throw error;
 
-          return { success: true, wasEnriched, title: festivalItem.title, decision_reason: decision.reason };
-        } catch (e: any) {
-          const errorMessage = `Error processing event ${festivalItem.title}: ${e.message}`;
+          return {
+            success: true,
+            wasEnriched,
+            wasSkippedNotKidFriendly: false,
+            title: festivalItem.title,
+            decision_reason: decision.reason
+          };
+        } catch (e) {
+          const errorMessage = `Error processing event ${festivalItem.title}: ${e instanceof Error ? e.message : String(e)}`;
           console.error(`  ⚠️ ${errorMessage}`);
           throw new Error(errorMessage);
         }
@@ -262,9 +304,14 @@ export async function collectAndSaveEvents() {
   // 결과 집계
   results.forEach((result) => {
     if (result.status === 'fulfilled') {
-      detailed_results.push(`처리: ${result.value.title} (${result.value.decision_reason})`);
-      if (result.value.wasEnriched) {
-        enrichedCount++;
+      if (result.value.wasSkippedNotKidFriendly) {
+        skippedNotKidFriendly++;
+        detailed_results.push(`스킵(부적합): ${result.value.title}`);
+      } else {
+        detailed_results.push(`처리: ${result.value.title} (${result.value.decision_reason})`);
+        if (result.value.wasEnriched) {
+          enrichedCount++;
+        }
       }
     } else {
       errors.push(result.reason.message);
@@ -272,19 +319,25 @@ export async function collectAndSaveEvents() {
     }
   });
 
-  const processedCount = results.filter((r) => r.status === 'fulfilled').length;
+  const processedCount = results.filter(
+    (r) => r.status === 'fulfilled' && !r.value.wasSkippedNotKidFriendly
+  ).length;
 
   const durationMs = Date.now() - startTime;
-  const costSavingPercent = ((toSkip.length / rawFestivalItems.length) * 100).toFixed(1);
+  const totalFiltered = excludedCount + skippedNotKidFriendly;
+  const filteringPercent = ((totalFiltered / keywordSearchResults.length) * 100).toFixed(1);
 
   console.log(`\n--- 완료 ---`);
   console.log(`📊 최종 통계:`);
-  console.log(`  - 처리 완료: ${processedCount}/${toEnrich.length}`);
-  console.log(`  - Enrichment 수행: ${enrichedCount}`);
-  console.log(`  - 스킵: ${toSkip.length}`);
-  console.log(`  - 오류: ${errors.length}`);
+  console.log(`  - 키워드 검색 결과: ${keywordSearchResults.length}개`);
+  console.log(`  - 제외 필터 (키워드): ${excludedCount}개`);
+  console.log(`  - 제외 필터 (AI 판단): ${skippedNotKidFriendly}개`);
+  console.log(`  - 처리 완료 (DB 저장): ${processedCount}개`);
+  console.log(`  - Enrichment 수행: ${enrichedCount}개`);
+  console.log(`  - 기존 이벤트 스킵: ${toSkip.length}개`);
+  console.log(`  - 오류: ${errors.length}개`);
   console.log(
-    `💰 비용 절감: ${costSavingPercent}% (${toSkip.length}/${rawFestivalItems.length} AI 호출 스킵)`
+    `🎯 필터링 효과: ${filteringPercent}% 부적합 행사 제거 (${totalFiltered}/${keywordSearchResults.length})`
   );
   console.log(`⏱️ 실행 시간: ${(durationMs / 1000).toFixed(1)}초`);
 
@@ -295,17 +348,20 @@ export async function collectAndSaveEvents() {
       executed_at: new Date().toISOString(),
       duration_ms: durationMs,
       success: errors.length === 0,
-      message: `Processed ${processedCount}, Enriched ${enrichedCount}, Skipped ${toSkip.length}`,
-      total_items: rawFestivalItems.length,
+      message: `Saved ${processedCount}, Excluded ${totalFiltered} (keyword: ${excludedCount}, AI: ${skippedNotKidFriendly})`,
+      total_items: keywordSearchResults.length,
       processed_count: processedCount,
       enriched_count: enrichedCount,
       skipped_count: toSkip.length,
       error_count: errors.length,
       errors: errors.length > 0 ? errors : null,
       metadata: {
+        keyword_search_results: keywordSearchResults.length,
+        excluded_by_keyword: excludedCount,
+        excluded_by_ai: skippedNotKidFriendly,
         new_events: newEvents.length,
         re_enriched: toReEnrich.length,
-        cost_saving_percent: parseFloat(costSavingPercent),
+        filtering_percent: parseFloat(filteringPercent),
       },
     });
     console.log('✅ 실행 로그 저장 완료');
@@ -318,11 +374,11 @@ export async function collectAndSaveEvents() {
   try {
     await sendTelegramNotification({
       success: errors.length === 0,
-      message: `Processed ${processedCount}, Enriched ${enrichedCount}, Skipped ${toSkip.length}`,
-      totalItems: rawFestivalItems.length,
+      message: `Saved ${processedCount}, Excluded ${totalFiltered} (keyword: ${excludedCount}, AI: ${skippedNotKidFriendly})`,
+      totalItems: keywordSearchResults.length,
       processedCount,
       enrichedCount,
-      skippedCount: toSkip.length,
+      skippedCount: toSkip.length + skippedNotKidFriendly,
       errors,
       durationMs,
       detailed_results,
@@ -334,11 +390,13 @@ export async function collectAndSaveEvents() {
 
   return {
     success: errors.length === 0,
-    message: `Processed ${processedCount}, Enriched ${enrichedCount}, Skipped ${toSkip.length}`,
+    message: `Saved ${processedCount}, Excluded ${totalFiltered} (keyword: ${excludedCount}, AI: ${skippedNotKidFriendly})`,
     processedCount,
     enrichedCount,
     skippedCount: toSkip.length,
-    totalItems: rawFestivalItems.length,
+    skippedNotKidFriendly,
+    excludedByKeyword: excludedCount,
+    totalItems: keywordSearchResults.length,
     errors,
   };
 }

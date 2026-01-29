@@ -11,6 +11,7 @@ export interface EnrichmentResult {
   is_indoor: boolean | null;
   is_outdoor: boolean | null;
   confidence_score: number; // 0-1
+  is_kid_friendly: boolean | null; // AI가 판단한 아이 동반 적합 여부
   source_blog_count: number;
   analyzed_at: string;
 }
