@@ -181,6 +181,21 @@ export async function collectAndSaveEvents() {
             images
           );
 
+          // 날짜가 없는 이벤트는 스킵 (DB에서 not-null 제약)
+          if (!mappedEvent.eventstartdate || !mappedEvent.eventenddate) {
+            console.log(
+              `  ⏭️ 날짜 정보 없음 스킵: ${festivalItem.title}`
+            );
+            return {
+              success: true,
+              wasEnriched: false,
+              wasSkippedNotKidFriendly: false,
+              wasSkippedNoDate: true,
+              title: festivalItem.title,
+              decision_reason: '날짜 정보 없음'
+            };
+          }
+
           // Enrichment 수행 (블로그 날짜 필터 적용)
           let finalEvent: TablesInsert<'events'> = mappedEvent;
           let wasEnriched = false;
@@ -259,12 +274,17 @@ export async function collectAndSaveEvents() {
 
           finalEvent = { ...finalEvent, tags };
 
+          // DB 저장 전 is_kid_friendly 필드 제거 (DB 스키마에 없음)
+          const { is_kid_friendly: _, ...eventToSave } = finalEvent as TablesInsert<'events'> & { is_kid_friendly?: boolean | null };
+
           // DB 저장
           const { error } = await supabase
             .from('events')
-            .upsert(finalEvent, { onConflict: 'contentid' });
+            .upsert(eventToSave, { onConflict: 'contentid' });
 
-          if (error) throw error;
+          if (error) {
+            throw new Error(`DB 저장 실패: ${error.message || JSON.stringify(error)}`);
+          }
 
           return {
             success: true,
@@ -283,14 +303,25 @@ export async function collectAndSaveEvents() {
   );
 
   // 결과 집계
+  let skippedNoDate = 0;
   results.forEach((result) => {
     if (result.status === 'fulfilled') {
-      if (result.value.wasSkippedNotKidFriendly) {
+      const value = result.value as {
+        wasSkippedNotKidFriendly?: boolean;
+        wasSkippedNoDate?: boolean;
+        wasEnriched?: boolean;
+        title?: string;
+        decision_reason?: string;
+      };
+      if (value.wasSkippedNotKidFriendly) {
         skippedNotKidFriendly++;
-        detailed_results.push(`스킵(부적합): ${result.value.title}`);
+        detailed_results.push(`스킵(부적합): ${value.title}`);
+      } else if (value.wasSkippedNoDate) {
+        skippedNoDate++;
+        detailed_results.push(`스킵(날짜없음): ${value.title}`);
       } else {
-        detailed_results.push(`처리: ${result.value.title} (${result.value.decision_reason})`);
-        if (result.value.wasEnriched) {
+        detailed_results.push(`처리: ${value.title} (${value.decision_reason})`);
+        if (value.wasEnriched) {
           enrichedCount++;
         }
       }
@@ -301,7 +332,9 @@ export async function collectAndSaveEvents() {
   });
 
   const processedCount = results.filter(
-    (r) => r.status === 'fulfilled' && !r.value.wasSkippedNotKidFriendly
+    (r) => r.status === 'fulfilled' &&
+      !(r.value as any).wasSkippedNotKidFriendly &&
+      !(r.value as any).wasSkippedNoDate
   ).length;
 
   const durationMs = Date.now() - startTime;
@@ -311,6 +344,7 @@ export async function collectAndSaveEvents() {
   console.log(`📊 최종 통계:`);
   console.log(`  - 키워드 검색 결과: ${keywordSearchResults.length}개`);
   console.log(`  - AI 판단 부적합: ${skippedNotKidFriendly}개`);
+  console.log(`  - 날짜 정보 없음: ${skippedNoDate}개`);
   console.log(`  - 처리 완료 (DB 저장): ${processedCount}개`);
   console.log(`  - Enrichment 수행: ${enrichedCount}개`);
   console.log(`  - 기존 이벤트 스킵: ${toSkip.length}개`);

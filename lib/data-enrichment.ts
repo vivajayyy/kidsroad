@@ -209,7 +209,7 @@ export async function enrichEventData(
 
     // Step 5: Merge AI results with TourAPI data
     // Prefer AI results over TourAPI inferences when AI result is non-null
-    const enrichedEvent: TablesInsert<'events'> = {
+    const enrichedEvent: TablesInsert<'events'> & { is_kid_friendly?: boolean | null } = {
       ...event,
       // Parent checklist fields - prefer AI results
       has_parking: aiResult.has_parking ?? event.has_parking,
@@ -227,6 +227,9 @@ export async function enrichEventData(
       // Indoor/outdoor - prefer AI detection
       is_indoor: aiResult.is_indoor ?? event.is_indoor,
       is_outdoor: aiResult.is_outdoor ?? event.is_outdoor,
+
+      // AI 판단 아이 적합성 (DB 저장 전 필터링용)
+      is_kid_friendly: aiResult.is_kid_friendly,
     };
 
     const metadata: EnrichmentMetadata = {

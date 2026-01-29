@@ -172,7 +172,7 @@ export async function fetchEventsByKeyword(
   }
 ): Promise<FestivalItem[]> {
   return fetchTourApi<FestivalItem>("searchKeyword2", {
-    keyword: encodeURIComponent(keyword),
+    keyword, // URLSearchParams가 자동으로 인코딩하므로 그대로 전달
     contentTypeId: "15", // 축제/행사
     numOfRows: params?.numOfRows || 50,
     pageNo: params?.pageNo || 1,

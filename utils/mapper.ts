@@ -23,8 +23,14 @@ export function mapTourApiToEvent(
   images: TourImageItem[]
 ): TablesInsert<"events"> {
   // --- Data Extraction and Type Conversion ---
-  const eventStartDate = formatDate(festivalItem.eventstartdate);
-  const eventEndDate = formatDate(festivalItem.eventenddate);
+  // Note: searchKeyword2 does not return eventstartdate/eventenddate,
+  // so we need to get them from introFestival (detailIntro2) as fallback
+  const eventStartDate = formatDate(
+    festivalItem.eventstartdate || introFestival?.eventstartdate || ''
+  );
+  const eventEndDate = formatDate(
+    festivalItem.eventenddate || introFestival?.eventenddate || ''
+  );
   // Note: TourAPI mapx/mapy can be in FestivalItem or commonDetail. Prioritize commonDetail as it might be more accurate.
   const mapx = commonDetail?.mapx
     ? parseFloat(commonDetail.mapx)
@@ -99,9 +105,10 @@ export function mapTourApiToEvent(
 
 /**
  * Formats TourAPI date string (YYYYMMDD) to YYYY-MM-DD.
+ * Returns null if the date string is invalid.
  */
-function formatDate(dateString: string): string {
-  if (!dateString || dateString.length !== 8) return dateString; // Return as is if invalid
+function formatDate(dateString: string | undefined): string | null {
+  if (!dateString || dateString.length !== 8) return null;
   return `${dateString.substring(0, 4)}-${dateString.substring(4, 6)}-${dateString.substring(6, 8)}`;
 }
 

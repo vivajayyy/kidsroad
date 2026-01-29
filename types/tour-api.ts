@@ -43,11 +43,12 @@ export interface BaseTourItem {
 }
 
 /**
- * Festival Item (from searchFestival1)
+ * Festival Item (from searchFestival1 or searchKeyword2)
+ * Note: searchKeyword2 does not return eventstartdate/eventenddate
  */
 export interface FestivalItem extends BaseTourItem {
-  eventstartdate: string;
-  eventenddate: string;
+  eventstartdate?: string;
+  eventenddate?: string;
 }
 
 /**
