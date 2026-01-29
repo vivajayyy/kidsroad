@@ -16,7 +16,6 @@ import { enrichEventData } from './data-enrichment';
 import { generateTags } from './tag-generator';
 import { shouldReEnrich, EventStatus } from './enrichment-policy';
 import { sendTelegramNotification } from './telegram-notifier';
-import { isExcludedEvent } from './kid-friendly-filter';
 import pLimit from 'p-limit';
 
 /**
@@ -59,28 +58,10 @@ export async function collectAndSaveEvents() {
   }
 
   console.log(`📋 키워드 검색 결과: ${keywordSearchResults.length}개`);
+  console.log(`💡 AI가 is_kid_friendly 판단 예정 (제외 키워드 필터 없음)`);
 
-  // Step 1.5: 제외 키워드 필터링 (마라톤, 성인, 주류 등)
-  const rawFestivalItems = keywordSearchResults.filter((item) => {
-    const excluded = isExcludedEvent(item.title);
-    if (excluded) {
-      console.log(`  ❌ 제외: ${item.title} (제외 키워드 포함)`);
-    }
-    return !excluded;
-  });
-
-  const excludedCount = keywordSearchResults.length - rawFestivalItems.length;
-  console.log(`🚫 제외 필터링: ${excludedCount}개 제외, ${rawFestivalItems.length}개 통과`);
-
-  if (rawFestivalItems.length === 0) {
-    console.log('All events were filtered out by exclude keywords.');
-    return {
-      success: true,
-      message: 'All events filtered out.',
-      processedCount: 0,
-      totalItems: keywordSearchResults.length,
-    };
-  }
+  // 키워드 검색 결과를 그대로 사용 (AI가 is_kid_friendly 판단)
+  const rawFestivalItems = keywordSearchResults;
 
   // Step 2: DB에서 기존 이벤트 조회 (enrichment 상태 포함)
   const contentIds = rawFestivalItems.map((item) => item.contentid);
@@ -324,21 +305,21 @@ export async function collectAndSaveEvents() {
   ).length;
 
   const durationMs = Date.now() - startTime;
-  const totalFiltered = excludedCount + skippedNotKidFriendly;
-  const filteringPercent = ((totalFiltered / keywordSearchResults.length) * 100).toFixed(1);
+  const aiFilterPercent = ((skippedNotKidFriendly / toEnrich.length) * 100).toFixed(1);
 
   console.log(`\n--- 완료 ---`);
   console.log(`📊 최종 통계:`);
   console.log(`  - 키워드 검색 결과: ${keywordSearchResults.length}개`);
-  console.log(`  - 제외 필터 (키워드): ${excludedCount}개`);
-  console.log(`  - 제외 필터 (AI 판단): ${skippedNotKidFriendly}개`);
+  console.log(`  - AI 판단 부적합: ${skippedNotKidFriendly}개`);
   console.log(`  - 처리 완료 (DB 저장): ${processedCount}개`);
   console.log(`  - Enrichment 수행: ${enrichedCount}개`);
   console.log(`  - 기존 이벤트 스킵: ${toSkip.length}개`);
   console.log(`  - 오류: ${errors.length}개`);
-  console.log(
-    `🎯 필터링 효과: ${filteringPercent}% 부적합 행사 제거 (${totalFiltered}/${keywordSearchResults.length})`
-  );
+  if (toEnrich.length > 0) {
+    console.log(
+      `🤖 AI 필터링: ${aiFilterPercent}% 부적합 판정 (${skippedNotKidFriendly}/${toEnrich.length})`
+    );
+  }
   console.log(`⏱️ 실행 시간: ${(durationMs / 1000).toFixed(1)}초`);
 
   // Step 6: 실행 결과를 DB에 저장
@@ -348,7 +329,7 @@ export async function collectAndSaveEvents() {
       executed_at: new Date().toISOString(),
       duration_ms: durationMs,
       success: errors.length === 0,
-      message: `Saved ${processedCount}, Excluded ${totalFiltered} (keyword: ${excludedCount}, AI: ${skippedNotKidFriendly})`,
+      message: `Saved ${processedCount}, AI filtered ${skippedNotKidFriendly}`,
       total_items: keywordSearchResults.length,
       processed_count: processedCount,
       enriched_count: enrichedCount,
@@ -357,11 +338,10 @@ export async function collectAndSaveEvents() {
       errors: errors.length > 0 ? errors : null,
       metadata: {
         keyword_search_results: keywordSearchResults.length,
-        excluded_by_keyword: excludedCount,
         excluded_by_ai: skippedNotKidFriendly,
         new_events: newEvents.length,
         re_enriched: toReEnrich.length,
-        filtering_percent: parseFloat(filteringPercent),
+        ai_filter_percent: toEnrich.length > 0 ? parseFloat(aiFilterPercent) : 0,
       },
     });
     console.log('✅ 실행 로그 저장 완료');
@@ -374,7 +354,7 @@ export async function collectAndSaveEvents() {
   try {
     await sendTelegramNotification({
       success: errors.length === 0,
-      message: `Saved ${processedCount}, Excluded ${totalFiltered} (keyword: ${excludedCount}, AI: ${skippedNotKidFriendly})`,
+      message: `Saved ${processedCount}, AI filtered ${skippedNotKidFriendly}`,
       totalItems: keywordSearchResults.length,
       processedCount,
       enrichedCount,
@@ -390,12 +370,11 @@ export async function collectAndSaveEvents() {
 
   return {
     success: errors.length === 0,
-    message: `Saved ${processedCount}, Excluded ${totalFiltered} (keyword: ${excludedCount}, AI: ${skippedNotKidFriendly})`,
+    message: `Saved ${processedCount}, AI filtered ${skippedNotKidFriendly}`,
     processedCount,
     enrichedCount,
     skippedCount: toSkip.length,
     skippedNotKidFriendly,
-    excludedByKeyword: excludedCount,
     totalItems: keywordSearchResults.length,
     errors,
   };
