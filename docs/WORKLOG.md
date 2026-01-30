@@ -5,6 +5,38 @@
 
 ---
 
+## 2026-01-20 (월)
+
+### 🎉 Week 6 완료: 지도 연동 및 북마크 기능
+
+- **분류**: `Feature` / `Milestone`
+- **작업 내용**:
+  - **6주차 목표 100% 달성**: 북마크 기능, 마이페이지, 지도 통합, UX 개선 모두 완료
+  - **문서 정리**:
+    - `docs/archive/Week6_Completed.md` 생성 (완료 보고서)
+    - `docs/TODO.md` 체크박스 업데이트 및 상태 변경 (완료 ✅)
+    - `docs/ROADMAP.md` Week 6 상태 업데이트
+    - `docs/WORKLOG.md` 완료 로그 추가
+  - **주요 성과**:
+    - 북마크 기능: Server Actions + 낙관적 업데이트 + Toast 알림
+    - 마이페이지: 프로필 + 북마크 목록 + 빈 상태 UI
+    - 지도 통합: Naver Maps API v3 + 마커 렌더링 + 영역 필터링
+    - UX 개선: 로딩 스켈레톤 + 반응형 + 토스트 알림 시스템
+  - **기술 검증**:
+    - ✅ TypeScript 타입 안전성 확보
+    - ✅ Server Components 우선 사용
+    - ✅ 컴포넌트 재사용성 (EventCard)
+    - ✅ 에러 처리 및 폴백 UI
+    - ✅ 모바일 반응형 최적화
+- **다음 단계**: Week 7 - QA 및 안정화
+- **관련 파일**:
+  - `docs/archive/Week6_Completed.md`
+  - `docs/TODO.md`
+  - `docs/ROADMAP.md`
+  - `docs/WORKLOG.md`
+
+---
+
 ## 2026-01-19 (월)
 
 ### 👤 마이페이지 및 북마크 UI 구현

@@ -3,6 +3,7 @@
 interface ChipProps {
   label: string;
   icon?: string;
+  textIcon?: string;
   active?: boolean;
   onClick?: () => void;
   className?: string;
@@ -11,6 +12,7 @@ interface ChipProps {
 export default function Chip({
   label,
   icon,
+  textIcon,
   active = false,
   onClick,
   className = "",
@@ -26,8 +28,18 @@ export default function Chip({
           : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
       } ${className}`}
     >
-      {icon && (
-        <span className="material-symbols-outlined text-lg">{icon}</span>
+      {textIcon && (
+        <span className="text-[11px] font-black tracking-tight leading-none">
+          {textIcon}
+        </span>
+      )}
+      {icon && !textIcon && (
+        <span
+          className="material-symbols-outlined text-lg"
+          style={active ? { fontVariationSettings: "'FILL' 1, 'wght' 500" } : undefined}
+        >
+          {icon}
+        </span>
       )}
       {label}
     </button>

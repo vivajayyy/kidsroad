@@ -56,9 +56,12 @@ export function mapTourApiToEvent(
     commonDetail?.addr1 || ""
   );
 
-  // The has_parking and has_stroller_access fields are not available on FestivalIntroItem.
-  // They are on CultureIntroItem. For festivals, this data must be inferred later.
-  // Set to null (unknown) for now.
+  // overview(상세설명)에서 시설 정보 추론
+  const overviewText = commonDetail?.overview || "";
+  const hasParking = inferHasParking(overviewText);
+  const hasStrollerAccess = inferHasStrollerAccess(overviewText);
+  const hasNursingRoom = inferHasNursingRoom(overviewText);
+  const hasDiaperStation = inferHasDiaperStation(overviewText);
 
   // --- Assemble the Supabase Insert Object ---
   return {
@@ -85,15 +88,15 @@ export function mapTourApiToEvent(
       : null,
     description: commonDetail?.overview || null,
 
-    // Kidsroad Specific Fields (default inferences)
+    // Kidsroad Specific Fields (inferred from overview text)
     age_ranges: ageRanges,
     is_free: isFree,
     is_indoor: isIndoor,
     is_outdoor: isOutdoor,
-    has_parking: null, // Not available for festivals from TourAPI, set to unknown
-    has_stroller_access: null, // Not available for festivals from TourAPI, set to unknown
-    has_nursing_room: null, // Default unknown
-    has_diaper_station: null, // Default unknown
+    has_parking: hasParking,
+    has_stroller_access: hasStrollerAccess,
+    has_nursing_room: hasNursingRoom,
+    has_diaper_station: hasDiaperStation,
     category: getCategory(festivalItem.contenttypeid), // Map contentTypeId to our category
     tags: [], // To be inferred later
     data_source: "TourAPI",
@@ -202,30 +205,50 @@ function inferIsOutdoor(title: string, addr: string): boolean | null {
 }
 
 /**
- * Infers parking availability.
- * As per docs/DATA_COVERAGE_ANALYSIS.md, parkingculture is from CultureIntroItem
+ * Infers parking availability from overview text.
+ * 주차장, 주차 가능 등의 언급이 있으면 true
  */
-function inferHasParking(parkingText: string): boolean | null {
-  const lowerText = parkingText.toLowerCase();
-  if (
-    lowerText.includes("가능") ||
-    lowerText.includes("있음") ||
-    lowerText.includes("주차")
-  )
-    return true;
-  if (lowerText.includes("불가능") || lowerText.includes("없음")) return false;
+function inferHasParking(text: string): boolean | null {
+  const lowerText = text.toLowerCase();
+  // 주차 관련 긍정적 키워드
+  if (/주차장|주차\s*가능|무료\s*주차|주차\s*시설/.test(lowerText)) return true;
+  // 주차 불가 키워드
+  if (/주차\s*불가|주차\s*어려|주차장\s*없/.test(lowerText)) return false;
   return null; // Unknown
 }
 
 /**
- * Infers stroller access.
- * As per docs/DATA_COVERAGE_ANALYSIS.md, chkbabycarriageculture is from CultureIntroItem
+ * Infers stroller access from overview text.
+ * 유모차 대여, 베리어프리 등의 언급이 있으면 true
  */
-function inferHasStrollerAccess(strollerText: string): boolean | null {
-  const lowerText = strollerText.toLowerCase();
-  if (lowerText.includes("가능") || lowerText.includes("대여")) return true;
-  if (lowerText.includes("불가능") || lowerText.includes("반입불가"))
-    return false;
+function inferHasStrollerAccess(text: string): boolean | null {
+  const lowerText = text.toLowerCase();
+  // 유모차 관련 긍정적 키워드
+  if (/유모차\s*대여|유모차\s*가능|유모차\s*ok|베리어프리|배리어프리|휠체어/.test(lowerText)) return true;
+  // 유모차 불가 키워드
+  if (/유모차\s*불가|유모차\s*반입\s*금지|계단\s*많|경사\s*심/.test(lowerText)) return false;
+  return null; // Unknown
+}
+
+/**
+ * Infers nursing room availability from overview text.
+ * 수유실, 모유수유 등의 언급이 있으면 true
+ */
+function inferHasNursingRoom(text: string): boolean | null {
+  const lowerText = text.toLowerCase();
+  // 수유실 관련 키워드
+  if (/수유실|수유\s*공간|모유\s*수유|nursing\s*room/.test(lowerText)) return true;
+  return null; // Unknown (수유실 없다고 명시하는 경우는 드뭄)
+}
+
+/**
+ * Infers diaper station availability from overview text.
+ * 기저귀 교환대 등의 언급이 있으면 true
+ */
+function inferHasDiaperStation(text: string): boolean | null {
+  const lowerText = text.toLowerCase();
+  // 기저귀 교환대 관련 키워드
+  if (/기저귀\s*교환|기저귀\s*갈|기저귀\s*대|diaper/.test(lowerText)) return true;
   return null; // Unknown
 }
 

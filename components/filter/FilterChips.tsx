@@ -10,13 +10,19 @@ const AGE_OPTIONS = [
   { label: "10세+", value: "10+" },
 ];
 
-const CHECKLIST_OPTIONS = [
-  { label: "무료", value: "free", icon: "payments" },
+const CHECKLIST_OPTIONS: Array<{
+  label: string;
+  value: string;
+  icon?: string;
+  textIcon?: string;
+}> = [
+  { label: "무료", value: "free", textIcon: "FREE" },
+  { label: "유료", value: "paid", icon: "payments" },
   { label: "실내", value: "indoor", icon: "home" },
-  { label: "실외", value: "outdoor", icon: "nature" },
+  { label: "실외", value: "outdoor", icon: "wb_sunny" },
   { label: "주차", value: "parking", icon: "local_parking" },
   { label: "유모차", value: "stroller", icon: "stroller" },
-  { label: "수유실", value: "nursing", icon: "child_care" },
+  { label: "수유실", value: "nursing", icon: "baby_changing_station" },
 ];
 
 interface FilterChipsProps {
@@ -81,6 +87,7 @@ export default function FilterChips({
             key={option.value}
             label={option.label}
             icon={option.icon}
+            textIcon={option.textIcon}
             active={currentChecklist[option.value] || false}
             onClick={() => handleChecklistClick(option.value)}
           />

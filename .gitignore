@@ -27,7 +27,15 @@ nul
 
 # AI tools temp files
 .gemini/
+.gemini-clipboard/
+.claude/
+.cursor/
+.agent/
+.mcp.json
 tmpclaude-*
+
+# MCP task manager data
+data/
 
 # debug
 npm-debug.log*

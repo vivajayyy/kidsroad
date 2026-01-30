@@ -89,11 +89,18 @@ export default function EventCard({
     });
   };
 
-  const checklistItems = [
+  const checklistItems: Array<{
+    key: string;
+    icon?: string;
+    textIcon?: string;
+    label: string;
+    active: boolean;
+  }> = [
+    { key: "free", textIcon: "FREE", label: "무료", active: event.is_free },
+    { key: "paid", icon: "payments", label: "유료", active: !event.is_free },
     { key: "parking", icon: "local_parking", label: "주차 가능", active: event.has_parking },
     { key: "stroller", icon: "stroller", label: "유모차 가능", active: event.has_stroller_access },
-    { key: "nursing", icon: "child_care", label: "수유실 있음", active: event.has_nursing_room },
-    { key: "free", icon: "payments", label: "무료", active: event.is_free },
+    { key: "nursing", icon: "baby_changing_station", label: "수유실 있음", active: event.has_nursing_room },
   ];
 
   const activeChecklist = checklistItems.filter((item) => item.active);
@@ -200,19 +207,25 @@ export default function EventCard({
         {/* 체크리스트 아이콘 */}
         {activeChecklist.length > 0 && (
           <div className="flex items-center gap-3 pt-3 border-t border-gray-100 dark:border-gray-800">
-            {activeChecklist.map((item) => (
-              <span
-                key={item.key}
-                className={`material-symbols-outlined text-lg ${
-                  item.key === "free"
-                    ? "text-primary"
-                    : "text-gray-400 dark:text-gray-500"
-                }`}
-                title={item.label}
-              >
-                {item.icon}
-              </span>
-            ))}
+            {activeChecklist.map((item) =>
+              item.textIcon ? (
+                <span
+                  key={item.key}
+                  className="text-[11px] font-black tracking-tight text-primary"
+                  title={item.label}
+                >
+                  {item.textIcon}
+                </span>
+              ) : (
+                <span
+                  key={item.key}
+                  className="material-symbols-outlined text-lg text-primary"
+                  title={item.label}
+                >
+                  {item.icon}
+                </span>
+              )
+            )}
           </div>
         )}
       </div>

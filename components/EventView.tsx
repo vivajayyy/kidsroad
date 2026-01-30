@@ -34,6 +34,7 @@ const initialFilterState: FilterState = {
   age: "",
   checklist: {
     free: false,
+    paid: false,
     indoor: false,
     outdoor: false,
     parking: false,
@@ -79,6 +80,7 @@ export default function EventView({ events }: { events: Event[] }) {
 
       // 체크리스트 필터
       if (filters.checklist.free && !event.is_free) return false;
+      if (filters.checklist.paid && event.is_free) return false;
       if (filters.checklist.indoor && !event.is_indoor) return false;
       if (filters.checklist.outdoor && event.is_indoor !== false) return false;
       if (filters.checklist.parking && !event.has_parking) return false;
@@ -198,7 +200,7 @@ export default function EventView({ events }: { events: Event[] }) {
 
     setFilters((prev) => {
       // 체크리스트 필터인 경우
-      if (["free", "indoor", "outdoor", "parking", "stroller", "nursing"].includes(key)) {
+      if (["free", "paid", "indoor", "outdoor", "parking", "stroller", "nursing"].includes(key)) {
         return {
           ...prev,
           checklist: {

@@ -124,51 +124,23 @@ export default function AuthButton({ user }: AuthButtonProps) {
   }
 
   return (
-    <div className="relative" ref={menuRef}>
-      <button
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        disabled={isLoading}
-        className="px-4 py-2 min-h-[44px] min-w-[44px] bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full text-sm font-semibold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors disabled:opacity-50"
-        aria-label="로그인"
-        aria-expanded={isMenuOpen}
-        aria-haspopup="true"
-      >
-        <span className="hidden md:inline">
-          {isLoading ? "로그인 중..." : "로그인"}
-        </span>
-        <span className="md:hidden material-symbols-outlined text-lg">
-          person
-        </span>
-      </button>
-
-      {isMenuOpen && (
-        <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-900 rounded-2xl shadow-dropdown border border-gray-100 dark:border-gray-800 overflow-hidden z-50 animate-scale-in origin-top-right">
-          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-            <p className="text-sm font-semibold text-gray-900 dark:text-white">
-              로그인
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-              간편하게 시작하세요
-            </p>
-          </div>
-          <button
-            onClick={() => handleSignIn("kakao")}
-            disabled={isLoading}
-            className="w-full px-4 py-3 flex items-center gap-3 text-left hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-50"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-              <rect width="20" height="20" rx="4" fill="#FEE500" />
-              <path
-                d="M10 5C6.68629 5 4 7.10167 4 9.70082C4 11.342 5.08604 12.7792 6.72727 13.5927L6.1066 15.7594C6.06381 15.9072 6.23405 16.0257 6.36233 15.9395L9.04124 14.2032C9.35577 14.2404 9.67537 14.2603 10 14.2603C13.3137 14.2603 16 12.1587 16 9.55929C16 7.10167 13.3137 5 10 5Z"
-                fill="#391B1B"
-              />
-            </svg>
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-              카카오로 시작하기
-            </span>
-          </button>
-        </div>
-      )}
-    </div>
+    <button
+      onClick={() => handleSignIn("kakao")}
+      disabled={isLoading}
+      className="flex items-center justify-center gap-2 h-[45px] px-4 bg-[#FEE500] hover:bg-[#F6DD00] text-[#000000] rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+      aria-label="카카오 로그인"
+    >
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M9 0.5C4.30558 0.5 0.5 3.43852 0.5 7.07143C0.5 9.32458 2.01292 11.2957 4.31818 12.4686L3.36364 16.3C3.30909 16.5143 3.55455 16.6857 3.74545 16.5571L8.17273 13.5286C8.43636 13.5571 8.71364 13.5714 9 13.5714C13.6944 13.5714 17.5 10.6329 17.5 7C17.5 3.43852 13.6944 0.5 9 0.5Z"
+          fill="#000000"
+        />
+      </svg>
+      <span className="hidden md:inline">
+        {isLoading ? "로그인 중..." : "카카오 로그인"}
+      </span>
+    </button>
   );
 }

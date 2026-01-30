@@ -12,6 +12,36 @@ import {
 import { analyzeBlogs, isConfidentResult } from './ai-analyzer';
 import { EnrichmentMetadata } from '@/types/enrichment.types';
 
+/**
+ * 이벤트 제목에서 핵심 키워드 추출
+ * 블로그 필터링에 사용
+ */
+function extractEventKeywords(title: string): string[] {
+  // 일반적인 단어 제거
+  const stopWords = ['축제', '행사', '페스티벌', 'festival', '제', '회', '년', '2024', '2025', '2026'];
+
+  // 제목을 공백으로 분리
+  const words = title.split(/[\s,·\-_()]+/).filter(Boolean);
+
+  // 핵심 키워드 추출 (2글자 이상, stopWords 제외)
+  const keywords = words.filter(
+    (word) => word.length >= 2 && !stopWords.includes(word.toLowerCase())
+  );
+
+  // 원본 제목도 키워드에 포함 (띄어쓰기 제거 버전)
+  const titleNoSpace = title.replace(/\s+/g, '');
+  if (titleNoSpace.length >= 3) {
+    keywords.push(titleNoSpace);
+  }
+
+  // 최소 2개 키워드 보장
+  if (keywords.length === 0) {
+    return [title];
+  }
+
+  return [...new Set(keywords)];
+}
+
 interface EnrichmentOptions {
   /**
    * 검색할 블로그 개수 (기본값: 10)
@@ -72,8 +102,8 @@ export async function enrichEventData(
   }
 
   try {
-    // Step 1: Search for relevant blogs
-    const searchQuery = `${event.title} 후기 유모차 주차 수유실`;
+    // Step 1: Search for relevant blogs (행사명 + 후기로만 검색)
+    const searchQuery = `${event.title} 후기`;
     console.log(`[Enrichment] Searching blogs for: ${event.title}`);
 
     let blogResults = await searchNaverBlogs(searchQuery, maxBlogSearch);
@@ -83,9 +113,25 @@ export async function enrichEventData(
       return { enrichedEvent: event, metadata: null };
     }
 
+    // Step 1.5: Filter blogs that actually mention the event name
+    // 행사명의 핵심 키워드를 추출하여 필터링
+    const eventKeywords = extractEventKeywords(event.title || "");
+    const beforeFilter = blogResults.length;
+
+    blogResults = blogResults.filter((blog) => {
+      const blogText = (blog.title + " " + blog.description).toLowerCase();
+      // 핵심 키워드 중 하나라도 포함되면 관련 블로그로 판단
+      return eventKeywords.some((keyword) => blogText.includes(keyword.toLowerCase()));
+    });
+
     console.log(
-      `[Enrichment] Found ${blogResults.length} blogs for: ${event.title}`
+      `[Enrichment] Found ${beforeFilter} blogs, ${blogResults.length} relevant for: ${event.title}`
     );
+
+    if (blogResults.length === 0) {
+      console.log(`[Enrichment] No relevant blogs found for: ${event.title}`);
+      return { enrichedEvent: event, metadata: null };
+    }
 
     // NEW: Apply date filter if provided
     if (blogDateFilter && blogResults.length > 0) {
