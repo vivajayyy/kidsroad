@@ -96,11 +96,11 @@ export default function EventCard({
     label: string;
     active: boolean;
   }> = [
-    { key: "free", textIcon: "FREE", label: "무료", active: event.is_free },
-    { key: "paid", icon: "payments", label: "유료", active: !event.is_free },
-    { key: "parking", icon: "local_parking", label: "주차 가능", active: event.has_parking },
-    { key: "stroller", icon: "stroller", label: "유모차 가능", active: event.has_stroller_access },
-    { key: "nursing", icon: "baby_changing_station", label: "수유실 있음", active: event.has_nursing_room },
+    { key: "free", textIcon: "FREE", label: "무료", active: event.is_free ?? false },
+    { key: "paid", icon: "payments", label: "유료", active: !(event.is_free ?? false) },
+    { key: "parking", icon: "local_parking", label: "주차 가능", active: event.has_parking ?? false },
+    { key: "stroller", icon: "stroller", label: "유모차 가능", active: event.has_stroller_access ?? false },
+    { key: "nursing", icon: "baby_changing_station", label: "수유실 있음", active: event.has_nursing_room ?? false },
   ];
 
   const activeChecklist = checklistItems.filter((item) => item.active);
